@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 加载更多 -->
+    <item name="common_list_abs_list_view_load_more" type="id" />
+    <!-- 下拉刷新 -->
+    <item name="common_list_layout_abs_listview_swipe_refresh" type="id" />
+
+    <!--listview-->
+    <item name="common_list_layout_abs_listview_lv" type="id" />
+    <!--header view-->
+    <item name="gsx_list_abs_list_view_header" type="id" />
+    <!--empty view-->
+    <item name="common_list_abs_list_view_empty" type="id" />
+     <!--error view-->
+    <item name="common_list_abs_list_view_error" type="id" />
+    <!--progress view-->
+    <item name="common_list_abs_list_view_progress" type="id" />
+    <!--右侧字母索引栏-->
+    <item name="gsx_list_abs_sidebar" type="id" />
+    <!--中间字母悬浮-->
+    <item name="common_list_abs_floating_header" type="id" />
+</resources>

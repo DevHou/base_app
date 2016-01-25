@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gsx_list_white">#ffffff</color>
+    <color name="gsx_list_middle_black">#6d6d6e</color>
+    <color name="gsx_list_green">#48b14b</color>
+    <color name="gsx_list_red">#f95e5e</color>
+    <color name="gsx_list_blue">#3fa5f2</color>
+    <color name="gsx_list_orange">#ff9100</color>
+</resources>

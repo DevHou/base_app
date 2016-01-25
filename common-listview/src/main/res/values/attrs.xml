@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 带更多功能的ListView -->
+    <declare-styleable name="common_list_attrs">
+        <!-- 数据头部view -->
+        <attr name="common_list_layout_header" format="reference" />
+        <!-- 无数据时页面 -->
+        <attr name="common_list_layout_empty" format="reference" />
+        <!-- 错误时页面 -->
+        <attr name="common_list_layout_error" format="reference" />
+        <!-- 加载更多页面 -->
+        <attr name="common_list_layout_more_progress" format="reference" />
+        <!-- 第一页加载中页面 -->
+        <attr name="common_list_layout_progress" format="reference" />
+        <!-- 是否显示无限长，即有多少数据显示多长 -->
+        <attr name="common_list_height_wrap_content" format="boolean" />
+        <!-- 是否允许子view再padding范围内绘制 -->
+        <attr name="common_list_clip_to_padding" format="boolean" />
+        <!--是否能下拉刷新-->
+        <attr name="common_list_enable_refresh" format="boolean" />
+        <!-- 是否自动加载下页-->
+        <attr name="common_list_enable_load_more" format="boolean" />
+        <!-- padding -->
+        <attr name="common_list_view_padding" format="dimension" />
+        <attr name="common_list_view_padding_top" format="dimension" />
+        <attr name="common_list_view_padding_bottom" format="dimension" />
+        <attr name="common_list_view_padding_left" format="dimension" />
+        <attr name="common_list_view_padding_right" format="dimension" />
+        <attr name="common_list_view_scrollbar_style">
+            <flag name="insideOverlay" value="0x00000000" />
+            <flag name="insideInset" value="0x01000000" />
+            <flag name="outsideOverlay" value="0x02000000" />
+            <flag name="outsideInset" value="0x03000000" />
+        </attr>
+        <!--主页面layout，这个一般不需要改-->
+        <attr name="common_list_main_layout_id" format="reference" />
+        <attr name="common_list_cell_type" format="string" />
+    </declare-styleable>
+
+
+</resources>

@@ -1,0 +1,2 @@
+include ':common-cache', ':common-event', ':common-image', ':common-listview', ':common-mp3recorder', ':common-network', ':common-permission', ':common-utils'
+include ':app-base', 'app'

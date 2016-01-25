@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.houlijiang.common.listview.AbsListView
+        android:id="@+id/test_listview_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:common_list_clip_to_padding="false"
+        app:common_list_height_wrap_content="false"
+        app:common_list_layout_empty="@layout/layout_listview_empty"
+        app:common_list_layout_error="@layout/layout_listview_error"
+        app:common_list_layout_header="@layout/layout_listview_header"
+        app:common_list_layout_more_progress="@layout/layout_listview_loadmore"
+        app:common_list_layout_progress="@layout/layout_listview_progress"
+        app:common_list_view_scrollbar_style="outsideOverlay" />
+
+</LinearLayout>

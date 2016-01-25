@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="13dip"
+    android:paddingLeft="13dip"
+    android:paddingRight="13dip"
+    android:paddingTop="13dip"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_main">
+
+    <Button
+        android:id="@+id/main_btn_test_net"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestNet" />
+
+    <Button
+        android:id="@+id/main_btn_test_cache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestCache" />
+
+    <Button
+        android:id="@+id/main_btn_test_image_loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestImageLoader" />
+
+    <Button
+        android:id="@+id/main_btn_test_listview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestListView" />
+
+    <Button
+        android:id="@+id/main_btn_test_mp3rec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestMp3Rec" />
+
+</LinearLayout>
