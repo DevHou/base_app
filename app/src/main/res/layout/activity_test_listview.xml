@@ -11,11 +11,11 @@
         android:layout_height="match_parent"
         app:common_list_clip_to_padding="false"
         app:common_list_height_wrap_content="false"
-        app:common_list_layout_empty="@layout/layout_listview_empty"
-        app:common_list_layout_error="@layout/layout_listview_error"
-        app:common_list_layout_header="@layout/layout_listview_header"
-        app:common_list_layout_more_progress="@layout/layout_listview_loadmore"
-        app:common_list_layout_progress="@layout/layout_listview_progress"
+        app:common_list_layout_empty="@layout/layout_common_listview_empty"
+        app:common_list_layout_error="@layout/layout_common_listview_error"
+        app:common_list_layout_header="@layout/layout_test_listview_header"
+        app:common_list_layout_more_progress="@layout/layout_common_listview_loadmore"
+        app:common_list_layout_progress="@layout/layout_common_listview_progress"
         app:common_list_view_scrollbar_style="outsideOverlay" />
 
 </LinearLayout>

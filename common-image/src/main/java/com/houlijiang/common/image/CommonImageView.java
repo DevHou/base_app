@@ -2,25 +2,24 @@ package com.houlijiang.common.image;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.facebook.drawee.controller.AbstractDraweeControllerBuilder;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.interfaces.SimpleDraweeControllerBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.houlijiang.common.image.fresco.ConfigConstants;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 /**
  * Created by houlijiang on 15/4/2.
@@ -152,41 +151,28 @@ public class CommonImageView extends SimpleDraweeView {
 
     @Override
     public void setImageURI(Uri uri, @Nullable Object callerContext) {
-        SimpleDraweeControllerBuilder controllerBuilder =
-            ConfigConstants.getSimpleDraweeControllerBuilder(getControllerBuilder(), uri, callerContext,
-                    getController());
-        if (controllerBuilder instanceof AbstractDraweeControllerBuilder) {
-            ((AbstractDraweeControllerBuilder<?, ?, ?, ?>) controllerBuilder).setControllerListener(mListener);
+        ImageRequest request = null;
+        if (getMeasuredWidth() > 0 && getMeasuredHeight() > 0) {
+            request =
+                ImageRequestBuilder.newBuilderWithSource(uri)
+                    .setResizeOptions(new ResizeOptions(getMeasuredWidth(), getMeasuredHeight())).build();
+        }
+        PipelineDraweeControllerBuilder controllerBuilder =
+            Fresco.newDraweeControllerBuilder().setUri(uri).setCallerContext(callerContext)
+                .setOldController(getController()).setControllerListener(mListener);
+        if (request != null) {
+            controllerBuilder.setImageRequest(request);
         }
         setController(controllerBuilder.build());
     }
 
-    /**
-     * 获取图片bitmap
-     * 
-     * @return bitmap
-     */
-    public Bitmap getBitmap() {
-        try {
-            Drawable drawable = getTopLevelDrawable();
-            Bitmap bitmap;
-            if (drawable instanceof BitmapDrawable) {
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                if (bitmapDrawable.getBitmap() != null) {
-                    return bitmapDrawable.getBitmap();
-                }
-            }
-            int widthPixels = getWidth();
-            int heightPixels = getHeight();
-            bitmap = Bitmap.createBitmap(widthPixels, heightPixels, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, widthPixels, heightPixels);
-            drawable.draw(canvas);
-            return bitmap;
-        } catch (Exception e) {
-            Log.e(TAG, "catch exception when get bitmap, e:" + e.getLocalizedMessage());
-            return null;
-        }
+    public void setImageURI(Uri uri, int width, int height) {
+        ImageRequest request =
+            ImageRequestBuilder.newBuilderWithSource(uri).setResizeOptions(new ResizeOptions(width, height)).build();
+        PipelineDraweeControllerBuilder controllerBuilder =
+            Fresco.newDraweeControllerBuilder().setUri(uri).setCallerContext(null).setOldController(getController())
+                .setControllerListener(mListener).setImageRequest(request);
+        setController(controllerBuilder.build());
     }
 
     public ControllerListener<Object> getListener() {

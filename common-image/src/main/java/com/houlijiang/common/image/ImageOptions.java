@@ -22,6 +22,7 @@ public class ImageOptions {
     private ScaleType emptyScaleType = ScaleType.CENTER_CROP;
     private ScaleType failScaleType = ScaleType.CENTER_CROP;
     private ImageProcessor processor = null;
+    private ImageSize imageSize = null;
 
     public int getImageResOnLoading() {
         return imageResOnLoading;
@@ -111,6 +112,14 @@ public class ImageOptions {
         this.imageScaleType = imageScaleType;
     }
 
+    public ImageSize getImageSize() {
+        return imageSize;
+    }
+
+    public void setImageSize(ImageSize imageSize) {
+        this.imageSize = imageSize;
+    }
+
     public static class Builder {
 
         ImageOptions options;
@@ -181,5 +190,10 @@ public class ImageOptions {
 
     public enum ScaleType {
         FIT_XY, FIT_START, FIT_CENTER, FIT_END, CENTER, CENTER_INSIDE, CENTER_CROP, FOCUS_CROP;
+    }
+
+    public static class ImageSize {
+        public int width;
+        public int height;
     }
 }

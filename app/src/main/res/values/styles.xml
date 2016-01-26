@@ -24,10 +24,10 @@
 
     <!-- activity动画 右进右出 -->
     <style name="CommonAnimationActivity" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/tx_in_right_to_left</item>
-        <item name="android:activityOpenExitAnimation">@anim/tx_out_right_to_left</item>
-        <item name="android:activityCloseEnterAnimation">@anim/tx_in_left_to_right</item>
-        <item name="android:activityCloseExitAnimation">@anim/tx_out_left_to_right</item>
+        <item name="android:activityOpenEnterAnimation">@anim/anim_common_in_right_to_left</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_common_out_right_to_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/anim_common_in_left_to_right</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_common_out_left_to_right</item>
     </style>
 
     <!-- activity样式，页面动画是右进右出 -->
@@ -55,10 +55,10 @@
 
     <!-- activity动画 底部进底部出 -->
     <style name="CommonAnimationBottomUpDown" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/tx_in_bottom_to_up</item>
-        <item name="android:activityOpenExitAnimation">@anim/tx_fade_out</item>
-        <item name="android:activityCloseEnterAnimation">@anim/tx_fade_in</item>
-        <item name="android:activityCloseExitAnimation">@anim/tx_out_up_to_bottom</item>
+        <item name="android:activityOpenEnterAnimation">@anim/anim_common_in_bottom_to_up</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_common_fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/anim_common_fade_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_common_out_up_to_bottom</item>
     </style>
 
     <!-- 从底部进入退出样式 -->
@@ -85,7 +85,7 @@
         <!-- 背景色，如果不单独设置popup的背景色，则也是这个颜色 -->
         <item name="android:background">@color/common_blue</item>
         <!-- 返回按钮icon，貌似不管用，需要在代码里设置 -->
-        <!--<item name="android:homeAsUpIndicator">@drawable/ic_title_back</item>-->
+        <!--<item name="android:homeAsUpIndicator">@drawable/ic_common_title_back</item>-->
         <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
         <item name="contentInsetStart">0dip</item>
         <item name="contentInsetLeft">0dip</item>

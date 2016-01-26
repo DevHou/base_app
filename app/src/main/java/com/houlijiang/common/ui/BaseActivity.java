@@ -54,12 +54,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         bindContentView();
 
-        mTitle = findViewById(R.id.tx_layout_common_title);
+        mTitle = findViewById(R.id.layout_common_title_fl);
         if (mTitle != null) {
-            mViewBackBtn = findViewById(R.id.tx_layout_title_fl_back);
-            mTvTitle = (TextView) findViewById(R.id.tx_layout_title_tv_title);
-            mVgRightIcons = (ViewGroup) findViewById(R.id.tx_layout_title_ll_buttons);
-            mVgPopItems = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.layout_title_popup, null);
+            mViewBackBtn = findViewById(R.id.layout_common_title_fl_back);
+            mTvTitle = (TextView) findViewById(R.id.layout_common_title_tv_title);
+            mVgRightIcons = (ViewGroup) findViewById(R.id.layout_common_title_ll_buttons);
+            mVgPopItems = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.layout_common_title_popup, null);
         }
         EventUtils.registerEvent(this);
     }
@@ -87,9 +87,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 View v;
                 if (item.showType == CustomMenuShowType.TYPE_ALWAYS) {
                     // 显示在右侧
-                    v = LayoutInflater.from(this).inflate(R.layout.item_title_bar_icon, mVgRightIcons, false);
-                    CommonImageView iv = (CommonImageView) v.findViewById(R.id.item_title_bar_icon_iv);
-                    TextView tv = (TextView) v.findViewById(R.id.item_title_bar_icon_tv);
+                    v = LayoutInflater.from(this).inflate(R.layout.item_common_title_bar_icon, mVgRightIcons, false);
+                    CommonImageView iv = (CommonImageView) v.findViewById(R.id.common_item_title_bar_icon_iv);
+                    TextView tv = (TextView) v.findViewById(R.id.common_item_title_bar_icon_tv);
                     if (item.icon > 0) {
                         ImageLoader.displayImage(item.icon, iv, null);
                     } else if (!TextUtils.isEmpty(item.iconUri)) {
@@ -101,10 +101,10 @@ public abstract class BaseActivity extends AppCompatActivity {
                 } else {
                     showMoreIcon = true;
                     // 弹出菜单
-                    v = LayoutInflater.from(this).inflate(R.layout.item_title_bar_popup, mVgPopItems, false);
-                    TextView tv = (TextView) v.findViewById(R.id.item_title_bar_popup_tv);
+                    v = LayoutInflater.from(this).inflate(R.layout.item_common_title_bar_popup, mVgPopItems, false);
+                    TextView tv = (TextView) v.findViewById(R.id.common_item_title_bar_popup_tv);
                     tv.setText(item.text);
-                    View divider = v.findViewById(R.id.item_title_bar_popup_line);
+                    View divider = v.findViewById(R.id.common_item_title_bar_popup_line);
                     if (firstPopItem) {
                         divider.setVisibility(View.GONE);
                     } else {
@@ -130,9 +130,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 });
             }
             if (showMoreIcon) {
-                final View v = LayoutInflater.from(this).inflate(R.layout.item_title_bar_icon, mVgRightIcons, false);
-                CommonImageView iv = (CommonImageView) v.findViewById(R.id.item_title_bar_icon_iv);
-                ImageLoader.displayImage(R.drawable.ic_title_more_action, iv, null);
+                final View v = LayoutInflater.from(this).inflate(R.layout.item_common_title_bar_icon, mVgRightIcons, false);
+                CommonImageView iv = (CommonImageView) v.findViewById(R.id.common_item_title_bar_icon_iv);
+                ImageLoader.displayImage(R.drawable.ic_common_title_more_action, iv, null);
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

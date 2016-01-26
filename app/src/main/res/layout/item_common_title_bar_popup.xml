@@ -2,17 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/tx_selector_white_bg"
+    android:background="@drawable/selector_common_white_bg"
     android:orientation="vertical">
 
     <View
-        android:id="@+id/item_title_bar_popup_line"
+        android:id="@+id/common_item_title_bar_popup_line"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="@color/common_black" />
 
     <TextView
-        android:id="@+id/item_title_bar_popup_tv"
+        android:id="@+id/common_item_title_bar_popup_tv"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/common_height_navi_bar_popup_item"
         android:layout_gravity="center"

@@ -30,7 +30,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        int layoutId = getContentLayoutId() <= 0 ? R.layout.common_fragment_viewpager_with_title : getContentLayoutId();
+        int layoutId = getContentLayoutId() <= 0 ? R.layout.fragment_common_viewpager_with_title : getContentLayoutId();
         View view = inflater.inflate(layoutId, container, false);
 
         mIndicator = (IPageIndicator) view.findViewById(R.id.common_viewpager_indicator);
@@ -114,7 +114,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
      * 自定义的title view
      */
     protected View getFragmentTabView(int position) {
-        return LayoutInflater.from(this.getActivity()).inflate(R.layout.common_layout_viewpager_tab_item, null);
+        return LayoutInflater.from(this.getActivity()).inflate(R.layout.item_common_viewpager_tab, null);
     }
 
     @Override

@@ -27,7 +27,7 @@ public abstract class BaseListFragment extends AbsListFragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_layout_listview, container, false);
+        return inflater.inflate(R.layout.fragment_common_base_list, container, false);
     }
 
     @Override
@@ -40,7 +40,7 @@ public abstract class BaseListFragment extends AbsListFragment {
      */
     @Override
     protected int getListViewId() {
-        return R.id.layout_listview_lv;
+        return R.id.layout_common_listview_lv;
     }
 
     /**

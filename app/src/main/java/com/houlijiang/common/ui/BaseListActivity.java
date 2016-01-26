@@ -21,7 +21,7 @@ public abstract class BaseListActivity extends AbsListActivity {
      */
     @Override
     protected boolean bindContentView() {
-        setContentView(R.layout.activity_layout_listview);
+        setContentView(R.layout.activity_common_base_list);
         return false;
     }
 
@@ -35,7 +35,7 @@ public abstract class BaseListActivity extends AbsListActivity {
      */
     @Override
     protected int getListViewId() {
-        return R.id.layout_listview_lv;
+        return R.id.layout_common_listview_lv;
     }
 
     /**

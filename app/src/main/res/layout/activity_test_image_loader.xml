@@ -13,7 +13,7 @@
             android:layout_width="100dip"
             android:layout_height="100dip"
             app:imageScaleType="centerCrop"
-            app:imageSrc="@drawable/abc" />
+            app:imageSrc="@drawable/test_abc" />
 
         <TextView
             android:layout_width="wrap_content"

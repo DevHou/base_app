@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:listview="http://schemas.android.com/apk/res/android">
+<resources>
     <style name="common_list_view">
         <item name="common_list_layout_empty">@layout/common_list_layout_empty</item>
         <item name="common_list_layout_error">@layout/common_list_layout_error</item>

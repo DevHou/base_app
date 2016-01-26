@@ -219,7 +219,12 @@ public class ImageLoader {
             imageView.setImageLoadListener(listener);
         }
 
-        imageView.setImageURI(uri);
+        if (options != null && options.getImageSize() != null && options.getImageSize().width > 0
+            && options.getImageSize().height > 0) {
+            imageView.setImageURI(uri, options.getImageSize().width, options.getImageSize().height);
+        } else {
+            imageView.setImageURI(uri);
+        }
     }
 
     /**

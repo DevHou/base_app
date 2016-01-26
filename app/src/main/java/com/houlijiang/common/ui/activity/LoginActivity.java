@@ -36,7 +36,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected boolean bindContentView() {
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_common_login);
         return true;
     }
 
