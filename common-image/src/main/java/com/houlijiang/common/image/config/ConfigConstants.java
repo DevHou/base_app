@@ -1,4 +1,4 @@
-package com.houlijiang.common.image.fresco;
+package com.houlijiang.common.image.config;
 
 import android.content.Context;
 import android.net.Uri;

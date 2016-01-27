@@ -33,9 +33,7 @@ public class TestImageLoaderActivity extends BaseActivity {
                 .showFailImage(R.drawable.ic_common_list_fail).build();
 
         CommonImageView netIv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net);
-        ImageOptions.ImageSize size = new ImageOptions.ImageSize();
-        size.width = 200;
-        size.height = 200;
+        ImageOptions.ImageSize size = new ImageOptions.ImageSize(200, 200);
         options.setImageSize(size);
         ImageLoader.displayImage(
             "http://g.hiphotos.baidu.com/image/pic/item/ca1349540923dd54703de864d309b3de9c82486b.jpg", netIv, options);

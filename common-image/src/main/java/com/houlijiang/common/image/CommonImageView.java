@@ -104,6 +104,7 @@ public class CommonImageView extends SimpleDraweeView {
 
             @Override
             public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable animatable) {
+                super.onFinalImageSet(id, imageInfo, animatable);
                 Log.v(TAG, "load image id:" + id + " success");
                 IImageLoadListener listener = null;
                 synchronized (CommonImageView.this) {
@@ -111,12 +112,16 @@ public class CommonImageView extends SimpleDraweeView {
                         listener = mImageLoadListener;
                     }
                 }
-                if (listener != null) {
-                    if (imageInfo == null) {
-                        listener.onSuccess(id, CommonImageView.this, 0, 0);
-                    } else {
-                        listener.onSuccess(id, CommonImageView.this, imageInfo.getWidth(), imageInfo.getHeight());
+                try {
+                    if (listener != null) {
+                        if (imageInfo == null) {
+                            listener.onSuccess(id, CommonImageView.this, 0, 0);
+                        } else {
+                            listener.onSuccess(id, CommonImageView.this, imageInfo.getWidth(), imageInfo.getHeight());
+                        }
                     }
+                } catch (Exception e) {
+                    Log.e(TAG, "success callback e:" + e.getLocalizedMessage());
                 }
             }
 
@@ -129,8 +134,12 @@ public class CommonImageView extends SimpleDraweeView {
                         listener = mImageLoadListener;
                     }
                 }
-                if (listener != null) {
-                    listener.onFailed(id, CommonImageView.this, null);
+                try {
+                    if (listener != null) {
+                        listener.onFailed(id, CommonImageView.this, null);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "fail callback e:" + e.getLocalizedMessage());
                 }
             }
 
@@ -156,18 +165,9 @@ public class CommonImageView extends SimpleDraweeView {
 
     @Override
     public void setImageURI(Uri uri, @Nullable Object callerContext) {
-        ImageRequest request = null;
-        if (getMeasuredWidth() > 0 && getMeasuredHeight() > 0) {
-            request =
-                ImageRequestBuilder.newBuilderWithSource(uri)
-                    .setResizeOptions(new ResizeOptions(getMeasuredWidth(), getMeasuredHeight())).build();
-        }
         PipelineDraweeControllerBuilder controllerBuilder =
             Fresco.newDraweeControllerBuilder().setUri(uri).setCallerContext(callerContext)
                 .setOldController(getController()).setControllerListener(mListener);
-        if (request != null) {
-            controllerBuilder.setImageRequest(request);
-        }
         setController(controllerBuilder.build());
     }
 

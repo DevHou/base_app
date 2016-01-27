@@ -26,10 +26,11 @@ public class TestImageBrowserActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 final String[] urls =
-                    new String[] { "http://pic88.nipic.com/file/20160120/5947861_102428502000_2.jpg",
-                        "http://pic88.nipic.com/file/20160119/22430813_155916345533_2.jpg",
-                        "http://www.bz55.com/uploads/allimg/150309/139-150309101A8.jpg" };
+                    new String[] { "http://pic85.nipic.com/file/20151212/22257486_115828234000_2.jpg",
+                        "http://pic84.nipic.com/file/20151129/17961491_210752100000_2.jpg",
+                        "http://pic84.nipic.com/file/20151209/22287948_101044394123_2.jpg" };
                 ImageOptions option = new ImageOptions();
+                option.setImageSize(new ImageOptions.ImageSize(500, 500));
                 option.setImageResForEmptyUri(R.drawable.ic_common_list_empty);
                 option.setImageResForEmptyUri(R.drawable.ic_common_list_fail);
                 ImageBrowserActivity.launch(TestImageBrowserActivity.this, urls, 0, option);

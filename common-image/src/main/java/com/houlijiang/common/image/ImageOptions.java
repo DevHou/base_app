@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 1、加载中，加载失败，404状态下的默认显示图片
  * 2、结果bitmap的再处理
  */
-public class ImageOptions implements Serializable{
+public class ImageOptions implements Serializable {
 
     private int imageResOnLoading = 0;
     private int imageResForEmptyUri = 0;
@@ -20,10 +20,10 @@ public class ImageOptions implements Serializable{
     private Drawable imageForEmptyUri = null;
     private Drawable imageOnFail = null;
     private Drawable imageProgress = null;
-    private ScaleType imageScaleType = ScaleType.CENTER_CROP;
-    private ScaleType loadingScaleType = ScaleType.CENTER_CROP;
-    private ScaleType emptyScaleType = ScaleType.CENTER_CROP;
-    private ScaleType failScaleType = ScaleType.CENTER_CROP;
+    private ScaleType imageScaleType = ScaleType.FIT_CENTER;
+    private ScaleType loadingScaleType = ScaleType.FIT_CENTER;
+    private ScaleType emptyScaleType = ScaleType.FIT_CENTER;
+    private ScaleType failScaleType = ScaleType.FIT_CENTER;
     private ImageProcessor processor = null;
     private ImageSize imageSize = null;
 
@@ -203,8 +203,13 @@ public class ImageOptions implements Serializable{
         FIT_XY, FIT_START, FIT_CENTER, FIT_END, CENTER, CENTER_INSIDE, CENTER_CROP, FOCUS_CROP;
     }
 
-    public static class ImageSize {
+    public static class ImageSize implements Serializable{
         public int width;
         public int height;
+
+        public ImageSize(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
     }
 }

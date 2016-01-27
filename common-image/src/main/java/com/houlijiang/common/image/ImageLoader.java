@@ -12,7 +12,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.houlijiang.common.image.fresco.ConfigConstants;
+import com.houlijiang.common.image.config.ConfigConstants;
 import com.houlijiang.common.image.utils.Utils;
 
 import java.io.File;
