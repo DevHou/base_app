@@ -12,7 +12,7 @@ import com.houlijiang.common.listview.MySectionIndexer;
 
 
 /**
- * Created by yanglei on 15/12/5.
+ * Created by houlijiang on 15/12/5.
  * 
  * 和Fragment一样，只是通过activity实现
  */

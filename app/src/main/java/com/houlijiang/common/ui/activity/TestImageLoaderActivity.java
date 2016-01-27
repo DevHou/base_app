@@ -32,11 +32,19 @@ public class TestImageLoaderActivity extends BaseActivity {
             new ImageOptions.Builder().showEmptyImage(R.drawable.ic_common_list_empty)
                 .showFailImage(R.drawable.ic_common_list_fail).build();
 
+        // CommonImageView drawableCiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_drawable_circle);
+        // ImageLoader.displayImage(R.drawable.test_abc, drawableCiv, options);
+
         CommonImageView netIv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net);
         ImageOptions.ImageSize size = new ImageOptions.ImageSize(200, 200);
         options.setImageSize(size);
-        ImageLoader.displayImage(
-            "http://g.hiphotos.baidu.com/image/pic/item/ca1349540923dd54703de864d309b3de9c82486b.jpg", netIv, options);
+
+        String url = "http://g.hiphotos.baidu.com/image/pic/item/ca1349540923dd54703de864d309b3de9c82486b.jpg";
+        ImageLoader.displayImage(url, netIv, options);
+        CommonImageView netCiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net_circle);
+        ImageLoader.displayImage(url, netCiv, null);
+        CommonImageView netRiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net_round);
+        ImageLoader.displayImage(url, netRiv, null);
 
         File imageFile = new File(FileUtils.getLargeSDCardPath() + File.separator + "GSX/20151221074051.jpg");
         CommonImageView fileIv = (CommonImageView) findViewById(R.id.test_image_loader_iv_file);

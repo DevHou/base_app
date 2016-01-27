@@ -3,7 +3,6 @@ package com.houlijiang.common.ui;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.houlijiang.app.base.error.ErrorModel;
 import com.houlijiang.common.R;
@@ -61,10 +60,4 @@ public abstract class BaseListActivity extends AbsListActivity {
         // TODO 根据 code 显示不同的 Error.
     }
 
-    private View.OnClickListener noNetworkErrorClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            onRefresh();
-        }
-    };
 }

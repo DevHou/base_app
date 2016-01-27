@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
 
 /**
@@ -19,7 +21,6 @@ public class CircleImageView extends CommonImageView {
 
     public CircleImageView(Context context) {
         super(context);
-        init(DEFAULT_BORDER_WIDTH, DEFAULT_BORDER_COLOR);
     }
 
     public CircleImageView(Context context, AttributeSet attrs) {
@@ -28,25 +29,30 @@ public class CircleImageView extends CommonImageView {
 
     public CircleImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView, defStyle, 0);
+    }
+
+    @Override
+    protected GenericDraweeHierarchy getInnerHierarchy(Context context, AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView);
         try {
-            int width = a.getDimensionPixelSize(R.styleable.CircleImageView_border_width, DEFAULT_BORDER_WIDTH);
-            int color = a.getColor(R.styleable.CircleImageView_border_color, DEFAULT_BORDER_COLOR);
-            init(width, color);
+            int width = a.getDimensionPixelSize(R.styleable.CircleImageView_civBorderWidth, DEFAULT_BORDER_WIDTH);
+            int color = a.getColor(R.styleable.CircleImageView_civBorderColor, DEFAULT_BORDER_COLOR);
+            RoundingParams roundingParams = RoundingParams.asCircle();
+            roundingParams.setBorder(color, width);
+            GenericDraweeHierarchy h = getHierarchy();
+            if (h == null) {
+                GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
+                h = builder.setRoundingParams(roundingParams).build();
+            } else {
+                h.setRoundingParams(roundingParams);
+            }
+            return h;
         } catch (Exception e) {
             Log.e(TAG, "circle image get attr error, e:" + e.getLocalizedMessage());
         } finally {
             a.recycle();
         }
+        return getHierarchy();
     }
 
-    private void init(int width, int color) {
-        try {
-            RoundingParams roundingParams = RoundingParams.asCircle();
-            roundingParams.setBorder(color, width);
-            getHierarchy().setRoundingParams(roundingParams);
-        } catch (Exception e) {
-            Log.e(TAG, "init circle image, e:" + e.getLocalizedMessage());
-        }
-    }
 }

@@ -62,12 +62,17 @@ public class TestListViewActivity extends BaseListActivity {
 
     @Override
     protected void loadFirstPage() {
-        Data[] data = new Data[30];
+        final Data[] data = new Data[30];
         for (int i = 0; i < data.length; i++) {
             data[i] = new Data();
             data[i].name = "这是测试文本，index：" + i;
         }
-        mAdapter.addAll(data);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.addAll(data);
+            }
+        }, 2000);
     }
 
     @Override

@@ -21,14 +21,31 @@
             android:text="drawable" />
 
         <com.houlijiang.common.image.CircleImageView
+            android:id="@+id/test_image_loader_iv_drawable_circle"
             android:layout_width="100dip"
             android:layout_height="100dip"
-            app:imageSrc="@mipmap/ic_launcher" />
+            app:civBorderColor="@color/common_blue"
+            app:civBorderWidth="2dip"
+            app:imageSrc="@drawable/test_abc" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="drawable circle" />
+
+        <com.houlijiang.common.image.RoundedImageView
+            android:id="@+id/test_image_loader_iv_drawable_round"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            app:imageSrc="@drawable/test_abc"
+            app:rivBorderColor="@color/common_blue"
+            app:rivBorderWidth="2dip"
+            app:rivCornerRadius="5dip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="drawable round" />
 
         <com.houlijiang.common.image.CommonImageView
             android:id="@+id/test_image_loader_iv_net"
@@ -40,6 +57,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="net" />
+
+        <com.houlijiang.common.image.CircleImageView
+            android:id="@+id/test_image_loader_iv_net_circle"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            app:civBorderColor="@color/common_blue"
+            app:civBorderWidth="2dip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="net circle" />
+
+        <com.houlijiang.common.image.RoundedImageView
+            android:id="@+id/test_image_loader_iv_net_round"
+            android:layout_width="100dip"
+            android:layout_height="100dip"
+            app:rivBorderColor="@color/common_blue"
+            app:rivBorderWidth="2dip"
+            app:rivCornerRadius="5dip" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="net round" />
 
         <com.houlijiang.common.image.CommonImageView
             android:id="@+id/test_image_loader_iv_file"

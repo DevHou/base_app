@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
 
 public class RoundedImageView extends CommonImageView {
@@ -17,7 +19,6 @@ public class RoundedImageView extends CommonImageView {
 
     public RoundedImageView(Context context) {
         super(context);
-        init(DEFAULT_RADIUS, DEFAULT_BORDER_COLOR, DEFAULT_BORDER_WIDTH);
     }
 
     public RoundedImageView(Context context, AttributeSet attrs) {
@@ -26,35 +27,38 @@ public class RoundedImageView extends CommonImageView {
 
     public RoundedImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+    }
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView, defStyle, 0);
+    @Override
+    protected GenericDraweeHierarchy getInnerHierarchy(Context context, AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView);
         try {
-            float cornerRadius = a.getDimensionPixelSize(R.styleable.RoundedImageView_riv_corner_radius, -1);
-            int borderWidth = a.getDimensionPixelSize(R.styleable.RoundedImageView_riv_border_width, -1);
+            float cornerRadius = a.getDimensionPixelSize(R.styleable.RoundedImageView_rivCornerRadius, -1);
+            int borderWidth = a.getDimensionPixelSize(R.styleable.RoundedImageView_rivBorderWidth, -1);
             if (cornerRadius < 0) {
                 cornerRadius = DEFAULT_RADIUS;
             }
             if (borderWidth < 0) {
                 borderWidth = DEFAULT_BORDER_WIDTH;
             }
-            int borderColor = a.getColor(R.styleable.RoundedImageView_riv_border_color, DEFAULT_BORDER_COLOR);
-            init(cornerRadius, borderColor, borderWidth);
+            int borderColor = a.getColor(R.styleable.RoundedImageView_rivBorderColor, DEFAULT_BORDER_COLOR);
+            RoundingParams roundingParams = RoundingParams.fromCornersRadius(cornerRadius);
+            roundingParams.setBorder(borderColor, borderWidth);
+            GenericDraweeHierarchy h = getHierarchy();
+            if (h == null) {
+                GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
+                h = builder.setRoundingParams(roundingParams).build();
+            } else {
+                h.setRoundingParams(roundingParams);
+            }
+            return h;
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when init round image, e:" + e.getLocalizedMessage());
+            Log.e(TAG, "circle image get attr error, e:" + e.getLocalizedMessage());
         } finally {
             a.recycle();
         }
-
+        return getHierarchy();
     }
 
-    private void init(float radius, int color, int width) {
-        try {
-            RoundingParams roundingParams = RoundingParams.fromCornersRadius(radius);
-            roundingParams.setBorder(color, width);
-            getHierarchy().setRoundingParams(roundingParams);
-        } catch (Exception e) {
-            Log.e(TAG, "init round image catch exception, e:" + e.getLocalizedMessage());
-        }
-    }
 
 }
