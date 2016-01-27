@@ -18,6 +18,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
@@ -39,7 +40,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 public class CommonImageView extends SimpleDraweeView {
 
     private static final String TAG = CommonImageView.class.getSimpleName();
-    private ControllerListener<Object> mListener;
+    private ControllerListener<ImageInfo> mListener;
     private IImageLoadListener mImageLoadListener;
 
     public CommonImageView(Context context, GenericDraweeHierarchy hierarchy) {
@@ -95,14 +96,14 @@ public class CommonImageView extends SimpleDraweeView {
     }
 
     private void init() {
-        mListener = new BaseControllerListener<Object>() {
+        mListener = new BaseControllerListener<ImageInfo>() {
             @Override
             public void onSubmit(String id, Object callerContext) {
                 Log.v(TAG, "start load image id:" + id);
             }
 
             @Override
-            public void onFinalImageSet(String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
+            public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable animatable) {
                 Log.v(TAG, "load image id:" + id + " success");
                 IImageLoadListener listener = null;
                 synchronized (CommonImageView.this) {
@@ -111,7 +112,11 @@ public class CommonImageView extends SimpleDraweeView {
                     }
                 }
                 if (listener != null) {
-                    listener.onSuccess(id, CommonImageView.this, null);
+                    if (imageInfo == null) {
+                        listener.onSuccess(id, CommonImageView.this, 0, 0);
+                    } else {
+                        listener.onSuccess(id, CommonImageView.this, imageInfo.getWidth(), imageInfo.getHeight());
+                    }
                 }
             }
 
@@ -175,7 +180,7 @@ public class CommonImageView extends SimpleDraweeView {
         setController(controllerBuilder.build());
     }
 
-    public ControllerListener<Object> getListener() {
+    public ControllerListener<ImageInfo> getListener() {
         return mListener;
     }
 

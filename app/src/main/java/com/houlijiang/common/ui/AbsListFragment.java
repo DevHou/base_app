@@ -11,15 +11,13 @@ import com.houlijiang.common.listview.AbsListDataAdapter;
 import com.houlijiang.common.listview.AbsListView;
 import com.houlijiang.common.listview.MySectionIndexer;
 
-
 /**
  * Created by houlijiang on 15/1/19.
  *
  * 通用ListView基类，把常用功能做了简单封装，避免重复代码
  * 把AbsListView需要设置的通过抽象方法让子类实现同时增加加载第一页接口使逻辑更清晰
  */
-public abstract class AbsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,
-    AbsListView.INoticeViewWillShowListener {
+public abstract class AbsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     protected AbsListView mRecyclerListView;
     protected AbsListDataAdapter mAdapter;
@@ -52,7 +50,6 @@ public abstract class AbsListFragment extends BaseFragment implements SwipeRefre
         mListEmptyView = mRecyclerListView.getEmptyView();
         mListErrorView = mRecyclerListView.getErrorView();
         mListProgressView = mRecyclerListView.getProgressView();
-        mRecyclerListView.setNoticeViewWillShowListener(this);
     }
 
     /**

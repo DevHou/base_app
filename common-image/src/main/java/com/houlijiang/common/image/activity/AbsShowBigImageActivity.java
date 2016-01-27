@@ -4,17 +4,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
 
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.drawable.ProgressBarDrawable;
-import com.facebook.drawee.drawable.ScalingUtils;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.interfaces.DraweeController;
+import com.houlijiang.common.image.IImageLoadListener;
+import com.houlijiang.common.image.ImageLoadError;
+import com.houlijiang.common.image.ImageLoader;
 import com.houlijiang.common.image.ImageOptions;
-import com.houlijiang.common.image.ZoomableImageView;
-import com.houlijiang.common.image.utils.Utils;
-import com.houlijiang.common.image.zoomableImage.zoomable.ZoomableDraweeView;
+import com.houlijiang.common.image.photodraweeview.PhotoDraweeView;
 
 import java.io.File;
 
@@ -25,7 +22,9 @@ import java.io.File;
  */
 public abstract class AbsShowBigImageActivity extends FragmentActivity {
 
-    ZoomableDraweeView mImageView;
+    private static final String TAG = AbsShowBigImageActivity.class.getSimpleName();
+
+    private PhotoDraweeView mImageView;
 
     /**
      * 获取layout id
@@ -35,70 +34,43 @@ public abstract class AbsShowBigImageActivity extends FragmentActivity {
     /**
      * 获取zoomable mImageView ID
      */
-    abstract protected int getZoomableViewId();
-
-    /**
-     * 图片加载时选项
-     */
-    protected ImageOptions getImageOptions() {
-        return null;
-    }
+    abstract protected int getImageViewId();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
-        mImageView = (ZoomableImageView) findViewById(getZoomableViewId());
+        mImageView = (PhotoDraweeView) findViewById(getImageViewId());
     }
 
-    protected void showImage(String url) {
+    protected void showImage(String url, ImageOptions options) {
         if (TextUtils.isEmpty(url)) {
             return;
         }
         Uri uri = Uri.parse(url);
-        showImage(uri);
+        showImage(uri, options);
     }
 
-    protected void showImage(File file) {
+    protected void showImage(File file, ImageOptions options) {
         Uri uri = Uri.fromFile(file);
-        showImage(uri);
+        showImage(uri, options);
     }
 
-    private void showImage(Uri uri) {
-        ImageOptions options = getImageOptions();
-        // 根据option设置显示
-        if (options != null) {
-            // 配置失败、加载中的显示图片
-            GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
-            if (options.getImageOnLoading() != null) {
-                builder.setPlaceholderImage(options.getImageOnLoading(),
-                    Utils.convertScaleType(options.getLoadingScaleType()));
-            } else if (options.getImageResOnLoading() != 0) {
-                builder.setPlaceholderImage(Utils.getDrawableFromResource(this, options.getImageResOnLoading()),
-                    Utils.convertScaleType(options.getLoadingScaleType()));
+    private void showImage(Uri uri, ImageOptions options) {
+        ImageLoader.displayImage(uri, mImageView, options, new IImageLoadListener() {
+            @Override
+            public void onFailed(String s, View view, ImageLoadError imageLoadError) {
+
             }
-            if (options.getImageOnFail() != null) {
-                builder.setFailureImage(options.getImageOnFail(), Utils.convertScaleType(options.getFailScaleType()));
-            } else if (options.getImageResOnFail() != 0) {
-                builder.setFailureImage(Utils.getDrawableFromResource(this, options.getImageResOnFail()),
-                    Utils.convertScaleType(options.getFailScaleType()));
+
+            @Override
+            public void onSuccess(String s, View view, int width, int height) {
+                if (width > 0 && height > 0) {
+                    Log.v(TAG, "update image width:" + width + " height:" + height);
+                    mImageView.update(width, height);
+                }
             }
-            // 设置scaleType
-            builder.setActualImageScaleType(Utils.convertScaleType(options.getImageScaleType()));
-            // 圆角参数重新设置回去
-            if (mImageView.hasHierarchy()) {
-                builder.setRoundingParams(mImageView.getHierarchy().getRoundingParams());
-            }
-            mImageView.setHierarchy(builder.build());
-        } else {
-            GenericDraweeHierarchy hierarchy =
-                new GenericDraweeHierarchyBuilder(getResources())
-                    .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_INSIDE)
-                    .setProgressBarImage(new ProgressBarDrawable()).build();
-            mImageView.setHierarchy(hierarchy);
-        }
-        DraweeController ctrl = Fresco.newDraweeControllerBuilder().setUri(uri).setTapToRetryEnabled(true).build();
-        mImageView.setController(ctrl);
+        });
 
     }
 }

@@ -17,7 +17,7 @@ import com.houlijiang.common.listview.MySectionIndexer;
  * 和Fragment一样，只是通过activity实现
  */
 public abstract class AbsListActivity extends BaseActivity implements
-    SwipeRefreshLayout.OnRefreshListener, AbsListView.INoticeViewWillShowListener {
+    SwipeRefreshLayout.OnRefreshListener {
 
     protected View mListHeaderView;
     protected View mListEmptyView;
@@ -50,7 +50,6 @@ public abstract class AbsListActivity extends BaseActivity implements
         mListEmptyView = mRecyclerListView.getEmptyView();
         mListErrorView = mRecyclerListView.getErrorView();
         mListProgressView = mRecyclerListView.getProgressView();
-        mRecyclerListView.setNoticeViewWillShowListener(this);
     }
 
     /**

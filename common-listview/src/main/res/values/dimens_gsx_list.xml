@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="gsx_list_text_size_big">18sp</dimen>
-    <dimen name="gsx_list_text_size_normal">16sp</dimen>
-    <dimen name="gsx_list_text_size_small">14sp</dimen>
-    <dimen name="gsx_list_text_size_small_v2">12sp</dimen>
-    <dimen name="gsx_list_text_size_small_v3">10sp</dimen>
-</resources>

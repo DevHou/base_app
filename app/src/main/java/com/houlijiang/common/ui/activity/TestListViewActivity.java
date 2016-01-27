@@ -1,24 +1,25 @@
 package com.houlijiang.common.ui.activity;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.houlijiang.common.R;
+import com.houlijiang.common.listview.AbsListDataAdapter;
 import com.houlijiang.common.listview.AbsListView;
 import com.houlijiang.common.listview.BaseListCell;
 import com.houlijiang.common.listview.BaseListDataAdapter;
-import com.houlijiang.common.ui.BaseActivity;
-
+import com.houlijiang.common.ui.BaseListActivity;
 
 /**
  * Created by houlijiang on 15/12/18.
  * 
  * 测试列表控件
  */
-public class TestListViewActivity extends BaseActivity {
+public class TestListViewActivity extends BaseListActivity {
 
     private AbsListView mListView;
 
@@ -29,22 +30,50 @@ public class TestListViewActivity extends BaseActivity {
     }
 
     @Override
+    protected int getListViewId() {
+        return R.id.test_listview_list;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRecyclerListView.setOnLoadMoreListener(new AbsListView.IOnLoadMore() {
+            @Override
+            public void onLoadMore() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Data[] data = new Data[30];
+                        for (int i = 0; i < data.length; i++) {
+                            data[i] = new Data();
+                            data[i].name = "这是测试文本，index：" + i;
+                        }
+                        mAdapter.addAll(data);
+                    }
+                }, 2000);
+            }
+        });
+    }
 
-        MyAdapter adapter = new MyAdapter();
+    @Override
+    protected AbsListDataAdapter getAdapter(Context context) {
+        return new MyAdapter();
+    }
 
-        mListView = (AbsListView) findViewById(R.id.test_listview_list);
-        mListView.setLayoutManager(new LinearLayoutManager(this));
-        mListView.setAdapter(adapter);
-
-        Data[] data = new Data[1000];
+    @Override
+    protected void loadFirstPage() {
+        Data[] data = new Data[30];
         for (int i = 0; i < data.length; i++) {
             data[i] = new Data();
             data[i].name = "这是测试文本，index：" + i;
         }
+        mAdapter.addAll(data);
+    }
 
-        adapter.addAll(data);
+    @Override
+    public void onListRefresh() {
+        mAdapter.clearData();
+        loadFirstPage();
     }
 
     public class MyAdapter extends BaseListDataAdapter<Data> {

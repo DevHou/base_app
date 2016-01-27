@@ -78,7 +78,6 @@ public class AbsListView extends RelativeLayout {
     private int mProgressId;
 
     private IOnLoadMore mIOnLoadMore;
-    private INoticeViewWillShowListener mNoticeViewWillShowListener;
 
     public AbsListView(Context context) {
         super(context);
@@ -106,14 +105,10 @@ public class AbsListView extends RelativeLayout {
             mClipToPadding = a.getBoolean(R.styleable.common_list_attrs_common_list_clip_to_padding, false);
             mHeightWrapContent = a.getBoolean(R.styleable.common_list_attrs_common_list_height_wrap_content, false);
             mPadding = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding, -1.0f);
-            mPaddingTop =
-                (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_top, 0.0f);
-            mPaddingBottom =
-                (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_bottom, 0.0f);
-            mPaddingLeft =
-                (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_left, 0.0f);
-            mPaddingRight =
-                (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_right, 0.0f);
+            mPaddingTop = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_top, 0.0f);
+            mPaddingBottom = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_bottom, 0.0f);
+            mPaddingLeft = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_left, 0.0f);
+            mPaddingRight = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_right, 0.0f);
             mScrollbarStyle = a.getInt(R.styleable.common_list_attrs_common_list_view_scrollbar_style, -1);
             mHeaderId = a.getResourceId(R.styleable.common_list_attrs_common_list_layout_header, -1);
             mEmptyId =
@@ -143,7 +138,7 @@ public class AbsListView extends RelativeLayout {
             return;
         }
         View v = LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
-        mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.common_list_layout_abs_listview_swipe_refresh);
+        mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.common_list_abs_list_view_swipe_refresh);
         mRefreshLayout.setEnabled(false);
 
         mHeader = (ViewStub) v.findViewById(R.id.common_list_abs_list_view_header);
@@ -202,7 +197,7 @@ public class AbsListView extends RelativeLayout {
             mEmptyView = mEmpty.inflate();
         }
         mEmpty.setVisibility(View.GONE);
-        mSideBar = (Sidebar) v.findViewById(R.id.gsx_list_abs_sidebar);
+        mSideBar = (Sidebar) v.findViewById(R.id.common_list_abs_sidebar);
         TextView header = (TextView) v.findViewById(R.id.common_list_abs_floating_header);
         if (mSideBar != null && header != null) {
             mSideBar.setHeader(header);
@@ -247,7 +242,7 @@ public class AbsListView extends RelativeLayout {
      * 初始化RecyclerView
      */
     protected void initRecyclerView(View view) {
-        View recyclerView = view.findViewById(R.id.common_list_layout_abs_listview_lv);
+        View recyclerView = view.findViewById(R.id.common_list_abs_list_view_lv);
 
         if (recyclerView instanceof RecyclerView)
             mRecycler = (RecyclerView) recyclerView;
@@ -386,9 +381,6 @@ public class AbsListView extends RelativeLayout {
      */
     public void setAdapter(final RecyclerView.Adapter adapter) {
         mRecycler.setAdapter(adapter);
-        if (mNoticeViewWillShowListener != null) {
-            mNoticeViewWillShowListener.noticeViewWillShow(getProgressView());
-        }
         mProgress.setVisibility(View.VISIBLE);
         mEmpty.setVisibility(View.GONE);
         mRecycler.setVisibility(View.VISIBLE);
@@ -440,17 +432,11 @@ public class AbsListView extends RelativeLayout {
                 if (adapter instanceof IAbsListDataAdapter) {
                     // 调用自定义判断是否是空的列表，可能有些特殊处理，比如第一个元素是个搜索框等
                     if (((IAbsListDataAdapter) adapter).isReloading()) {
-                        if (mNoticeViewWillShowListener != null) {
-                            mNoticeViewWillShowListener.noticeViewWillShow(getProgressView());
-                        }
                         mProgress.setVisibility(View.VISIBLE);
                         mEmpty.setVisibility(View.GONE);
                         mRecycler.setVisibility(View.GONE);
                         mError.setVisibility(View.GONE);
                     } else if (((IAbsListDataAdapter) adapter).isEmpty()) {
-                        if (mNoticeViewWillShowListener != null) {
-                            mNoticeViewWillShowListener.noticeViewWillShow(getEmptyView());
-                        }
                         mEmpty.setVisibility(View.VISIBLE);
                         mRecycler.setVisibility(View.GONE);
                         mError.setVisibility(View.GONE);
@@ -461,9 +447,6 @@ public class AbsListView extends RelativeLayout {
                     }
                 } else {
                     if (getChildCount() == 0) {
-                        if (mNoticeViewWillShowListener != null) {
-                            mNoticeViewWillShowListener.noticeViewWillShow(getEmptyView());
-                        }
                         mEmpty.setVisibility(View.VISIBLE);
                         mRecycler.setVisibility(View.GONE);
                         mError.setVisibility(View.GONE);
@@ -529,8 +512,8 @@ public class AbsListView extends RelativeLayout {
         mOutRefreshListener = listener;
         mRefreshLayout.setEnabled(bEnableRefresh);
         mRefreshLayout.setOnRefreshListener(mInternalRefreshListener);
-        setRefreshingColorResources(R.color.gsx_list_blue, R.color.gsx_list_green, R.color.gsx_list_orange,
-            R.color.gsx_list_red);
+        setRefreshingColorResources(R.color.common_list_blue, R.color.common_list_green, R.color.common_list_orange,
+            R.color.common_list_red);
     }
 
     /**
@@ -684,15 +667,8 @@ public class AbsListView extends RelativeLayout {
         mIOnLoadMore = l;
     }
 
-    public void setNoticeViewWillShowListener(INoticeViewWillShowListener l) {
-        mNoticeViewWillShowListener = l;
-    }
-
     public interface IOnLoadMore {
         void onLoadMore();
     }
 
-    public interface INoticeViewWillShowListener {
-        void noticeViewWillShow(View view);
-    }
 }

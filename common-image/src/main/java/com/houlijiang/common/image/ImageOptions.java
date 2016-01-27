@@ -2,6 +2,8 @@ package com.houlijiang.common.image;
 
 import android.graphics.drawable.Drawable;
 
+import java.io.Serializable;
+
 /**
  * Created by houlijiang on 2014/9/19.
  * 
@@ -9,7 +11,7 @@ import android.graphics.drawable.Drawable;
  * 1、加载中，加载失败，404状态下的默认显示图片
  * 2、结果bitmap的再处理
  */
-public class ImageOptions {
+public class ImageOptions implements Serializable{
 
     private int imageResOnLoading = 0;
     private int imageResForEmptyUri = 0;
@@ -17,6 +19,7 @@ public class ImageOptions {
     private Drawable imageOnLoading = null;
     private Drawable imageForEmptyUri = null;
     private Drawable imageOnFail = null;
+    private Drawable imageProgress = null;
     private ScaleType imageScaleType = ScaleType.CENTER_CROP;
     private ScaleType loadingScaleType = ScaleType.CENTER_CROP;
     private ScaleType emptyScaleType = ScaleType.CENTER_CROP;
@@ -118,6 +121,14 @@ public class ImageOptions {
 
     public void setImageSize(ImageSize imageSize) {
         this.imageSize = imageSize;
+    }
+
+    public Drawable getImageProgress() {
+        return imageProgress;
+    }
+
+    public void setImageProgress(Drawable imageProgress) {
+        this.imageProgress = imageProgress;
     }
 
     public static class Builder {

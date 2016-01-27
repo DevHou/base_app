@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="common_image_browser_progress_bar_bg">#ffffff</color>
+    <color name="common_image_browser_progress_bar">#00ccff</color>
+    <color name="common_image_browser_progress_bar_text">#dddddd</color>
+    <dimen name="common_image_browser_progress_width">5dip</dimen>
+    <dimen name="common_image_browser_progress_text_size">12sp</dimen>
+</resources>

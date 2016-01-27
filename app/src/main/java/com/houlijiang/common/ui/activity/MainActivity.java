@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.main_btn_test_net).setOnClickListener(this);
         findViewById(R.id.main_btn_test_cache).setOnClickListener(this);
         findViewById(R.id.main_btn_test_image_loader).setOnClickListener(this);
+        findViewById(R.id.main_btn_test_image_browser).setOnClickListener(this);
         findViewById(R.id.main_btn_test_listview).setOnClickListener(this);
         findViewById(R.id.main_btn_test_mp3rec).setOnClickListener(this);
     }
@@ -125,6 +126,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.main_btn_test_image_loader: {
                 Intent i = new Intent(this, TestImageLoaderActivity.class);
+                startActivity(i);
+                break;
+            }
+            case R.id.main_btn_test_image_browser: {
+                Intent i = new Intent(this, TestImageBrowserActivity.class);
                 startActivity(i);
                 break;
             }

@@ -31,6 +31,12 @@
         android:text="TestImageLoader" />
 
     <Button
+        android:id="@+id/main_btn_test_image_browser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TestImageBrowser" />
+
+    <Button
         android:id="@+id/main_btn_test_listview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

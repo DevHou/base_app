@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.houlijiang.common.listview.AbsListView
-        android:id="@+id/test_listview_list"
-        style="@style/common_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <Button
+        android:id="@+id/test_image_browser_btn_browser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="浏览大图"/>
 
 </LinearLayout>

@@ -28,6 +28,7 @@
         <activity android:name=".ui.activity.TestImageLoaderActivity" />
         <activity android:name=".ui.activity.TestMp3RecActivity" />
         <activity android:name=".ui.activity.TestCacheActivity" />
+        <activity android:name=".ui.activity.TestImageBrowserActivity" />
 
         <activity android:name=".ui.activity.LoginActivity" />
     </application>
