@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="common_view_background">#f0f0f0</color>
-    <color name="common_white">#ffffff</color>
-    <color name="common_white_pressed">#dddddd</color>
-    <color name="common_blue">#00ccff</color>
-    <color name="common_blue_pressed">#00abd6</color>
-    <color name="common_transparent">@android:color/transparent</color>
-    <color name="common_black">#333333</color>
+    <color name="app_view_background">#f0f0f0</color>
+    <color name="app_white">#ffffff</color>
+    <color name="app_white_pressed">#dddddd</color>
+    <color name="app_blue">#00ccff</color>
+    <color name="app_blue_pressed">#00abd6</color>
+    <color name="app_transparent">@android:color/transparent</color>
+    <color name="app_black">#333333</color>
 
     <!-- 按钮颜色 -->
-    <color name="common_btn_white">@color/common_white</color>
-    <color name="common_btn_white_disable">@color/common_white_pressed</color>
-    <color name="common_btn_white_pressed">@color/common_white_pressed</color>
-    <color name="common_btn_blue">@color/common_blue</color>
-    <color name="common_btn_blue_disable">@color/common_blue_pressed</color>
-    <color name="common_btn_blue_pressed">@color/common_blue_pressed</color>
+    <color name="app_btn_white">@color/app_white</color>
+    <color name="app_btn_white_disable">@color/app_white_pressed</color>
+    <color name="app_btn_white_pressed">@color/app_white_pressed</color>
+    <color name="app_btn_blue">@color/app_blue</color>
+    <color name="app_btn_blue_disable">@color/app_blue_pressed</color>
+    <color name="app_btn_blue_pressed">@color/app_blue_pressed</color>
     <!-- 文字颜色 -->
-    <color name="common_text_white">@color/common_white</color>
-    <color name="common_text_white_pressed">@color/common_white_pressed</color>
-    <color name="common_text_white_disable">@color/common_white_pressed</color>
+    <color name="app_text_white">@color/app_white</color>
+    <color name="app_text_white_pressed">@color/app_white_pressed</color>
+    <color name="app_text_white_disable">@color/app_white_pressed</color>
 </resources>

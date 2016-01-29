@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 
 import com.houlijiang.common.cache.memory.LruBitmapCache;
+import com.jjc.volley.toolbox.ImageLoader;
 
 
 /**
@@ -12,7 +13,7 @@ import com.houlijiang.common.cache.memory.LruBitmapCache;
  *
  * 图片缓存，默认是5个屏大小的图片
  */
-public class ImageCache extends LruBitmapCache implements com.android.volley.toolbox.ImageLoader.ImageCache {
+public class ImageCache extends LruBitmapCache implements ImageLoader.ImageCache {
 
     private static ImageCache mCache;
     private static final int MAX_IMAGE_CACHE_OF_SCREEN = 5;

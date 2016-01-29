@@ -1,16 +1,16 @@
 <resources>
 
-    <style name="CommonAppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionModeBackground">@color/common_blue</item>
-        <item name="android:editTextStyle">@style/common_edit_text_base</item>
-        <item name="colorPrimary">@color/common_blue</item>
-        <item name="colorPrimaryDark">@color/common_blue</item>
+        <item name="android:actionModeBackground">@color/app_blue</item>
+        <item name="android:editTextStyle">@style/edit_text_base</item>
+        <item name="colorPrimary">@color/app_blue</item>
+        <item name="colorPrimaryDark">@color/app_blue</item>
     </style>
 
-    <style name="CommonAppBaseDialog" parent="Theme.AppCompat.Light.Dialog">
+    <style name="AppBaseDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowActionBar">false</item>
         <!-- 继承自AppCompactActivity的设置这个属性 -->
         <item name="windowNoTitle">true</item>
@@ -23,89 +23,89 @@
     </style>
 
     <!-- activity动画 右进右出 -->
-    <style name="CommonAnimationActivity" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/anim_common_in_right_to_left</item>
-        <item name="android:activityOpenExitAnimation">@anim/anim_common_out_right_to_left</item>
-        <item name="android:activityCloseEnterAnimation">@anim/anim_common_in_left_to_right</item>
-        <item name="android:activityCloseExitAnimation">@anim/anim_common_out_left_to_right</item>
+    <style name="AnimationActivity" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/anim_in_right_to_left</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_out_right_to_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/anim_in_left_to_right</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_out_left_to_right</item>
     </style>
 
     <!-- activity样式，页面动画是右进右出 -->
-    <style name="CommonAppTheme" parent="CommonAppBaseTheme">
-        <item name="android:windowBackground">@color/common_view_background</item>
-        <item name="android:windowAnimationStyle">@style/CommonAnimationActivity</item>
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:windowBackground">@color/app_view_background</item>
+        <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
     </style>
 
     <!-- dialog样式 -->
-    <style name="CommonAppDialog" parent="CommonAppBaseDialog">
+    <style name="AppDialog" parent="AppBaseDialog">
         <!-- 是否悬浮在activity上 -->
         <item name="android:windowIsFloating">true</item>
         <!-- 半透明 -->
         <item name="android:windowIsTranslucent">true</item>
         <!-- 输入框样式 -->
-        <item name="android:editTextStyle">@style/common_edit_text_base</item>
+        <item name="android:editTextStyle">@style/edit_text_base</item>
     </style>
 
     <!-- 全屏样式，主要是欢迎页用 -->
-    <style name="CommonAppThemeFullScreen" parent="CommonAppTheme">
+    <style name="AppThemeFullScreen" parent="AppTheme">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!-- activity动画 底部进底部出 -->
-    <style name="CommonAnimationBottomUpDown" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/anim_common_in_bottom_to_up</item>
-        <item name="android:activityOpenExitAnimation">@anim/anim_common_fade_out</item>
-        <item name="android:activityCloseEnterAnimation">@anim/anim_common_fade_in</item>
-        <item name="android:activityCloseExitAnimation">@anim/anim_common_out_up_to_bottom</item>
+    <style name="AnimationBottomUpDown" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/anim_in_bottom_to_up</item>
+        <item name="android:activityOpenExitAnimation">@anim/anim_fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/anim_fade_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_out_up_to_bottom</item>
     </style>
 
     <!-- 从底部进入退出样式 -->
-    <style name="CommonAppThemeBottomUpDown" parent="CommonAppTheme">
-        <item name="android:windowAnimationStyle">@style/CommonAnimationBottomUpDown</item>
+    <style name="AppThemeBottomUpDown" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/AnimationBottomUpDown</item>
     </style>
 
 
-    <style name="CommonBaseToolbarStyle" parent="Theme.AppCompat">
+    <style name="BaseToolbarStyle" parent="Theme.AppCompat">
         <item name="android:layout_height">?attr/actionBarSize</item>
     </style>
 
     <!-- 标题栏样式 -->
-    <style name="CommonToolbarStyle" parent="CommonBaseToolbarStyle">
+    <style name="ToolbarStyle" parent="BaseToolbarStyle">
         <!-- 标题的颜色 -->
-        <item name="android:textColorPrimary">@color/common_white</item>
+        <item name="android:textColorPrimary">@color/app_white</item>
         <!--<item name="android:textColorPrimaryInverse">@color/white</item>-->
         <!-- 右侧三个点和左侧三条杠的颜色 -->
-        <item name="android:textColorSecondary">@color/common_white</item>
+        <item name="android:textColorSecondary">@color/app_white</item>
         <!-- action菜单文字的颜色，只是显示在bar上的而不是popup菜单里的 -->
-        <item name="android:actionMenuTextColor">@color/common_white</item>
+        <item name="android:actionMenuTextColor">@color/app_white</item>
         <!-- action菜单文字的样式，只是显示在bar上的而不是popup菜单里的 -->
-        <item name="android:actionMenuTextAppearance">@style/CommonToolbar.MenuText</item>
+        <item name="android:actionMenuTextAppearance">@style/Toolbar.MenuText</item>
         <!-- 背景色，如果不单独设置popup的背景色，则也是这个颜色 -->
-        <item name="android:background">@color/common_blue</item>
+        <item name="android:background">@color/app_blue</item>
         <!-- 返回按钮icon，貌似不管用，需要在代码里设置 -->
-        <!--<item name="android:homeAsUpIndicator">@drawable/ic_common_title_back</item>-->
+        <!--<item name="android:homeAsUpIndicator">@drawable/ic_title_back</item>-->
         <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
         <item name="contentInsetStart">0dip</item>
         <item name="contentInsetLeft">0dip</item>
     </style>
 
     <!-- 标题栏更多操作弹出窗样式 -->
-    <style name="CommonToolbar.PopupStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
+    <style name="Toolbar.PopupStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
         <!-- 弹出窗不覆盖在title上面 -->
         <item name="overlapAnchor">false</item>
         <item name="android:popupAnimationStyle">@null</item>
-        <item name="android:windowBackground">@color/common_transparent</item>
-        <item name="android:textColorPrimary">@color/common_black</item>
-        <item name="android:background">@color/common_view_background</item>
+        <item name="android:windowBackground">@color/app_transparent</item>
+        <item name="android:textColorPrimary">@color/app_black</item>
+        <item name="android:background">@color/app_view_background</item>
     </style>
 
     <!-- 标题栏MENU样式 -->
-    <style name="CommonToolbar.MenuText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/common_title_menu_text</item>
+    <style name="Toolbar.MenuText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/title_menu_text</item>
     </style>
 
-    <style name="common_edit_text_base" parent="@android:style/Widget.EditText" />
+    <style name="edit_text_base" parent="@android:style/Widget.EditText" />
 
 </resources>

@@ -31,4 +31,5 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
 
     compile project(':app-base')
+    compile project(':common-mp3recorder')
 }

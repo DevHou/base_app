@@ -31,8 +31,8 @@ public class TestImageBrowserActivity extends BaseActivity {
                         "http://pic84.nipic.com/file/20151209/22287948_101044394123_2.jpg" };
                 ImageOptions option = new ImageOptions();
                 option.setImageSize(new ImageOptions.ImageSize(500, 500));
-                option.setImageResForEmptyUri(R.drawable.ic_common_list_empty);
-                option.setImageResForEmptyUri(R.drawable.ic_common_list_fail);
+                option.setImageResForEmptyUri(R.drawable.ic_list_empty);
+                option.setImageResForEmptyUri(R.drawable.ic_list_fail);
                 ImageBrowserActivity.launch(TestImageBrowserActivity.this, urls, 0, option);
             }
         });

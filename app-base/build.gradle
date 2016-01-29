@@ -27,7 +27,6 @@ dependencies {
     compile project(':common-event')
     compile project(':common-image')
     compile project(':common-listview')
-    compile project(':common-mp3recorder')
     compile project(':common-network')
     compile project(':common-permission')
     compile project(':common-utils')

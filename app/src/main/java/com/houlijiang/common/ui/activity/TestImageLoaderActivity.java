@@ -29,8 +29,8 @@ public class TestImageLoaderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         ImageOptions options =
-            new ImageOptions.Builder().showEmptyImage(R.drawable.ic_common_list_empty)
-                .showFailImage(R.drawable.ic_common_list_fail).build();
+            new ImageOptions.Builder().showEmptyImage(R.drawable.ic_list_empty)
+                .showFailImage(R.drawable.ic_list_fail).build();
 
         // CommonImageView drawableCiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_drawable_circle);
         // ImageLoader.displayImage(R.drawable.test_abc, drawableCiv, options);

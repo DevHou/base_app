@@ -2,12 +2,12 @@ package com.houlijiang.common.network.volley;
 
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.toolbox.HttpHeaderParser;
+import com.jjc.volley.AuthFailureError;
+import com.jjc.volley.NetworkResponse;
+import com.jjc.volley.ParseError;
+import com.jjc.volley.Request;
+import com.jjc.volley.Response;
+import com.jjc.volley.toolbox.HttpHeaderParser;
 import com.google.gson.JsonSyntaxException;
 import com.houlijiang.common.network.HttpResponseResult;
 import com.houlijiang.common.network.HttpWorker;

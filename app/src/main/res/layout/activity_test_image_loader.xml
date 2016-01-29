@@ -24,7 +24,7 @@
             android:id="@+id/test_image_loader_iv_drawable_circle"
             android:layout_width="100dip"
             android:layout_height="100dip"
-            app:civBorderColor="@color/common_blue"
+            app:civBorderColor="@color/app_blue"
             app:civBorderWidth="2dip"
             app:imageSrc="@drawable/test_abc" />
 
@@ -38,7 +38,7 @@
             android:layout_width="100dip"
             android:layout_height="100dip"
             app:imageSrc="@drawable/test_abc"
-            app:rivBorderColor="@color/common_blue"
+            app:rivBorderColor="@color/app_blue"
             app:rivBorderWidth="2dip"
             app:rivCornerRadius="5dip" />
 
@@ -62,7 +62,7 @@
             android:id="@+id/test_image_loader_iv_net_circle"
             android:layout_width="100dip"
             android:layout_height="100dip"
-            app:civBorderColor="@color/common_blue"
+            app:civBorderColor="@color/app_blue"
             app:civBorderWidth="2dip" />
 
         <TextView
@@ -74,7 +74,7 @@
             android:id="@+id/test_image_loader_iv_net_round"
             android:layout_width="100dip"
             android:layout_height="100dip"
-            app:rivBorderColor="@color/common_blue"
+            app:rivBorderColor="@color/app_blue"
             app:rivBorderWidth="2dip"
             app:rivCornerRadius="5dip" />
 

@@ -4,15 +4,15 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionModeBackground">@color/common_blue</item>
-        <item name="android:editTextStyle">@style/common_edit_text_base</item>
+        <item name="android:actionModeBackground">@color/app_blue</item>
+        <item name="android:editTextStyle">@style/edit_text_base</item>
         <!-- 19以后用，设置了这个就会导致下面设置的颜色不显示 -->
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <!-- 21以后用 -->
-        <item name="android:colorPrimary">@color/common_blue</item>
-        <item name="android:colorPrimaryDark">@color/common_blue</item>
+        <item name="android:colorPrimary">@color/app_blue</item>
+        <item name="android:colorPrimaryDark">@color/app_blue</item>
         <!-- 各种系统控件的颜色 -->
-        <item name="colorAccent">@color/common_blue</item>
+        <item name="colorAccent">@color/app_blue</item>
         <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
         <item name="android:contentInsetStart">0dip</item>
         <item name="android:contentInsetLeft">0dip</item>
@@ -23,9 +23,9 @@
         <!-- 弹出窗不覆盖在title上面 -->
         <item name="android:overlapAnchor">false</item>
         <item name="android:popupAnimationStyle">@null</item>
-        <item name="android:windowBackground">@color/common_transparent</item>
-        <item name="android:textColorPrimary">@color/common_black</item>
-        <item name="android:background">@color/common_view_background</item>
+        <item name="android:windowBackground">@color/app_transparent</item>
+        <item name="android:textColorPrimary">@color/app_black</item>
+        <item name="android:background">@color/app_view_background</item>
     </style>
 
 </resources>
