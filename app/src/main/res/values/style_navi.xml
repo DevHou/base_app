@@ -3,37 +3,37 @@
 
     <!-- ##########窗口顶部导航############# -->
     <!-- 导航栏图片大小 -->
-    <dimen name="common_image_size_navi_bar">20dip</dimen>
+    <dimen name="navi_bar_image_size">20dip</dimen>
     <!-- 窗口顶部导航条相邻按钮间的间距空隙 -->
-    <dimen name="common_space_navi_bar_between_buttons">13dip</dimen>
+    <dimen name="navi_bar_space_between_buttons">13dip</dimen>
     <!-- 窗口顶部导航条的左右内边距 -->
-    <dimen name="common_padding_navi_bar_lr">13dip</dimen>
+    <dimen name="navi_bar_padding_lr">13dip</dimen>
     <!-- 弹出菜单每条高度-->
-    <dimen name="common_height_navi_bar_popup_item">40dip</dimen>
+    <dimen name="navi_bar_popup_item_height">40dip</dimen>
 
     <!-- 标题栏文字 -->
-    <style name="common_text_navi_bar_title">
+    <style name="navi_bar_text_title">
         <item name="android:textColor">@color/app_white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
     </style>
 
     <!-- 标题栏按钮 -->
-    <style name="common_icon_navi_bar_button">
-        <item name="android:layout_height">@dimen/common_image_size_navi_bar</item>
-        <item name="android:layout_width">@dimen/common_image_size_navi_bar</item>
+    <style name="navi_bar_image_button">
+        <item name="android:layout_height">@dimen/navi_bar_image_size</item>
+        <item name="android:layout_width">@dimen/navi_bar_image_size</item>
     </style>
 
     <!-- 标题栏按钮 -->
-    <style name="common_text_navi_bar_button">
+    <style name="navi_bar_text_button">
         <item name="android:textColor">@color/selector_text_white</item>
-        <item name="android:textSize">@dimen/common_text_size_30</item>
+        <item name="android:textSize">@dimen/text_size_30</item>
     </style>
 
     <!--标题栏样式-->
-    <style name="common_title_bar">
+    <style name="navi_bar_title">
         <item name="android:background">@color/app_blue</item>
-        <item name="android:layout_height">@dimen/common_height_title_bar</item>
+        <item name="android:layout_height">@dimen/app_title_bar_height</item>
         <item name="android:layout_width">match_parent</item>
     </style>
 

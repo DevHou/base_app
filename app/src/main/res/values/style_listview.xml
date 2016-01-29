@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="list_view">
-        <item name="common_list_layout_empty">@layout/common_list_layout_empty</item>
-        <item name="common_list_layout_error">@layout/common_list_layout_error</item>
-        <item name="common_list_layout_more_progress">@layout/common_list_layout_load_more</item>
-        <item name="common_list_layout_progress">@layout/common_list_layout_loading</item>
+    <style name="app_list_view">
+        <item name="common_list_layout_empty">@layout/layout_listview_empty</item>
+        <item name="common_list_layout_error">@layout/layout_listview_error</item>
+        <item name="common_list_layout_more_progress">@layout/layout_listview_progress</item>
+        <item name="common_list_layout_progress">@layout/layout_listview_progress</item>
         <item name="common_list_clip_to_padding">false</item>
         <item name="common_list_height_wrap_content">false</item>
         <item name="common_list_view_scrollbar_style">outsideOverlay</item>

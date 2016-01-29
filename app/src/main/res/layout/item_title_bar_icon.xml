@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/common_space_navi_bar_between_buttons">
+    android:paddingLeft="@dimen/navi_bar_space_between_buttons">
 
     <com.baijiahulian.common.image.CommonImageView
         android:id="@+id/common_item_title_bar_icon_iv"
-        android:layout_width="@dimen/common_image_size_navi_bar"
-        android:layout_height="@dimen/common_image_size_navi_bar"
+        android:layout_width="@dimen/navi_bar_image_size"
+        android:layout_height="@dimen/navi_bar_image_size"
         android:layout_gravity="center"
         app:imageScaleType="centerInside" />
 

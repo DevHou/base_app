@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/common_title_bar">
+    style="@style/navi_bar_title">
 
     <!-- 多套一层，以免外面include时改了id导致查找不到title-->
     <RelativeLayout
@@ -17,10 +17,10 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/common_image_size_navi_bar"
+                android:layout_height="@dimen/navi_bar_image_size"
                 android:layout_gravity="center_vertical"
                 android:background="@color/app_transparent"
-                android:paddingLeft="@dimen/common_padding_navi_bar_lr"
+                android:paddingLeft="@dimen/navi_bar_padding_lr"
                 android:src="@drawable/ic_title_back" />
         </FrameLayout>
 
@@ -30,13 +30,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/common_space_navi_bar_between_buttons"
+            android:layout_marginRight="@dimen/navi_bar_space_between_buttons"
             android:gravity="center_vertical"
             android:orientation="horizontal" />
 
         <TextView
             android:id="@+id/layout_title_tv_title"
-            style="@style/common_text_navi_bar_title"
+            style="@style/navi_bar_text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

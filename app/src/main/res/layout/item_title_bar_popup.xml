@@ -14,7 +14,7 @@
     <TextView
         android:id="@+id/common_item_title_bar_popup_tv"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/common_height_navi_bar_popup_item"
+        android:layout_height="@dimen/navi_bar_popup_item_height"
         android:layout_gravity="center"
         android:ellipsize="end"
         android:gravity="center"
