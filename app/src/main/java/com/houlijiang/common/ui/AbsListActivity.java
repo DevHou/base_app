@@ -2,22 +2,20 @@ package com.houlijiang.common.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.houlijiang.common.listview.AbsListDataAdapter;
 import com.houlijiang.common.listview.AbsListView;
 import com.houlijiang.common.listview.MySectionIndexer;
-
+import com.houlijiang.common.uikit.PtrHeaderView;
 
 /**
  * Created by houlijiang on 15/12/5.
  * 
  * 和Fragment一样，只是通过activity实现
  */
-public abstract class AbsListActivity extends BaseActivity implements
-    SwipeRefreshLayout.OnRefreshListener {
+public abstract class AbsListActivity extends BaseActivity implements AbsListView.IOnPullToRefresh {
 
     protected View mListHeaderView;
     protected View mListEmptyView;
@@ -37,6 +35,12 @@ public abstract class AbsListActivity extends BaseActivity implements
 
         if (isRefreshEnabled()) {
             mRecyclerListView.setRefreshListener(this);
+            View headerView = createHeaderView();
+            AbsListView.IPtrHeaderUI handler = null;
+            if (headerView instanceof AbsListView.IPtrHeaderUI) {
+                handler = (AbsListView.IPtrHeaderUI) headerView;
+            }
+            mRecyclerListView.setRefreshHeaderView(headerView, handler);
         }
 
         MySectionIndexer indexer = getIndexer();
@@ -50,6 +54,10 @@ public abstract class AbsListActivity extends BaseActivity implements
         mListEmptyView = mRecyclerListView.getEmptyView();
         mListErrorView = mRecyclerListView.getErrorView();
         mListProgressView = mRecyclerListView.getProgressView();
+    }
+
+    protected View createHeaderView() {
+        return new PtrHeaderView(this);
     }
 
     /**
@@ -70,7 +78,7 @@ public abstract class AbsListActivity extends BaseActivity implements
      * 目前什么也没做，将来可能加上一些通用逻辑，子类实现特殊逻辑
      */
     @Override
-    public void onRefresh() {
+    public void onRefreshBegin() {
         mAdapter.setIsLoading();
         onListRefresh();
     }

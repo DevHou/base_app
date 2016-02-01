@@ -2,6 +2,8 @@
 <resources>
 
     <!-- ##########窗口顶部导航############# -->
+    <!-- 标题栏高度 -->
+    <dimen name="navi_bar_height">48dip</dimen>
     <!-- 导航栏图片大小 -->
     <dimen name="navi_bar_image_size">20dip</dimen>
     <!-- 窗口顶部导航条相邻按钮间的间距空隙 -->
@@ -27,13 +29,13 @@
     <!-- 标题栏按钮 -->
     <style name="navi_bar_text_button">
         <item name="android:textColor">@color/selector_text_white</item>
-        <item name="android:textSize">@dimen/text_size_30</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
     </style>
 
     <!--标题栏样式-->
     <style name="navi_bar_title">
         <item name="android:background">@color/app_blue</item>
-        <item name="android:layout_height">@dimen/app_title_bar_height</item>
+        <item name="android:layout_height">@dimen/navi_bar_height</item>
         <item name="android:layout_width">match_parent</item>
     </style>
 

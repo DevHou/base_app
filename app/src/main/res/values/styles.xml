@@ -103,7 +103,7 @@
 
     <!-- 标题栏MENU样式 -->
     <style name="Toolbar.MenuText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">@dimen/title_menu_text</item>
+        <item name="android:textSize">@dimen/navi_bar_image_size</item>
     </style>
 
     <style name="edit_text_base" parent="@android:style/Widget.EditText" />

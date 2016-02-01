@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 普通单行高度 -->
+    <dimen name="normal_line_height">45dip</dimen>
+    <!-- 页面左右两边padding -->
+    <dimen name="normal_window_padding_rl">13dip</dimen>
+    <!-- 页面上下两边padding -->
+    <dimen name="normal_window_padding_tb">13dip</dimen>
+    <!-- 横向数据间间距 -->
+    <dimen name="normal_margin_h">10dip</dimen>
+    <!-- 纵向数据间间距 -->
+    <dimen name="normal_margin_v">10dip</dimen>
+    <!-- 纵向数据间更大间距 -->
+    <dimen name="normal_margin_v_big">20dip</dimen>
+</resources>

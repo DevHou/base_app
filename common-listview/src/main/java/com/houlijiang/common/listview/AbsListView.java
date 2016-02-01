@@ -3,19 +3,24 @@ package com.houlijiang.common.listview;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.annotation.ColorRes;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.houlijiang.common.listview.ptr.PtrFrameLayout;
+import com.houlijiang.common.listview.ptr.PtrHandler;
+import com.houlijiang.common.listview.ptr.PtrUIHandler;
+import com.houlijiang.common.listview.ptr.indicator.PtrIndicator;
 
 /**
  * 包含的功能：下拉刷新，自动加载更多，右侧快速索引
@@ -33,7 +38,7 @@ import android.widget.TextView;
  * > 如果需要自动加载下一页功能需要设置setOnLoadMoreListener，同时加载数据后记得调用stopLoadMore隐藏加载更多中的view
  * > 如果第一页加载数据错误后记得调用一下ShowErrorView来显示错误view，否则不会显示，第二页及以后根据具体业务自己做处理
  */
-public class AbsListView extends RelativeLayout {
+public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffsetChangedListener {
 
     private static final String TAG = AbsListView.class.getSimpleName();
     protected RecyclerView mRecycler;
@@ -70,9 +75,11 @@ public class AbsListView extends RelativeLayout {
     // 外部设置的listener
     protected RecyclerView.OnScrollListener mExternalOnScrollListener;
 
-    protected SwipeRefreshLayout mRefreshLayout;
-    protected SwipeRefreshLayout.OnRefreshListener mOutRefreshListener;
-    protected SwipeRefreshLayout.OnRefreshListener mInternalRefreshListener;
+    protected PtrFrameLayout mRefreshLayout;
+    protected IOnPullToRefresh mOutRefreshListener;
+
+    private AppBarLayout mAppBarLayout;
+    private int mAppBarOffset;
 
     protected int mSuperRecyclerViewMainLayout;
     private int mProgressId;
@@ -138,41 +145,13 @@ public class AbsListView extends RelativeLayout {
             return;
         }
         View v = LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
-        mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.common_list_abs_list_view_swipe_refresh);
-        mRefreshLayout.setEnabled(false);
+        mRefreshLayout = (PtrFrameLayout) v.findViewById(R.id.common_list_abs_list_view_swipe_refresh);
+        mAppBarLayout = (AppBarLayout) v.findViewById(R.id.common_list_abs_list_view_app_bar);
 
         mHeader = (ViewStub) v.findViewById(R.id.common_list_abs_list_view_header);
         if (mHeaderId > 0) {
             mHeader.setLayoutResource(mHeaderId);
             mHeaderView = mHeader.inflate();
-
-            // final View fragmentView = findViewById(R.id.my_money_fl);
-            // final ScrollableLayout scrollableLayout = (ScrollableLayout)
-            // v.findViewById(R.id.gsx_list_abs_list_scroll);
-            // scrollableLayout.setCanScrollVerticallyDelegate(new CanScrollVerticallyDelegate() {
-            // @Override
-            // public boolean canScrollVertically(int direction, int currentY) {
-            // // >0向上拽，<0向下拽
-            // return AbsListView.this.canScrollVertically(direction);
-            // }
-            //
-            // @Override
-            // public boolean isHeightEnough(int height) {
-            // int listHeight = 0;
-            // if (mRecycler != null) {
-            // for (int i = 0; i < mRecycler.getChildCount(); i++) {
-            // int childHeight = mRecycler.getChildAt(i).getHeight();
-            // listHeight += childHeight;
-            // if (listHeight > height) {
-            // return false;
-            // }
-            // }
-            // }
-            // return true;
-            // }
-            //
-            // });
-
         }
 
         mLoadMore = (ViewStub) v.findViewById(R.id.common_list_abs_list_view_load_more);
@@ -203,6 +182,7 @@ public class AbsListView extends RelativeLayout {
             mSideBar.setHeader(header);
         }
 
+        mAppBarLayout.addOnOffsetChangedListener(this);
         initRecyclerView(v);
     }
 
@@ -232,6 +212,15 @@ public class AbsListView extends RelativeLayout {
             }
         }
 
+    }
+
+    /**
+     * AppBar的回调
+     */
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        Log.d(TAG, "AppBarLayout offset:" + verticalOffset);
+        mAppBarOffset = verticalOffset;
     }
 
     public enum LAYOUT_MANAGER_TYPE {
@@ -384,7 +373,7 @@ public class AbsListView extends RelativeLayout {
         mProgress.setVisibility(View.VISIBLE);
         mEmpty.setVisibility(View.GONE);
         mRecycler.setVisibility(View.VISIBLE);
-        mRefreshLayout.setRefreshing(false);
+        // mRefreshLayout.refreshComplete();
         // 有数据变化时会重置刷新显示状态
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -428,7 +417,7 @@ public class AbsListView extends RelativeLayout {
 
             private void update() {
                 mProgress.setVisibility(View.GONE);
-                mRefreshLayout.setRefreshing(false);
+                // mRefreshLayout.refreshComplete();
                 if (adapter instanceof IAbsListDataAdapter) {
                     // 调用自定义判断是否是空的列表，可能有些特殊处理，比如第一个元素是个搜索框等
                     if (((IAbsListDataAdapter) adapter).isReloading()) {
@@ -490,45 +479,119 @@ public class AbsListView extends RelativeLayout {
     /**
      * 设置下拉刷新回调
      */
-    public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
-        mInternalRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // 如果非list显示则不支持下拉刷新
-                if (mProgress.getVisibility() == View.VISIBLE || mEmpty.getVisibility() == View.VISIBLE
-                    || mError.getVisibility() == View.VISIBLE) {
-                    return;
-                }
-
-                // 如果不是在列表页则不处理下拉刷新
-                if (mRecycler.getVisibility() != View.VISIBLE) {
-                    return;
-                }
-                if (mOutRefreshListener != null) {
-                    mOutRefreshListener.onRefresh();
-                }
-            }
-        };
+    public void setRefreshListener(IOnPullToRefresh listener) {
         mOutRefreshListener = listener;
-        mRefreshLayout.setEnabled(bEnableRefresh);
-        mRefreshLayout.setOnRefreshListener(mInternalRefreshListener);
-        setRefreshingColorResources(R.color.common_list_blue, R.color.common_list_green, R.color.common_list_orange,
-            R.color.common_list_red);
+        mRefreshLayout.setPtrHandler(new PtrHandler() {
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                if (!bEnableRefresh) {
+                    return false;
+                }
+                if (mAppBarOffset != 0) {
+                    return false;
+                }
+                if (mRecycler.getChildCount() == 0) {
+                    return true;
+                }
+                int top = mRecycler.getChildAt(0).getTop();
+                if (top != 0) {
+                    return false;
+                }
+                final RecyclerView recyclerView = mRecycler;
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+                if (layoutManager instanceof LinearLayoutManager) {
+                    int position = ((LinearLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
+                    if (position == 0) {
+                        return true;
+                    } else if (position == -1) {
+                        position = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+                        return position == 0;
+                    }
+                } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    boolean allViewAreOverScreen = true;
+                    int[] positions = ((StaggeredGridLayoutManager) layoutManager).findFirstVisibleItemPositions(null);
+                    for (int position : positions) {
+                        if (position == 0) {
+                            return true;
+                        }
+                        if (position != -1) {
+                            allViewAreOverScreen = false;
+                        }
+                    }
+                    if (allViewAreOverScreen) {
+                        positions = ((StaggeredGridLayoutManager) layoutManager).findFirstVisibleItemPositions(null);
+                        for (int position : positions) {
+                            if (position == 0) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                // todo 支持更多LayoutManager的判断
+                return false;
+            }
+
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                Log.d(TAG, "onRefreshBegin");
+                mOutRefreshListener.onRefreshBegin();
+            }
+        });
     }
 
-    /**
-     * 设置下拉刷新控件的颜色集
-     */
-    public void setRefreshingColorResources(@ColorRes int colRes1, @ColorRes int colRes2, @ColorRes int colRes3,
-        @ColorRes int colRes4) {
-        mRefreshLayout.setColorSchemeResources(colRes1, colRes2, colRes3, colRes4);
-    }
+    public void setRefreshHeaderView(View view, final IPtrHeaderUI handler) {
+        if (handler != null) {
+            mRefreshLayout.addPtrUIHandler(new PtrUIHandler() {
+                @Override
+                public void onUIReset(PtrFrameLayout frame) {
+                    Log.d(TAG, "onUIReset");
+                    handler.onUIReset();
+                }
 
-    /**
-     * 设置下拉刷新控件的颜色集
-     */
-    public void setRefreshingColor(int col1, int col2, int col3, int col4) {
-        mRefreshLayout.setColorSchemeColors(col1, col2, col3, col4);
+                @Override
+                public void onUIRefreshPrepare(PtrFrameLayout frame) {
+                    Log.d(TAG, "onUIRefreshPrepare");
+                    handler.onUIRefreshPrepare();
+                }
+
+                @Override
+                public void onUIRefreshBegin(PtrFrameLayout frame) {
+                    Log.d(TAG, "onUIRefreshBegin");
+                    handler.onUIRefreshBegin();
+                }
+
+                @Override
+                public void onUIRefreshComplete(PtrFrameLayout frame) {
+                    Log.d(TAG, "onUIRefreshComplete");
+                    handler.onUIRefreshComplete();
+                }
+
+                @Override
+                public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status,
+                    PtrIndicator ptrIndicator) {
+                    Log.d(TAG, "onUIPositionChange");
+                    PtrStatus ptrStatus;
+                    switch (status) {
+                        case PtrFrameLayout.PTR_STATUS_INIT:
+                            ptrStatus = PtrStatus.INIT;
+                            break;
+                        case PtrFrameLayout.PTR_STATUS_PREPARE:
+                            ptrStatus = PtrStatus.PREPARE;
+                            break;
+                        case PtrFrameLayout.PTR_STATUS_LOADING:
+                            ptrStatus = PtrStatus.LOADING;
+                            break;
+                        case PtrFrameLayout.PTR_STATUS_COMPLETE:
+                        default:
+                            ptrStatus = PtrStatus.COMPLETE;
+                            break;
+                    }
+                    handler.onUIPositionChange(isUnderTouch, ptrStatus, frame.getOffsetToRefresh(),
+                        ptrIndicator.getCurrentPosY(), ptrIndicator.getLastPosY());
+                }
+            });
+        }
+        mRefreshLayout.setHeaderView(view);
     }
 
     /**
@@ -632,12 +695,11 @@ public class AbsListView extends RelativeLayout {
     }
 
     public void stopRefresh() {
-        mRefreshLayout.setRefreshing(false);
+        mRefreshLayout.refreshComplete();
     }
 
     public void setEnableRefresh(boolean enable) {
         this.bEnableRefresh = enable;
-        mRefreshLayout.setEnabled(enable);
     }
 
     public void setEnableLoadMore(boolean enable) {
@@ -667,6 +729,84 @@ public class AbsListView extends RelativeLayout {
         mIOnLoadMore = l;
     }
 
+    /**
+     * 下拉刷新回调
+     */
+    public interface IOnPullToRefresh {
+        void onRefreshBegin();
+    }
+
+    /**
+     * 下拉刷新UI的回调
+     */
+    public interface IPtrHeaderUI {
+
+        /**
+         * Content重新回到顶部，Header消失，整个下拉刷新过程完全结束以后
+         */
+        void onUIReset();
+
+        /**
+         * 准备刷新，Header将要出现时调用
+         */
+        void onUIRefreshPrepare();
+
+        /**
+         * 开始刷新，即调用数据刷新之前
+         */
+        void onUIRefreshBegin();
+
+        /**
+         * 刷新结束，Header 开始向上移动之前调用，即调用complete之后
+         */
+        void onUIRefreshComplete();
+
+        /**
+         * 下拉过程中位置变化回调
+         * 
+         * @param isUnderTouch 是否是按下
+         * @param status 状态
+         * @param offset 设定的下拉刷新高度
+         * @param current 当前纵坐标
+         * @param last 上次的纵坐标
+         */
+        void onUIPositionChange(boolean isUnderTouch, PtrStatus status, float offset, float current, float last);
+    }
+
+    public enum PtrStatus {
+        INIT(1), // 初始化
+        PREPARE(2), // 将要显示header
+        LOADING(3), // 刷新中
+        COMPLETE(4);// 刷新完成
+
+        private int value;
+
+        public int getValue() {
+            return this.value;
+        }
+
+        PtrStatus(int value) {
+            this.value = value;
+        }
+
+        public static PtrStatus valueOf(int value) {
+            switch (value) {
+                case 1:
+                    return INIT;
+                case 2:
+                    return PREPARE;
+                case 3:
+                    return LOADING;
+                case 4:
+                default:
+                    return COMPLETE;
+            }
+        }
+    }
+
+    /**
+     * 加载跟多回调
+     */
     public interface IOnLoadMore {
         void onLoadMore();
     }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="PtrFrameLayout">
+        <!-- 自定义头部和内容 -->
+        <attr name="ptr_header" format="reference" />
+        <attr name="ptr_content" format="reference" />
+
+        <!-- 阻尼系数，越大则下拉越费劲 -->
+        <attr name="ptr_resistance" format="float" />
+
+        <!-- 下拉到headerView的高度的多少倍时开始刷新 -->
+        <attr name="ptr_ratio_of_header_height_to_refresh" format="float" />
+        <!--回弹延时-->
+        <attr name="ptr_duration_to_close" format="integer" />
+        <!--头部回弹动画时间-->
+        <attr name="ptr_duration_to_close_header" format="integer" />
+
+        <!-- 下拉刷新或者释放刷新 -->
+        <attr name="ptr_pull_to_fresh" format="boolean" />
+
+        <!-- 刷新时是否是否显示header-->
+        <attr name="ptr_keep_header_when_refresh" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="PtrClassicHeader">
+        <attr name="ptr_rotate_ani_time" format="integer" />
+    </declare-styleable>
+</resources>

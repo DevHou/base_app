@@ -21,8 +21,6 @@ import com.houlijiang.common.ui.BaseListActivity;
  */
 public class TestListViewActivity extends BaseListActivity {
 
-    private AbsListView mListView;
-
     @Override
     protected boolean bindContentView() {
         setContentView(R.layout.activity_test_listview);

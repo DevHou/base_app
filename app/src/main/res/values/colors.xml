@@ -19,4 +19,6 @@
     <color name="app_text_white">@color/app_white</color>
     <color name="app_text_white_pressed">@color/app_white_pressed</color>
     <color name="app_text_white_disable">@color/app_white_pressed</color>
+
+    <color name="text_hint">@color/app_white_pressed</color>
 </resources>

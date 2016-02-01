@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="app_edit_text" parent="text_black_high_normal">
+        <item name="android:background">@drawable/shape_gray_corner_trans_bg</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:paddingLeft">8dip</item>
+        <item name="android:paddingRight">8dip</item>
+        <item name="android:layout_height">@dimen/big_button_height</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/big_button_margin</item>
+        <item name="android:layout_marginRight">@dimen/big_button_margin</item>
+    </style>
+
+</resources>

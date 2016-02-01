@@ -71,7 +71,6 @@ public abstract class BaseListFragment extends AbsListFragment {
     private View.OnClickListener noNetworkErrorClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            onRefresh();
         }
     };
 }

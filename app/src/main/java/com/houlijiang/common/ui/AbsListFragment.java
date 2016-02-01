@@ -3,7 +3,6 @@ package com.houlijiang.common.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -17,7 +16,7 @@ import com.houlijiang.common.listview.MySectionIndexer;
  * 通用ListView基类，把常用功能做了简单封装，避免重复代码
  * 把AbsListView需要设置的通过抽象方法让子类实现同时增加加载第一页接口使逻辑更清晰
  */
-public abstract class AbsListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class AbsListFragment extends BaseFragment implements AbsListView.IOnPullToRefresh  {
 
     protected AbsListView mRecyclerListView;
     protected AbsListDataAdapter mAdapter;
@@ -74,7 +73,7 @@ public abstract class AbsListFragment extends BaseFragment implements SwipeRefre
      * 目前什么也没做，将来可能加上一些通用逻辑，子类实现特殊逻辑
      */
     @Override
-    public void onRefresh() {
+    public void onRefreshBegin() {
         mAdapter.setIsLoading();
         onListRefresh();
     }

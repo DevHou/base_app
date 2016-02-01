@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="big_button_radius">5dip</dimen>
+    <dimen name="small_button_radius">3dip</dimen>
+
+    <dimen name="big_button_height">44dip</dimen>
+    <dimen name="big_button_margin">20dip</dimen>
+
+    <style name="big_btn_blue" parent="text_white_normal">
+        <item name="android:background">@drawable/selector_blue_bg</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_height">@dimen/big_button_height</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/big_button_margin</item>
+        <item name="android:layout_marginRight">@dimen/big_button_margin</item>
+    </style>
+
+</resources>

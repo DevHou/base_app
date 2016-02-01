@@ -3,4 +3,18 @@
     <string name="app_name">基础库</string>
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
+
+    <string name="loading">加载中…</string>
+    <string name="cancel">取消</string>
+
+    <string name="ptr_pull_down">下拉</string>
+    <string name="ptr_pull_down_to_refresh">下拉刷新</string>
+    <string name="ptr_release_to_refresh">释放刷新</string>
+    <string name="ptr_refreshing">加载中…</string>
+    <string name="ptr_refresh_complete">更新完成.</string>
+
+    <string name="ptr_last_update">上次更新:&#160;</string>
+    <string name="ptr_seconds_ago">&#160;秒之前</string>
+    <string name="ptr_minutes_ago">&#160;分钟之前</string>
+    <string name="ptr_hours_ago">&#160;小时之前</string>
 </resources>
