@@ -78,6 +78,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     protected PtrFrameLayout mRefreshLayout;
     protected IOnPullToRefresh mOutRefreshListener;
 
+    //记录header view的偏移，在判断能否下拉刷新时用到
     private AppBarLayout mAppBarLayout;
     private int mAppBarOffset;
 

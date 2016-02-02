@@ -1,5 +1,7 @@
 package com.houlijiang.app.base.manager;
 
+import android.text.TextUtils;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -19,6 +21,7 @@ public class AuthManager {
         return InstanceHolder.instance;
     }
 
+    private long userId;
     private String authToken;
     // 登录状态改变观察者
     private final ConcurrentLinkedQueue<IAuthChangedListener> mListeners = new ConcurrentLinkedQueue<>();
@@ -32,6 +35,18 @@ public class AuthManager {
 
     public String getAuthToken() {
         return authToken;
+    }
+
+    public void setUserId(long useId){
+        this.userId = useId;
+    }
+
+    public long getUserId(){
+        return userId;
+    }
+
+    public boolean isLogin() {
+        return !TextUtils.isEmpty(authToken);
     }
 
     /**
