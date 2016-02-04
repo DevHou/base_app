@@ -95,7 +95,7 @@ public class UploadManager {
                                                     UploadResult uploadResult = new UploadResult();
                                                     uploadResult.result =
                                                         HttpWorker.handlerResult(result.data, di.resultClass);
-                                                    di.callback.onFinish(true, uploadResult);
+                                                    di.callback.onFinish(true, uploadResult, di.param);
                                                 } catch (Exception e) {
                                                     AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
                                                 }
@@ -126,7 +126,7 @@ public class UploadManager {
                                             }
                                             if (di.callback != null) {
                                                 try {
-                                                    di.callback.progress(donebytes, totalbytes);
+                                                    di.callback.progress(donebytes, totalbytes, di.param);
                                                 } catch (Exception e) {
                                                     AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
                                                 }
@@ -192,7 +192,7 @@ public class UploadManager {
                 DispatchUtils.getInstance().postInMain(new Runnable() {
                     @Override
                     public void run() {
-                        item.callback.onFinish(false, null);
+                        item.callback.onFinish(false, null, item.param);
                     }
                 });
             }
@@ -229,7 +229,7 @@ public class UploadManager {
     /**
      * 上传返回结果
      */
-    private static class UploadResult<Result> extends HttpResponseResult {
+    public static class UploadResult<Result> extends HttpResponseResult {
         public Result result;
     }
 
@@ -258,7 +258,7 @@ public class UploadManager {
          *
          * @param success 成功与否
          */
-        void onFinish(boolean success, UploadResult result);
+        void onFinish(boolean success, UploadResult result, Object param);
 
         /**
          * 上传进度
@@ -266,6 +266,6 @@ public class UploadManager {
          * @param done 完成字节数
          * @param total 同公的字节数
          */
-        void progress(long done, long total);
+        void progress(long done, long total, Object param);
     }
 }
