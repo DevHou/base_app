@@ -1,4 +1,4 @@
-package com.houlijiang.common.ui.activity;
+package com.houlijiang.common.ui.test;
 
 import android.content.Intent;
 import android.os.Bundle;

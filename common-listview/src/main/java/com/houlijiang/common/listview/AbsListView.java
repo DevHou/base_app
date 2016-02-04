@@ -78,7 +78,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     protected PtrFrameLayout mRefreshLayout;
     protected IOnPullToRefresh mOutRefreshListener;
 
-    //记录header view的偏移，在判断能否下拉刷新时用到
+    // 记录header view的偏移，在判断能否下拉刷新时用到
     private AppBarLayout mAppBarLayout;
     private int mAppBarOffset;
 
@@ -422,9 +422,14 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 if (adapter instanceof IAbsListDataAdapter) {
                     // 调用自定义判断是否是空的列表，可能有些特殊处理，比如第一个元素是个搜索框等
                     if (((IAbsListDataAdapter) adapter).isReloading()) {
-                        mProgress.setVisibility(View.VISIBLE);
+                        if (((IAbsListDataAdapter) adapter).isEmpty()) {
+                            mProgress.setVisibility(View.VISIBLE);
+                            mRecycler.setVisibility(View.GONE);
+                        } else {
+                            mProgress.setVisibility(View.GONE);
+                            mRecycler.setVisibility(View.VISIBLE);
+                        }
                         mEmpty.setVisibility(View.GONE);
-                        mRecycler.setVisibility(View.GONE);
                         mError.setVisibility(View.GONE);
                     } else if (((IAbsListDataAdapter) adapter).isEmpty()) {
                         mEmpty.setVisibility(View.VISIBLE);
@@ -495,7 +500,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     return true;
                 }
                 int top = mRecycler.getChildAt(0).getTop();
-                if (top != 0) {
+                if (top < 0) {
                     return false;
                 }
                 final RecyclerView recyclerView = mRecycler;

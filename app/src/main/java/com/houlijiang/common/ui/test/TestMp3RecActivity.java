@@ -1,4 +1,4 @@
-package com.houlijiang.common.ui.activity;
+package com.houlijiang.common.ui.test;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;

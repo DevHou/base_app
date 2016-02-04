@@ -9,6 +9,7 @@ import android.view.View;
 import com.houlijiang.common.listview.AbsListDataAdapter;
 import com.houlijiang.common.listview.AbsListView;
 import com.houlijiang.common.listview.MySectionIndexer;
+import com.houlijiang.common.uikit.PtrHeaderView;
 
 /**
  * Created by houlijiang on 15/1/19.
@@ -16,7 +17,7 @@ import com.houlijiang.common.listview.MySectionIndexer;
  * 通用ListView基类，把常用功能做了简单封装，避免重复代码
  * 把AbsListView需要设置的通过抽象方法让子类实现同时增加加载第一页接口使逻辑更清晰
  */
-public abstract class AbsListFragment extends BaseFragment implements AbsListView.IOnPullToRefresh  {
+public abstract class AbsListFragment extends BaseFragment implements AbsListView.IOnPullToRefresh {
 
     protected AbsListView mRecyclerListView;
     protected AbsListDataAdapter mAdapter;
@@ -35,6 +36,12 @@ public abstract class AbsListFragment extends BaseFragment implements AbsListVie
 
         if (isRefreshEnabled()) {
             mRecyclerListView.setRefreshListener(this);
+            View headerView = createHeaderView();
+            AbsListView.IPtrHeaderUI handler = null;
+            if (headerView instanceof AbsListView.IPtrHeaderUI) {
+                handler = (AbsListView.IPtrHeaderUI) headerView;
+            }
+            mRecyclerListView.setRefreshHeaderView(headerView, handler);
         }
 
         MySectionIndexer indexer = getIndexer();
@@ -49,6 +56,10 @@ public abstract class AbsListFragment extends BaseFragment implements AbsListVie
         mListEmptyView = mRecyclerListView.getEmptyView();
         mListErrorView = mRecyclerListView.getErrorView();
         mListProgressView = mRecyclerListView.getProgressView();
+    }
+
+    protected View createHeaderView() {
+        return new PtrHeaderView(getActivity());
     }
 
     /**

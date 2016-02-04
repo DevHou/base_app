@@ -12,7 +12,6 @@ import com.houlijiang.app.base.error.ErrorModel;
 import com.houlijiang.common.R;
 import com.houlijiang.common.listview.MySectionIndexer;
 
-
 /**
  * Created by houlijiang on 15/3/31.
  *
@@ -64,13 +63,14 @@ public abstract class BaseListFragment extends AbsListFragment {
      */
     public void showErrorView(ErrorModel result) {
         // 根据 result code 的情况显示不同的 errorView
-        //TXErrorUtils.showErrorView(getActivity(), mListErrorView, result, noNetworkErrorClickListener);
+        ListViewUtils.showErrorView(getActivity(), mListErrorView, result, noNetworkErrorClickListener);
         mRecyclerListView.showErrorView();
     }
 
     private View.OnClickListener noNetworkErrorClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            onRefreshBegin();
         }
     };
 }

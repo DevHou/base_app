@@ -1,4 +1,4 @@
-package com.houlijiang.common.ui.activity;
+package com.houlijiang.common.ui.test;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -60,6 +60,15 @@ public class TestListViewActivity extends BaseListActivity {
 
     @Override
     protected void loadFirstPage() {
+        loadList();
+    }
+
+    @Override
+    public void onListRefresh() {
+        loadList();
+    }
+
+    private void loadList(){
         final Data[] data = new Data[30];
         for (int i = 0; i < data.length; i++) {
             data[i] = new Data();
@@ -68,15 +77,35 @@ public class TestListViewActivity extends BaseListActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                mRecyclerListView.stopRefresh();
                 mAdapter.addAll(data);
             }
         }, 2000);
-    }
 
-    @Override
-    public void onListRefresh() {
-        mAdapter.clearData();
-        loadFirstPage();
+
+       /* mDataService.getTeacherList(this, mCategoryId, mPageNum, new IDataServiceCallback<TeacherListModel>() {
+            @Override
+            public void onSuccess(DataServiceResultModel result, TeacherListModel obj, Object param) {
+                int pageNum = (int) param;
+                if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
+                    mAdapter.clearData();
+                }
+                mAdapter.addAll(obj.list);
+                mHasMore = obj.pageInfo.hasMore;
+                mPageNum++;
+            }
+
+            @Override
+            public void onError(ErrorModel result, Object param) {
+                int pageNum = (int) param;
+                if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
+                    showErrorView(result);
+                } else {
+                    Tips.showMessage(TeacherListActivity.this, result.message);
+                }
+            }
+        }, mPageNum);*/
+
     }
 
     public class MyAdapter extends BaseListDataAdapter<Data> {

@@ -3,6 +3,7 @@ package com.houlijiang.common.ui;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.houlijiang.app.base.error.ErrorModel;
 import com.houlijiang.common.R;
@@ -55,9 +56,15 @@ public abstract class BaseListActivity extends AbsListActivity {
 
     public void showErrorView(ErrorModel result) {
         // 根据 result code 的情况显示不同的 errorView
-       // TXErrorUtils.showErrorView(this, mListErrorView, result, noNetworkErrorClickListener);
+        ListViewUtils.showErrorView(this, mListErrorView, result, noNetworkErrorClickListener);
         mRecyclerListView.showErrorView();
-        // TODO 根据 code 显示不同的 Error.
     }
+
+    private View.OnClickListener noNetworkErrorClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onRefreshBegin();
+        }
+    };
 
 }
