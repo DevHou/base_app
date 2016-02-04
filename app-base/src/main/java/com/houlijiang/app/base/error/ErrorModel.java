@@ -36,7 +36,6 @@ public class ErrorModel {
     public static ErrorModel errorWithCode(long code, Exception exception) {
         ErrorModel error = new ErrorModel();
         error.code = code;
-        // TODO 需调整
         error.message = ErrorConst.getMessage(code);
         error.exception = exception;
         return error;

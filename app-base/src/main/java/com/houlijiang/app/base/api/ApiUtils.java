@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.houlijiang.app.base.error.ErrorConst;
-import com.houlijiang.app.base.manager.DeployManager;
 import com.houlijiang.app.base.utils.AppLog;
 import com.houlijiang.common.network.FileWrapper;
 import com.houlijiang.common.network.HttpResponseError;
@@ -23,7 +22,6 @@ import com.houlijiang.common.utils.ResourceManager;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by houlijiang on 16/1/22.
@@ -88,7 +86,6 @@ public class ApiUtils {
                 return;
             }
         }
-        createDefaultParams(newUrl, token, params);
         int h = addToResourceManager(tag);
         HttpWorker.get(h, newUrl, params, HttpStringResponse.class, new InnerBaseApiListener(httpInterface), param);
     }
@@ -127,10 +124,9 @@ public class ApiUtils {
                 return;
             }
         }
-        createDefaultParams(newUrl, token, params);
         int h = addToResourceManager(tag);
         HttpWorker.post(h, newUrl, params, contentType, headers, HttpStringResponse.class, new InnerBaseApiListener(
-            httpInterface), param);
+                httpInterface), param);
     }
 
     /**
@@ -217,10 +213,9 @@ public class ApiUtils {
         }
         Map<String, FileWrapper> files = new HashMap<>();
         files.put("attachment", new FileWrapper(file, contentType, customFileName));
-        createDefaultParams(url, token, params);
         int h = addToResourceManager(tag);
         HttpWorker.upload(h, url, headers, files, params, HttpStringResponse.class, new InnerBaseApiListener(
-            httpInterface), param);
+                httpInterface), param);
     }
 
     /**
@@ -252,7 +247,6 @@ public class ApiUtils {
         if (params == null) {
             params = new HttpParams();
         }
-        createDefaultParams(url, token, params);
         int h = addToResourceManager(tag);
         HttpWorker.download(h, url, null, file, params, new IHttpResponse<File>() {
             @Override
@@ -280,44 +274,6 @@ public class ApiUtils {
             }
         }, param);
 
-    }
-
-    /**
-     * 获取默认参数
-     */
-    public static IHttpParams createDefaultParams(String url, String authToken, IHttpParams originParams) {
-        IHttpParams params = originParams;
-        if (params == null) {
-            params = HttpWorker.createHttpParams();
-        }
-        if (!TextUtils.isEmpty(DeployManager.getVersion())) {
-            params.put("version", DeployManager.getVersion());
-        }
-        if (!TextUtils.isEmpty(DeployManager.getApiVersion())) {
-            params.put("api", DeployManager.getApiVersion());
-        }
-        if (!TextUtils.isEmpty(DeployManager.getPlatform())) {
-            params.put("platform", DeployManager.getPlatform());
-        }
-        if (!TextUtils.isEmpty(DeployManager.getOs())) {
-            params.put("os", DeployManager.getOs());
-        }
-        if (!TextUtils.isEmpty(DeployManager.getImei())) {
-            params.put("l_imei", DeployManager.getImei());
-        }
-        if (!TextUtils.isEmpty(DeployManager.getMac())) {
-            params.put("l_mac", DeployManager.getMac());
-        }
-        if (!TextUtils.isEmpty(DeployManager.getUuid())) {
-            params.put("uuid", DeployManager.getUuid());
-        }
-        if (!TextUtils.isEmpty(DeployManager.getChannel())) {
-            params.put("channel", DeployManager.getChannel());
-        }
-        // signUrl(params, url, authToken);
-
-        params.put("logId", UUID.randomUUID().toString());
-        return params;
     }
 
     /**
@@ -381,11 +337,11 @@ public class ApiUtils {
                     }
                 }
 
-                if (jsonObject.has("pageDto")) {
-                    if (jsonObject.get("pageDto") instanceof JsonNull) {
+                if (jsonObject.has("pageInfo")) {
+                    if (jsonObject.get("pageInfo") instanceof JsonNull) {
                         model.pageDto = null;
                     } else {
-                        model.pageDto = JsonUtils.parseString(jsonObject.get("pageDto").toString(), BaseApiModel.PageDTO.class);
+                        model.pageDto = JsonUtils.parseString(jsonObject.get("pageInfo").toString(), BaseApiModel.PageDTO.class);
                     }
                 }
 

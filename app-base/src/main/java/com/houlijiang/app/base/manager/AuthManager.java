@@ -21,8 +21,9 @@ public class AuthManager {
         return InstanceHolder.instance;
     }
 
-    private long userId;
-    private String authToken;
+    private long mUserId;
+    private int mUserType;
+    private String mAuthToken;
     // 登录状态改变观察者
     private final ConcurrentLinkedQueue<IAuthChangedListener> mListeners = new ConcurrentLinkedQueue<>();
 
@@ -30,23 +31,38 @@ public class AuthManager {
     }
 
     public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+        this.mAuthToken = authToken;
     }
 
     public String getAuthToken() {
-        return authToken;
+        return mAuthToken;
     }
 
-    public void setUserId(long useId){
-        this.userId = useId;
+    public void setUserId(long useId) {
+        this.mUserId = useId;
     }
 
-    public long getUserId(){
-        return userId;
+    public long getUserId() {
+        return mUserId;
+    }
+
+    public int getmUserType() {
+        return mUserType;
+    }
+
+    public void setmUserType(int mUserType) {
+        this.mUserType = mUserType;
+    }
+
+    /**
+     * 获取用户唯一标识
+     */
+    public String getUserUniqueId() {
+        return mUserId + "_" + mUserType;
     }
 
     public boolean isLogin() {
-        return !TextUtils.isEmpty(authToken);
+        return !TextUtils.isEmpty(mAuthToken);
     }
 
     /**
