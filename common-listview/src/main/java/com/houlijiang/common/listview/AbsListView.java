@@ -423,9 +423,11 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     // 调用自定义判断是否是空的列表，可能有些特殊处理，比如第一个元素是个搜索框等
                     if (((IAbsListDataAdapter) adapter).isReloading()) {
                         if (((IAbsListDataAdapter) adapter).isEmpty()) {
+                            // 为空认为是第一次加载，显示加载中view
                             mProgress.setVisibility(View.VISIBLE);
                             mRecycler.setVisibility(View.GONE);
                         } else {
+                            // 否则认为是下拉刷新，不显示加载中view
                             mProgress.setVisibility(View.GONE);
                             mRecycler.setVisibility(View.VISIBLE);
                         }
@@ -501,6 +503,8 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 }
                 int top = mRecycler.getChildAt(0).getTop();
                 if (top < 0) {
+                    // 这里不能用!=0判断，因为子view可能有marginTop，这样其显示在第一个时top永远>0
+                    // 所以用<0判断第一个view是否显示
                     return false;
                 }
                 final RecyclerView recyclerView = mRecycler;
