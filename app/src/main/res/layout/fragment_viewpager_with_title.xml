@@ -9,14 +9,14 @@
         android:layout_height="wrap_content"
         android:padding="5dip">
 
-        <com.houlijiang.common.uikit.indicator.PageTabLabel
+        <com.common.app.uikit.indicator.PageTabLabel
             android:id="@+id/common_viewpager_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
     </FrameLayout>
 
-    <com.houlijiang.common.uikit.UnScrollViewPager
+    <com.common.app.uikit.UnScrollViewPager
         android:id="@+id/common_viewpager_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

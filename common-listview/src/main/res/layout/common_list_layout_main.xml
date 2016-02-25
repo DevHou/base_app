@@ -34,7 +34,7 @@
                 android:minHeight="20dip"
                 android:visibility="invisible" />
 
-            <com.houlijiang.common.listview.ptr.PtrFrameLayout
+            <com.common.listview.ptr.PtrFrameLayout
                 android:id="@id/common_list_abs_list_view_swipe_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:scrollbars="vertical"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-            </com.houlijiang.common.listview.ptr.PtrFrameLayout>
+            </com.common.listview.ptr.PtrFrameLayout>
 
         </RelativeLayout>
 
@@ -71,7 +71,7 @@
             android:layout_centerInParent="true"
             android:visibility="gone" />
 
-        <com.houlijiang.common.listview.Sidebar
+        <com.common.listview.Sidebar
             android:id="@id/common_list_abs_sidebar"
             android:layout_width="30dip"
             android:layout_height="match_parent"

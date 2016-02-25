@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.houlijiang.common.image.CommonImageView
+        <com.common.image.CommonImageView
             android:layout_width="100dip"
             android:layout_height="100dip"
             app:imageScaleType="centerCrop"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="drawable" />
 
-        <com.houlijiang.common.image.CircleImageView
+        <com.common.image.CircleImageView
             android:id="@+id/test_image_loader_iv_drawable_circle"
             android:layout_width="100dip"
             android:layout_height="100dip"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="drawable circle" />
 
-        <com.houlijiang.common.image.RoundedImageView
+        <com.common.image.RoundedImageView
             android:id="@+id/test_image_loader_iv_drawable_round"
             android:layout_width="100dip"
             android:layout_height="100dip"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:text="drawable round" />
 
-        <com.houlijiang.common.image.CommonImageView
+        <com.common.image.CommonImageView
             android:id="@+id/test_image_loader_iv_net"
             android:layout_width="100dip"
             android:layout_height="100dip"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:text="net" />
 
-        <com.houlijiang.common.image.CircleImageView
+        <com.common.image.CircleImageView
             android:id="@+id/test_image_loader_iv_net_circle"
             android:layout_width="100dip"
             android:layout_height="100dip"
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:text="net circle" />
 
-        <com.houlijiang.common.image.RoundedImageView
+        <com.common.image.RoundedImageView
             android:id="@+id/test_image_loader_iv_net_round"
             android:layout_width="100dip"
             android:layout_height="100dip"
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:text="net round" />
 
-        <com.houlijiang.common.image.CommonImageView
+        <com.common.image.CommonImageView
             android:id="@+id/test_image_loader_iv_file"
             android:layout_width="100dip"
             android:layout_height="100dip"

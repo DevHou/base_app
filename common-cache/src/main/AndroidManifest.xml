@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.houlijiang.common.cache">
+    package="com.common.cache">
 
     <application
         android:allowBackup="true"

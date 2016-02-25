@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.houlijiang.common.listview.AbsListView
+    <com.common.listview.AbsListView
         android:id="@+id/test_listview_list"
         style="@style/app_list_view"
         android:layout_width="match_parent"

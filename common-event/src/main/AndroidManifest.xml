@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.houlijiang.common.event">
+    package="com.common.event">
 
     <application
         android:allowBackup="true"

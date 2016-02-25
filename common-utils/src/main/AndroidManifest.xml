@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.houlijiang.common.utils">
+    package="com.common.utils">
 
     <!-- On android 4.4+ this permission is no longer required for cache purpose -->
     <!-- 好像是既支持内部SDCard又支持TF卡的有问题 -->

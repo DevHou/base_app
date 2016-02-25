@@ -3,12 +3,12 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <com.houlijiang.common.image.uikit.MultiTouchViewPager
+    <com.common.image.uikit.MultiTouchViewPager
         android:id="@+id/common_fragment_large_image_view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.houlijiang.common.image.uikit.SlideDotView
+    <com.common.image.uikit.SlideDotView
         android:id="@+id/common_fragment_large_image_indicator"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

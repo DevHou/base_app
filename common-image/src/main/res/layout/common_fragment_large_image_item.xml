@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:background="#bb000000">
 
-    <com.houlijiang.common.image.photodraweeview.PhotoDraweeView
+    <com.common.image.photodraweeview.PhotoDraweeView
         android:id="@+id/common_fragment_large_image_item_photoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

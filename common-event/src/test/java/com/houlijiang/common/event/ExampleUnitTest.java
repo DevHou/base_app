@@ -1,4 +1,4 @@
-package com.houlijiang.common.event;
+package com.common.app.event;
 
 import org.junit.Test;
 

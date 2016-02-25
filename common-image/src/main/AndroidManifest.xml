@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.houlijiang.common.image">
+    package="com.common.image">
 
     <application
         android:allowBackup="true"
