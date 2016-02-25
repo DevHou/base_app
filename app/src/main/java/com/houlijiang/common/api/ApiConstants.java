@@ -5,9 +5,9 @@ package com.houlijiang.common.api;
  */
 public class ApiConstants {
 
-    public static final String AUTH_HOST_TEST = "http://test-i.genshuixue.com/";
-    public static final String AUTH_HOST_BETA = "http://beta-i.genshuixue.com/";
-    public static final String AUTH_HOST_ONLINE = "http://i.genshuixue.com/";
+    public static final String AUTH_HOST_TEST = "http://test-i.houlijiang.com/";
+    public static final String AUTH_HOST_BETA = "http://beta-i.houlijiang.com/";
+    public static final String AUTH_HOST_ONLINE = "http://i.houlijiang.com/";
 
     public static final String API_LOGIN = "app/auth/doLogin.do";
 }

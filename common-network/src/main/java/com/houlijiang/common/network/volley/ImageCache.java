@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 
 import com.houlijiang.common.cache.memory.LruBitmapCache;
-import com.jjc.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageLoader;
 
 
 /**

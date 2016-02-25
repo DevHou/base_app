@@ -1,12 +1,12 @@
 package com.houlijiang.common.network.volley;
 
-import com.jjc.volley.AuthFailureError;
-import com.jjc.volley.NetworkError;
-import com.jjc.volley.NoConnectionError;
-import com.jjc.volley.ParseError;
-import com.jjc.volley.ServerError;
-import com.jjc.volley.TimeoutError;
-import com.jjc.volley.VolleyError;
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
 import com.houlijiang.common.network.HttpResponseError;
 
 /**

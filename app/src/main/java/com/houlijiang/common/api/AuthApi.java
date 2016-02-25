@@ -40,7 +40,6 @@ public class AuthApi extends AbsBaseApi {
         params.put("password", passwd);
         String url = constructUrl(ApiConstants.API_LOGIN);
         ApiUtils.doPost(origin, url, null, params, param, listener);
-
     }
 
 }
