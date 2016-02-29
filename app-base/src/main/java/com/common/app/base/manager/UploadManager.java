@@ -16,6 +16,7 @@ import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
 import com.common.utils.DispatchUtils;
+import com.common.utils.JsonUtils;
 import com.common.utils.ResourceManager;
 
 import java.util.HashMap;
@@ -94,7 +95,7 @@ public class UploadManager {
                                                 try {
                                                     UploadResult uploadResult = new UploadResult();
                                                     uploadResult.result =
-                                                        HttpWorker.handlerResult(result.data, di.resultClass);
+                                                        JsonUtils.parseString(result.data, di.resultClass);
                                                     di.callback.onFinish(true, uploadResult, di.param);
                                                 } catch (Exception e) {
                                                     AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
@@ -107,6 +108,7 @@ public class UploadManager {
 
                                 @Override
                                 public void onFailed(@NonNull HttpResponseError error, Object param) {
+                                    Log.v(TAG, "upload failed, will retry");
                                     // 失败了就再加入队列
                                     UploadItem di = (UploadItem) param;
                                     if (di.isCanceled) {
@@ -117,6 +119,7 @@ public class UploadManager {
 
                                 @Override
                                 public void onProgress(final long donebytes, final long totalbytes, final Object param) {
+                                    Log.v(TAG, "done:" + donebytes + " taotal:" + totalbytes);
                                     DispatchUtils.getInstance().postInMain(new Runnable() {
                                         @Override
                                         public void run() {
@@ -163,7 +166,7 @@ public class UploadManager {
      * @param item 要上传的文件
      */
     public void addToUploadQueue(UploadItem item) {
-        if (item == null || mUploadFilter.contains(item.url)) {
+        if (item == null) {
             return;
         }
         item.retry = 1;

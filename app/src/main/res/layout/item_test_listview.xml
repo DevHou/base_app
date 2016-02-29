@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -41,4 +42,6 @@
             android:gravity="center"
             android:text="btn1" />
     </LinearLayout>
+
+    <View style="@style/app_divider" />
 </LinearLayout>

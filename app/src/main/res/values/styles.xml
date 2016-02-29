@@ -8,6 +8,8 @@
         <item name="android:editTextStyle">@style/edit_text_base</item>
         <item name="colorPrimary">@color/app_blue</item>
         <item name="colorPrimaryDark">@color/app_blue</item>
+        <!-- 使用CAB时不会把原有的actionBar顶到下面 -->
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="AppBaseDialog" parent="Theme.AppCompat.Light.Dialog">

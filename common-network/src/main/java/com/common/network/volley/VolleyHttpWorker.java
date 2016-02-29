@@ -240,15 +240,15 @@ public class VolleyHttpWorker implements IHttpWorker {
         okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
         try {
             requestBuilder.url(url);
-        }catch (final Exception e){
-            Log.e(TAG,"download url invalid, e:"+e.getLocalizedMessage());
+        } catch (final Exception e) {
+            Log.e(TAG, "download url invalid, e:" + e.getLocalizedMessage());
             if (handler != null) {
                 DispatchUtils.getInstance().postInBackground(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             HttpResponseError error =
-                                    new HttpResponseError(HttpResponseError.ERROR_URL_INVALID, e.getLocalizedMessage());
+                                new HttpResponseError(HttpResponseError.ERROR_URL_INVALID, e.getLocalizedMessage());
                             handler.onFailed(error, param);
                         } catch (Exception e) {
                             Log.e(TAG, "download call fail e:" + e.getLocalizedMessage());
@@ -553,9 +553,13 @@ public class VolleyHttpWorker implements IHttpWorker {
                 bufferedSink = Okio.buffer(sink(sink));
             }
             // 写入
-            requestBody.writeTo(bufferedSink);
-            // 必须调用flush，否则最后一部分数据可能不会被写入
-            bufferedSink.flush();
+            try {
+                requestBody.writeTo(bufferedSink);
+                // 必须调用flush，否则最后一部分数据可能不会被写入
+                bufferedSink.flush();
+            } catch (Exception e) {
+                Log.e(TAG, "写入错误，e:" + e.getLocalizedMessage());
+            }
 
         }
 

@@ -16,6 +16,8 @@
         <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
         <item name="android:contentInsetStart">0dip</item>
         <item name="android:contentInsetLeft">0dip</item>
+        <!-- 使用CAB时不会把原有的actionBar顶到下面 -->
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <!-- 标题栏更多操作弹出窗样式 -->

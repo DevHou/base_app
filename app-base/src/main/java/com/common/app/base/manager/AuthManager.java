@@ -13,6 +13,10 @@ public class AuthManager {
 
     private static final String TAG = AuthManager.class.getSimpleName();
 
+    private static final String KEY_CURRENT_USER_AUTH = "key_current_user_auth";
+    private static final String KEY_CURRENT_USER_ID = "key_current_user_id";
+    private static final String KEY_CURRENT_USER_TYPE = "key_current_user_type";
+
     private static class InstanceHolder {
         public final static AuthManager instance = new AuthManager();
     }
@@ -28,10 +32,20 @@ public class AuthManager {
     private final ConcurrentLinkedQueue<IAuthChangedListener> mListeners = new ConcurrentLinkedQueue<>();
 
     private AuthManager() {
+        if (CacheManager.getInstance().contains(KEY_CURRENT_USER_AUTH)) {
+            mAuthToken = CacheManager.getInstance().getString(KEY_CURRENT_USER_AUTH);
+        }
+        if (CacheManager.getInstance().contains(KEY_CURRENT_USER_ID)) {
+            mUserId = CacheManager.getInstance().getLong(KEY_CURRENT_USER_ID);
+        }
+        if (CacheManager.getInstance().contains(KEY_CURRENT_USER_TYPE)) {
+            mUserType = CacheManager.getInstance().getLong(KEY_CURRENT_USER_TYPE).intValue();
+        }
     }
 
     public void setAuthToken(String authToken) {
         this.mAuthToken = authToken;
+        CacheManager.getInstance().put(KEY_CURRENT_USER_AUTH, authToken);
     }
 
     public String getAuthToken() {
@@ -40,18 +54,20 @@ public class AuthManager {
 
     public void setUserId(long useId) {
         this.mUserId = useId;
+        CacheManager.getInstance().put(KEY_CURRENT_USER_ID, useId);
     }
 
     public long getUserId() {
         return mUserId;
     }
 
-    public int getmUserType() {
+    public int getUserType() {
         return mUserType;
     }
 
-    public void setmUserType(int mUserType) {
-        this.mUserType = mUserType;
+    public void setUserType(int userType) {
+        this.mUserType = userType;
+        CacheManager.getInstance().put(KEY_CURRENT_USER_TYPE, userType);
     }
 
     /**
@@ -83,6 +99,10 @@ public class AuthManager {
      * 退出登录时调用，清除缓存数据
      */
     public void logout() {
+        CacheManager.getInstance().remove(KEY_CURRENT_USER_AUTH);
+        CacheManager.getInstance().remove(KEY_CURRENT_USER_ID);
+        CacheManager.getInstance().remove(KEY_CURRENT_USER_TYPE);
+
     }
 
     /**

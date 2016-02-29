@@ -30,6 +30,7 @@
         <activity android:name=".ui.test.TestCacheActivity" />
         <activity android:name=".ui.test.TestImageBrowserActivity" />
         <activity android:name=".ui.test.TestPtrActivity" />
+        <activity android:name=".ui.test.TestContextMenuActivity" />
 
         <activity android:name=".ui.test.LoginActivity" />
     </application>
