@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 
-package com.houlijiang.common.mp3recorder;
+package com.common.mp3recorder;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;

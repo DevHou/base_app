@@ -13,7 +13,7 @@ import com.common.app.R;
 import com.common.app.ui.BaseActivity;
 import com.common.permission.AppPermissions;
 import com.common.utils.FileUtils;
-import com.houlijiang.common.mp3recorder.RecMicToMp3;
+import com.common.mp3recorder.RecMicToMp3;
 
 import java.io.File;
 
