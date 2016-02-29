@@ -99,6 +99,9 @@ public class AuthManager {
      * 退出登录时调用，清除缓存数据
      */
     public void logout() {
+        mAuthToken = null;
+        mUserId = 0;
+        mUserType = 0;
         CacheManager.getInstance().remove(KEY_CURRENT_USER_AUTH);
         CacheManager.getInstance().remove(KEY_CURRENT_USER_ID);
         CacheManager.getInstance().remove(KEY_CURRENT_USER_TYPE);
