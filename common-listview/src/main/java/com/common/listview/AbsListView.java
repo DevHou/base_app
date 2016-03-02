@@ -729,7 +729,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         if (show) {
             mLoadMoreView.setVisibility(View.VISIBLE);
         } else {
-            mLoadMoreView.setVisibility(View.INVISIBLE);
+            mLoadMoreView.setVisibility(View.GONE);
         }
     }
 
