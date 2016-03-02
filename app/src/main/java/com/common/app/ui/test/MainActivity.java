@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.main_btn_test_mp3rec).setOnClickListener(this);
         findViewById(R.id.main_btn_test_ptr).setOnClickListener(this);
         findViewById(R.id.main_btn_test_context_menu).setOnClickListener(this);
+
     }
 
     @Override
