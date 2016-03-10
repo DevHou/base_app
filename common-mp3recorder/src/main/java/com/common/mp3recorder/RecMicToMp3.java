@@ -59,7 +59,7 @@ public class RecMicToMp3 {
     /**
      * 是否在录音中
      */
-    private boolean mIsRecording = false;
+    private static boolean mIsRecording = false;
 
     /**
      * 是否发送语音大小消息
@@ -182,7 +182,7 @@ public class RecMicToMp3 {
         if (mIsRecording) {
             return;
         }
-
+        mIsRecording = true;
         mVoiceLen = 0;
         //
         new Thread() {
@@ -229,7 +229,7 @@ public class RecMicToMp3 {
                 // Lame init
                 Lame.init(mSampleRate, 1, mSampleRate, 32);
 
-                mIsRecording = true;
+                //mIsRecording = true;
                 try {
                     try {
                         audioRecord.startRecording();
