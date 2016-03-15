@@ -9,6 +9,8 @@ import com.common.app.model.LoginModel;
 
 /**
  * Created by houlijiang on 16/1/23.
+ *
+ * 登录等相关API
  */
 public class AuthDataService extends BaseDataService {
 
@@ -22,7 +24,7 @@ public class AuthDataService extends BaseDataService {
     }
 
     /**
-     * 获取添加课程和添加老师url
+     * 登录
      *
      * @param origin 生命周期控制对象
      * @param callback 回调

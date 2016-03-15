@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/app-base/app-base.iml" filepath="$PROJECT_DIR$/app-base/app-base.iml" />
       <module fileurl="file://$PROJECT_DIR$/common.iml" filepath="$PROJECT_DIR$/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/common-cache/common-cache.iml" filepath="$PROJECT_DIR$/common-cache/common-cache.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common-event/common-event.iml" filepath="$PROJECT_DIR$/common-event/common-event.iml" />
       <module fileurl="file://$PROJECT_DIR$/common-image/common-image.iml" filepath="$PROJECT_DIR$/common-image/common-image.iml" />
       <module fileurl="file://$PROJECT_DIR$/common-listview/common-listview.iml" filepath="$PROJECT_DIR$/common-listview/common-listview.iml" />
       <module fileurl="file://$PROJECT_DIR$/common-mp3recorder/common-mp3recorder.iml" filepath="$PROJECT_DIR$/common-mp3recorder/common-mp3recorder.iml" />

@@ -15,16 +15,19 @@ import android.widget.TextView;
 
 import com.common.app.R;
 import com.common.app.event.ExitAppEvent;
-import com.common.event.EventUtils;
 import com.common.image.CommonImageView;
 import com.common.image.ImageLoader;
 import com.common.utils.DisplayUtils;
 import com.common.utils.InputMethodUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 
 /**
  * Created by houlijiang on 16/1/25.
- * 
+ * <p/>
  * 处理通用title bar
  */
 public abstract class BaseActivity extends AppCompatActivity {
@@ -62,12 +65,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             mVgRightIcons = (ViewGroup) findViewById(R.id.layout_title_ll_buttons);
             mVgPopItems = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.layout_title_popup, null);
         }
-        EventUtils.registerEvent(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onDestroy() {
-        EventUtils.unRegisterEvent(this);
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -140,11 +143,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                         int windowsWidth = DisplayUtils.getScreenWidthPixels(BaseActivity.this) / 3;
                         if (mPopupWindow == null) {
                             mPopupWindow =
-                                new PopupWindow(mVgPopItems, windowsWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                    new PopupWindow(mVgPopItems, windowsWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
                             mPopupWindow.setFocusable(true);
                             mPopupWindow.setOutsideTouchable(true);
                             mPopupWindow.setBackgroundDrawable(new ColorDrawable(getResources().getColor(
-                                android.R.color.transparent)));
+                                    android.R.color.transparent)));
                         }
 
                         int x = windowsWidth / 2;
@@ -226,7 +229,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 显示返回键以及返回键右面的文本
      *
-     * @param title 返回按钮右面的文本
+     * @param title    返回按钮右面的文本
      * @param listener 返回键点击回调
      */
     protected void showBackBtnWithText(String title, final View.OnClickListener listener) {
@@ -303,7 +306,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 设置右侧自定义按钮
      *
-     * @param menus 菜单
+     * @param menus    菜单
      * @param listener 回调
      */
     public void setCustomMenu(CustomMenuItem[] menus, IOnMenuClick listener) {
@@ -353,7 +356,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * 退出软件，所有activity直接finish
      */
-    public void onEventMainThread(ExitAppEvent event) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExitApp(ExitAppEvent event) {
         finish();
     }
 

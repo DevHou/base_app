@@ -12,7 +12,8 @@ import android.util.Log;
 import com.common.app.base.manager.DeployManager;
 import com.common.app.base.manager.Manager;
 import com.common.app.event.ExitAppEvent;
-import com.common.event.EventUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Iterator;
 import java.util.List;
@@ -92,7 +93,7 @@ public class App extends Application {
     public void setVersionType(DeployManager.EnvironmentType type) {
         mSharedPreferences.edit().putInt(PREF_VERSION_TYPE, type.getValue()).commit();
         // 退出程序
-        EventUtils.postEvent(new ExitAppEvent());
+        EventBus.getDefault().post(new ExitAppEvent());
     }
 
 }
