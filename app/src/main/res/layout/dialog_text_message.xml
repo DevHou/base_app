@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_white_corner_bg"
+    android:gravity="center"
+    android:minWidth="240dip"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/dialog_text_message_ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/dialog_text_message_tv_title"
+            style="@style/text_black_high_normal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/normal_line_height"
+            android:gravity="center"
+            android:text=""
+            android:visibility="visible" />
+
+        <View
+            android:id="@+id/dialog_text_message_content_line"
+            style="@style/app_divider"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/normal_window_padding_rl"
+            android:layout_marginRight="@dimen/normal_window_padding_rl" />
+
+        <TextView
+            android:id="@+id/dialog_text_message_tv_content"
+            style="@style/text_black_high_normal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/normal_window_padding_tb"
+            android:layout_marginLeft="@dimen/normal_window_padding_rl"
+            android:layout_marginRight="@dimen/normal_window_padding_rl"
+            android:layout_marginTop="@dimen/normal_window_padding_tb"
+            android:paddingLeft="5dip"
+            android:paddingRight="5dip"
+            android:text="" />
+
+    </LinearLayout>
+
+    <View
+        style="@style/app_divider"
+        android:layout_width="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/dialog_text_message_ll_btns"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/normal_line_height"
+        android:orientation="horizontal" />
+</LinearLayout>

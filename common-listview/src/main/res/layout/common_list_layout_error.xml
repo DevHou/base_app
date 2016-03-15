@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <!--<ImageView-->
+        <!--android:layout_width="80dip"-->
+        <!--android:layout_height="80dip"-->
+        <!--android:src="@drawable/ic_list_empty"-->
+        <!--android:visibility="gone" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/layout_error_tv"-->
+        <!--style="@style/text_black_middle_normal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="10dip"-->
+        <!--android:background="@drawable/shape_gray_corner_transparent_bg"-->
+        <!--android:paddingBottom="5dip"-->
+        <!--android:paddingLeft="8dip"-->
+        <!--android:paddingRight="8dip"-->
+        <!--android:paddingTop="5dip"-->
+        <!--android:text="@string/click_reload" />-->
+</LinearLayout>

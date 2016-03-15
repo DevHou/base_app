@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/test_net_et_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/test_net_btn_download"
+        android:layout_width="wrap_content"
+        android:layout_height="35dip"
+        android:gravity="center"
+        android:text="下载" />
+
+    <EditText
+        android:id="@+id/test_net_et_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/test_net_btn_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="35dip"
+        android:gravity="center"
+        android:text="上传" />
+
+    <EditText
+        android:id="@+id/test_net_et_download_times"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/test_net_btn_download_manager"
+        android:layout_width="wrap_content"
+        android:layout_height="35dip"
+        android:gravity="center"
+        android:text="下载队列" />
+
+    <TextView
+        android:id="@+id/test_net_tv_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

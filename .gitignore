@@ -1,0 +1,16 @@
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+/.idea
+.DS_Store
+/build
+/captures
+/common-cache/build
+/common-image/build
+/common-listview/build
+/common-mp3recrder/build
+/common-network/build
+/common-permission/build
+/common-utils/build

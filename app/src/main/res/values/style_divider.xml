@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_divider">@color/app_black</color>
+    <style name="app_divider">
+        <item name="android:background">@color/app_divider</item>
+        <item name="android:layout_height">1dip</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+</resources>

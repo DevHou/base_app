@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="app_view_background">#f0f0f0</color>
+    <color name="app_white">#ffffff</color>
+    <color name="app_white_pressed">#dddddd</color>
+    <color name="app_blue">#00ccff</color>
+    <color name="app_blue_pressed">#00abd6</color>
+    <color name="app_transparent">@android:color/transparent</color>
+    <color name="app_black">#333333</color>
+
+    <!-- 按钮颜色 -->
+    <color name="app_btn_white">@color/app_white</color>
+    <color name="app_btn_white_disable">@color/app_white_pressed</color>
+    <color name="app_btn_white_pressed">@color/app_white_pressed</color>
+    <color name="app_btn_blue">@color/app_blue</color>
+    <color name="app_btn_blue_disable">@color/app_blue_pressed</color>
+    <color name="app_btn_blue_pressed">@color/app_blue_pressed</color>
+    <!-- 文字颜色 -->
+    <color name="app_text_white">@color/app_white</color>
+    <color name="app_text_white_pressed">@color/app_white_pressed</color>
+    <color name="app_text_white_disable">@color/app_white_pressed</color>
+
+    <color name="text_hint">@color/app_white_pressed</color>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="edit_text_base" parent="@android:style/Widget.Holo.Light.EditText">
+        <item name="android:textCursorDrawable">@null</item>
+    </style>
+
+</resources>

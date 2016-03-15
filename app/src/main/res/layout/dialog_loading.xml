@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/shape_dialog_loading_bg"
+    android:gravity="center"
+    android:paddingBottom="20dip"
+    android:paddingTop="20dip">
+
+    <LinearLayout
+        android:id="@+id/item_chat_received_picture_ll_loading"
+        android:layout_width="165dip"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal">
+
+        <ProgressBar
+            android:id="@+id/pb_dialog_loading"
+            android:layout_width="25dip"
+            android:layout_height="25dip"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="15dip" />
+
+        <TextView
+            android:id="@+id/tv_dialog_loading"
+            style="@style/text_white_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/loading" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="165dip"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_chat_received_picture_ll_loading"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dip"
+        android:gravity="center_horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_dialog_cancel"
+            style="@style/text_white_normal"
+            android:layout_width="80dip"
+            android:layout_height="@dimen/big_button_height"
+            android:layout_gravity="center_horizontal"
+            android:background="@null"
+            android:text="@string/cancel" />
+    </LinearLayout>
+</RelativeLayout>
