@@ -17,7 +17,6 @@ import android.view.ViewStub;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.common.listview.R;
 import com.common.listview.ptr.PtrFrameLayout;
 import com.common.listview.ptr.PtrHandler;
 import com.common.listview.ptr.PtrUIHandler;
@@ -56,7 +55,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     protected View mLoadMoreView;
 
     protected boolean mClipToPadding;
-    protected boolean mHeightWrapContent;
     protected int mPadding;
     protected int mPaddingTop;
     protected int mPaddingBottom;
@@ -112,7 +110,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 a.getResourceId(R.styleable.common_list_attrs_common_list_main_layout_id,
                     R.layout.common_list_layout_main);
             mClipToPadding = a.getBoolean(R.styleable.common_list_attrs_common_list_clip_to_padding, false);
-            mHeightWrapContent = a.getBoolean(R.styleable.common_list_attrs_common_list_height_wrap_content, false);
             mPadding = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding, -1.0f);
             mPaddingTop = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_top, 0.0f);
             mPaddingBottom = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_bottom, 0.0f);
@@ -186,16 +183,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
         mAppBarLayout.addOnOffsetChangedListener(this);
         initRecyclerView(v);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mHeightWrapContent) {
-            int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
-            super.onMeasure(widthMeasureSpec, expandSpec);
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
     }
 
     @Override
