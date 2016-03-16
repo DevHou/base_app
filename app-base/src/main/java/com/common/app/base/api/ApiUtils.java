@@ -3,24 +3,20 @@ package com.common.app.base.api;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.common.app.base.error.ErrorConst;
 import com.common.app.base.utils.AppLog;
-import com.common.network.FileWrapper;
 import com.common.network.HttpResponseError;
 import com.common.network.HttpStringResponse;
 import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
-import com.common.network.volley.HttpParams;
 import com.common.utils.JsonUtils;
 import com.common.utils.ResourceManager;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -182,98 +178,6 @@ public class ApiUtils {
     public static void doPost(Object tag, String url, String token, IHttpParams params, Object param,
         IApiCallback httpInterface) {
         doPost(tag, url, token, null, null, params, param, httpInterface, null);
-    }
-
-    /**
-     * 上传文件
-     *
-     * @param tag 请求相关tag，删除时用
-     * @param url 地址
-     * @param params 参数
-     * @param httpInterface 回调
-     */
-    public static void upload(Object tag, String url, String token, File file, String contentType,
-        String customFileName, IHttpParams params, final IApiCallback httpInterface) {
-        upload(tag, url, null, file, contentType, customFileName, token, params, null, httpInterface);
-    }
-
-    /**
-     * 上传文件
-     *
-     * @param tag 请求相关tag，删除时用
-     * @param url 地址
-     * @param params 参数
-     * @param param 用户自定参数，回调时传回
-     * @param httpInterface 回调
-     */
-    public static void upload(Object tag, String url, Map<String, String> headers, File file, String contentType,
-        String customFileName, String token, IHttpParams params, Object param, final IApiCallback httpInterface) {
-        if (params == null) {
-            params = HttpWorker.createHttpParams();
-        }
-        Map<String, FileWrapper> files = new HashMap<>();
-        files.put("attachment", new FileWrapper(file, contentType, customFileName));
-        int h = addToResourceManager(tag);
-        HttpWorker.upload(h, url, headers, files, params, HttpStringResponse.class, new InnerBaseApiListener(
-                httpInterface), param);
-    }
-
-    /**
-     * 下载文件
-     *
-     * @param tag 请求相关tag，删除时用
-     * @param url url
-     * @param file 下载文件存放位置
-     * @param params 参数
-     * @param httpInterface 回调
-     */
-    public static void download(Object tag, String url, String token, File file, IHttpParams params,
-        final IDownloadCallback httpInterface) {
-        download(tag, url, token, file, params, null, httpInterface);
-    }
-
-    /**
-     * 下载文件
-     *
-     * @param tag 请求相关tag，删除时用
-     * @param url url
-     * @param file 下载文件存放位置
-     * @param params 参数
-     * @param param 用户自定参数，回调时传回
-     * @param httpInterface 回调
-     */
-    public static void download(Object tag, String url, String token, File file, IHttpParams params, Object param,
-        final IDownloadCallback httpInterface) {
-        if (params == null) {
-            params = new HttpParams();
-        }
-        int h = addToResourceManager(tag);
-        HttpWorker.download(h, url, null, file, params, new IHttpResponse<File>() {
-            @Override
-            public void onSuccess(@NonNull File file, Object param) {
-                if (httpInterface != null) {
-                    ApiResultModel model = new ApiResultModel();
-                    model.code = ErrorConst.ERROR_CODE_SUCCESS;
-                    httpInterface.onRequestCompleted(model, param);
-                }
-            }
-
-            @Override
-            public void onFailed(@NonNull HttpResponseError error, Object param) {
-                if (httpInterface != null) {
-                    ApiResultModel apiResult = convertApiError(error);
-                    httpInterface.onRequestCompleted(apiResult, param);
-                }
-            }
-
-            @Override
-            public void onProgress(long donebytes, long totalbytes, Object param) {
-                if (httpInterface != null) {
-                    httpInterface.onDownloadProgress(donebytes, totalbytes);
-                }
-            }
-        }, param);
-
     }
 
     /**
