@@ -4,17 +4,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.common.app.R;
 import com.common.app.uikit.UnScrollViewPager;
 import com.common.app.uikit.indicator.IIconPagerAdapter;
 import com.common.app.uikit.indicator.IPageIndicator;
-
 
 /**
  * Created by houlijiang on 15/12/10.
@@ -27,6 +28,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
 
     protected UnScrollViewPager mViewPager = null;
     protected IPageIndicator mIndicator = null;
+    protected PagerAdapter mAdapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +41,8 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
         }
         mViewPager = (UnScrollViewPager) view.findViewById(R.id.common_viewpager_vp);
         mViewPager.setCanScroll(canScroll());
-        mViewPager.setAdapter(new SampleFragmentPagerAdapter(getAdapterFragmentManager()));
+        mAdapter = new SampleFragmentPagerAdapter(getAdapterFragmentManager());
+        mViewPager.setAdapter(mAdapter);
         mIndicator.setViewPager(mViewPager);
         mIndicator.setOnPageChangeListener(this);
 
@@ -106,15 +109,20 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
     protected abstract Fragment getFragment(int position);
 
     /**
-     * @return 当前页的标题
+     * @return 当前页的标题，如果实现自定义tabview则不用重载这个方法
      */
-    protected abstract CharSequence getFragmentTitle(int position);
+    protected CharSequence getFragmentTitle(int position) {
+        return "";
+    }
 
     /**
      * 自定义的title view
      */
     protected View getFragmentTabView(int position) {
-        return LayoutInflater.from(this.getActivity()).inflate(R.layout.item_viewpager_tab, null);
+        View v = LayoutInflater.from(this.getActivity()).inflate(R.layout.item_viewpager_tab, null);
+        TextView tv = (TextView) v.findViewById(R.id.item_viewpager_tab_tv);
+        tv.setText(getFragmentTitle(position));
+        return v;
     }
 
     @Override
@@ -160,5 +168,4 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
             return AbsViewPagerFragment.this.getFragmentTabView(index);
         }
     }
-
 }

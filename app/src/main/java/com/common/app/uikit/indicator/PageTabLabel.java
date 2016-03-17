@@ -39,7 +39,6 @@ import java.util.List;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-
 /**
  * This widget implements the dynamic action bar tab behavior that can change
  * across different configurations or circumstances.
@@ -47,8 +46,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class PageTabLabel extends HorizontalScrollView implements IPageIndicator {
 
     private int mLastSelectedItem;
-    private List<TabView> mTabViewList;// hlj added
-    private List<TextView> mTextViewList;// hlj added
+    private List<View> mTabViewList;// hlj added
 
     /**
      * Title text used when no title is provided by the adapter.
@@ -110,7 +108,6 @@ public class PageTabLabel extends HorizontalScrollView implements IPageIndicator
 
         mLastSelectedItem = -1;
         mTabViewList = new ArrayList<>();
-        mTextViewList = new ArrayList<>();
         mTabLayout = new IcsLinearLayout(context, R.attr.commonVpiTabPageIndicatorStyle);
         addView(mTabLayout, new ViewGroup.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
     }
@@ -192,44 +189,18 @@ public class PageTabLabel extends HorizontalScrollView implements IPageIndicator
         return img;
     }
 
-    private void addTab(int index, CharSequence text, int iconResId) {
-        final TabView tabView = new TabView(getContext());
-        tabView.mIndex = index;
-        tabView.setFocusable(true);
-        tabView.setOnClickListener(mTabClickListener);
-        tabView.setText(text);
-
-        // if (iconResId != 0) {
-        // tabView.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
-        // }
-        tabView.setIcon(iconResId);
-        mTabViewList.add(tabView);
-
-        // mTabLayout.setDividerDrawable(mDivider);
-        mTabCount++;
-        mTabLayout.addView(tabView, new LinearLayout.LayoutParams(0, MATCH_PARENT, 1));
-        if (mDividerRes > 0 && mTabCount != mViewPager.getAdapter().getCount()) {
-            mTabLayout.addView(getDivider(), new LinearLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
-        }
-    }
-
-    private void addTab(int index, View view, CharSequence text) {
+    private void addTab(int index, View view) {
         assert (view != null);
 
-        TextView textView = (TextView) view.findViewById(R.id.tab_text);
-        if (textView == null) {
-            throw new NullPointerException("Not Found TextView by R.id.tab_text.");
-        }
-        textView.setText(text);
         view.setOnClickListener(mTabClickListener);
         view.setTag(index);
-        mTextViewList.add(textView);
 
         mTabCount++;
         mTabLayout.addView(view, new LinearLayout.LayoutParams(0, MATCH_PARENT, 1));
         if (mDividerRes > 0 && mTabCount != mViewPager.getAdapter().getCount()) {
             mTabLayout.addView(getDivider(), new LinearLayout.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
         }
+        mTabViewList.add(index, view);
     }
 
     @Override
@@ -275,7 +246,6 @@ public class PageTabLabel extends HorizontalScrollView implements IPageIndicator
         mTabLayout.removeAllViews();
         mTabCount = 0;
         mTabViewList.clear();
-        mTextViewList.clear();
         PagerAdapter adapter = mViewPager.getAdapter();
         IIconPagerAdapter iconAdapter = null;
         if (adapter instanceof IIconPagerAdapter) {
@@ -283,15 +253,9 @@ public class PageTabLabel extends HorizontalScrollView implements IPageIndicator
         }
         final int count = adapter.getCount();
         for (int i = 0; i < count; i++) {
-            CharSequence title = adapter.getPageTitle(i);
-            if (title == null) {
-                title = EMPTY_TITLE;
-            }
-            if (iconAdapter == null) {
-                addTab(i, title, 0);
-            } else {
+            if (iconAdapter != null) {
                 View child = iconAdapter.getTabView(i);
-                addTab(i, child, title);
+                addTab(i, child);
             }
             // int iconResId = 0;
             // if (iconAdapter != null) {
@@ -320,29 +284,30 @@ public class PageTabLabel extends HorizontalScrollView implements IPageIndicator
         mSelectedTabIndex = item;
         mViewPager.setCurrentItem(item);
         try {
-            TabView tabView = mTabViewList.get(item);
-            if (tabView != null) {
-                tabView.setText(mViewPager.getAdapter().getPageTitle(item));
-            }
-            if (mLastSelectedItem >= 0) {
-                tabView = mTabViewList.get(mLastSelectedItem);
-                if (tabView != null) {
-                    tabView.setText(mViewPager.getAdapter().getPageTitle(mLastSelectedItem));
+            View v = mTabViewList.get(item);
+            if (v != null) {
+                if (v instanceof ViewGroup) {
+                    ViewGroup tabView = (ViewGroup) v;
+                    int count = tabView.getChildCount();
+                    for (int i = 0; i < count; i++) {
+                        tabView.getChildAt(i).setSelected(true);
+                    }
+                } else {
+                    v.setSelected(true);
                 }
             }
-        } catch (Exception e) {
-        }
-        try {
-            TextView textView = mTextViewList.get(item);
-            if (textView != null) {
-                textView.setText(mViewPager.getAdapter().getPageTitle(item));
-                textView.setSelected(true);
-            }
-            if (mLastSelectedItem >= 0 && mLastSelectedItem != mSelectedTabIndex) {
-                textView = mTextViewList.get(mLastSelectedItem);
-                if (textView != null) {
-                    textView.setText(mViewPager.getAdapter().getPageTitle(mLastSelectedItem));
-                    textView.setSelected(false);
+            if (mLastSelectedItem >= 0) {
+                View v2 = mTabViewList.get(mLastSelectedItem);
+                if (v2 != null) {
+                    if (v2 instanceof ViewGroup) {
+                        ViewGroup tabView = (ViewGroup) v2;
+                        int count = tabView.getChildCount();
+                        for (int i = 0; i < count; i++) {
+                            tabView.getChildAt(i).setSelected(false);
+                        }
+                    } else {
+                        v2.setSelected(false);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -408,8 +373,7 @@ public class PageTabLabel extends HorizontalScrollView implements IPageIndicator
 
             mTextView = new TextView(context, null, R.attr.commonVpiTabPageIndicatorStyle);
             mImageView = new ImageView(context);
-            mTextView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT));
+            mTextView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             addView(mTextView);
             LayoutParams params = new LayoutParams(-2, -2, Gravity.RIGHT | Gravity.TOP);
             params.topMargin = (int) (8 * DisplayUtils.getScreenDensity(getContext()));
