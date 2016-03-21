@@ -122,7 +122,7 @@ public class ApiUtils {
         }
         int h = addToResourceManager(tag);
         HttpWorker.post(h, newUrl, params, contentType, headers, HttpStringResponse.class, new InnerBaseApiListener(
-                httpInterface), param);
+            httpInterface), param);
     }
 
     /**
@@ -245,7 +245,8 @@ public class ApiUtils {
                     if (jsonObject.get("pageInfo") instanceof JsonNull) {
                         model.pageDto = null;
                     } else {
-                        model.pageDto = JsonUtils.parseString(jsonObject.get("pageInfo").toString(), BaseApiModel.PageDTO.class);
+                        model.pageDto =
+                            JsonUtils.parseString(jsonObject.get("pageInfo").toString(), BaseApiModel.PageDTO.class);
                     }
                 }
 
@@ -283,6 +284,11 @@ public class ApiUtils {
                 }
             } catch (JsonSyntaxException e) {
                 AppLog.e(TAG, "parse json error, e:" + e.getLocalizedMessage());
+                apiResult.code = ErrorConst.ERROR_CODE_JSON_PARSE;
+                apiResult.result = o.data;
+                mListener.onRequestCompleted(apiResult, param);
+            } catch (Exception e) {
+                AppLog.e(TAG, "error, e:" + e.getLocalizedMessage());
                 apiResult.code = ErrorConst.ERROR_CODE_JSON_PARSE;
                 apiResult.result = o.data;
                 mListener.onRequestCompleted(apiResult, param);
