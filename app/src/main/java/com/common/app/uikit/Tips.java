@@ -60,6 +60,9 @@ public class Tips {
      */
     public static void showMessage(final Context act, final int msg, final int len) {
         synchronized (synObj) {
+            if (act == null) {
+                return;
+            }
             if (toast != null) {
                 // toast.cancel();
                 toast.setText(msg);
@@ -75,8 +78,10 @@ public class Tips {
      * Toast发送消息
      */
     public static void showMessage(final Context act, final String msg, final int len) {
-        Log.d(TAG, "show msg");
         synchronized (synObj) {
+            if (act == null) {
+                return;
+            }
             if (toast != null) {
                 // toast.cancel();
                 toast.setText(msg);

@@ -140,10 +140,6 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
 
     public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter implements IIconPagerAdapter {
 
-        public SampleFragmentPagerAdapter() {
-            super(getActivity().getSupportFragmentManager());
-        }
-
         public SampleFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
         }
