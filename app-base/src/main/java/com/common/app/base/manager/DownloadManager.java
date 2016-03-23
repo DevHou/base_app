@@ -53,7 +53,7 @@ public class DownloadManager {
             @Override
             public boolean handleMessage(Message message) {
                 try {
-                    DownloadItem item = mDownloadQueue.poll(2000, TimeUnit.MILLISECONDS);
+                    final DownloadItem item = mDownloadQueue.poll(2000, TimeUnit.MILLISECONDS);
                     if (item != null) {
                         AppLog.v(TAG, "download url:" + item.url);
                         Map<String, String> maps = null;
@@ -91,6 +91,7 @@ public class DownloadManager {
                                             AppLog.v(TAG, "download success url:" + di.url);
                                         }
                                     });
+                                    mDownloadFilter.remove(item.url);
                                 }
 
                                 @Override
