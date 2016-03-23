@@ -56,7 +56,7 @@ public class Manager {
         String netCacheDir = goodCacheDir + File.separator + "netCache";
         FileUtils.createDirIfNotExists(netCacheDir);
         File netCache = new File(netCacheDir);
-        HttpWorker.init(context, netCache, 10000);
+        HttpWorker.init(context, netCache, 20000);
         // 缓存初始化，需要比较稳定的存储位置
         String dataCacheDir = goodCacheDir + File.separator + "dataCache";
         FileUtils.createDirIfNotExists(dataCacheDir);
