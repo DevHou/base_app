@@ -2,7 +2,7 @@ package com.common.image.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -20,11 +20,11 @@ import java.io.File;
  * 
  * 查看大图
  */
-public abstract class AbsShowBigImageActivity extends FragmentActivity {
+public abstract class AbsShowBigImageActivity extends AppCompatActivity {
 
     private static final String TAG = AbsShowBigImageActivity.class.getSimpleName();
 
-    private PhotoDraweeView mImageView;
+    protected PhotoDraweeView mImageView;
 
     /**
      * 获取layout id
