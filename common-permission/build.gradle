@@ -22,5 +22,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
 
     //权限工具类使用了
-    compile 'com.netflix.rxjava:rxjava-core:0.20.7'
+    compile 'io.reactivex:rxjava:1.1.0'
 }
