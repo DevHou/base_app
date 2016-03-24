@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/navi_bar_space_between_buttons">
 
-    <com.houlijiang.common.image.CommonImageView
+    <com.common.image.CommonImageView
         android:id="@+id/common_item_title_bar_icon_iv"
         android:layout_width="@dimen/navi_bar_image_size"
         android:layout_height="@dimen/navi_bar_image_size"
