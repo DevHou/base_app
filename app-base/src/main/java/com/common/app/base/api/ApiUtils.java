@@ -193,7 +193,7 @@ public class ApiUtils {
                 apiResult.code = ErrorConst.ERROR_UNKNOWN;
             }
         }
-        apiResult.message = error.getReason();
+        apiResult.message = error.getReason(null);
         return apiResult;
     }
 

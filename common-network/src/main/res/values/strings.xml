@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">common-network</string>
+    <string name="common_network_parse_error">数据解析错误</string>
+    <string name="common_network_timeout">网络超时</string>
+    <string name="common_network_server_error">服务器异常</string>
+    <string name="common_network_auth_error">授权错误</string>
+    <string name="common_network_auth_fail">授权失败</string>
+    <string name="common_network_process_error">数据处理失败</string>
+    <string name="common_network_unknown">未知错误</string>
+    <string name="common_network_url_invalid">URL错误</string>
 </resources>
