@@ -28,11 +28,14 @@ public class App extends Application {
     // 程序版本
     private final String PREF_VERSION_TYPE = "version_type";
 
+    private static Application mInstance;
+
     private SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mInstance=this;
         mSharedPreferences = getSharedPreferences("app", Context.MODE_PRIVATE);
         // 初始化TX基础模块
         Manager.initForProcess(this, getVersionType());
@@ -55,6 +58,10 @@ public class App extends Application {
     public void onTerminate() {
         AppMain.getInstance(this).appStop();
         super.onTerminate();
+    }
+
+    public static Application getInstance(){
+        return mInstance;
     }
 
     private String getAppName(int pID) {

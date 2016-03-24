@@ -1,10 +1,10 @@
 package com.common.app.base.manager;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import android.text.TextUtils;
 
 import com.common.app.base.service.BaseDataService;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**

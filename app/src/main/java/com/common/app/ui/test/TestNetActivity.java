@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.common.app.App;
 import com.common.app.R;
 import com.common.app.base.manager.DownloadManager;
 import com.common.app.base.manager.NetworkChangeManager;
@@ -103,7 +104,7 @@ public class TestNetActivity extends BaseActivity implements View.OnClickListene
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTvStatus.setText("下载失败：" + error.getReason());
+                            mTvStatus.setText("下载失败：" + error.getReason(App.getInstance()));
                         }
                     });
                 }

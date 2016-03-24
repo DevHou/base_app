@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">app-base</string>
-
     <string name="TX_ERROR_CODE_SUCCESS">成功</string>
     <string name="TX_ERROR_CODE_NETWORK_FAIL">网络不给力，请稍候再试</string>
     <string name="TX_ERROR_CODE_JSON_PARSE">JSON解析失败</string>

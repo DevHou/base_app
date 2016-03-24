@@ -1,5 +1,7 @@
 package com.common.app.base.manager;
 
+import java.io.File;
+
 import android.content.Context;
 
 import com.common.app.base.error.ErrorConst;
@@ -7,8 +9,6 @@ import com.common.image.ImageLoader;
 import com.common.network.HttpWorker;
 import com.common.utils.FileUtils;
 import com.common.utils.ResourceManager;
-
-import java.io.File;
 
 /**
  * Created by houlijiang on 15/12/2.

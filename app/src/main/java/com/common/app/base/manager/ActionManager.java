@@ -1,13 +1,13 @@
 package com.common.app.base.manager;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import android.content.Context;
 import android.text.TextUtils;
 
 import com.common.app.base.utils.AppLog;
-
-import java.lang.ref.WeakReference;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**

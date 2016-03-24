@@ -1,8 +1,8 @@
 package com.common.app.base.manager;
 
-import android.text.TextUtils;
-
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import android.text.TextUtils;
 
 /**
  * Created by houlijiang on 15/11/18.
