@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,7 @@ import com.common.image.photodraweeview.OnPhotoTapListener;
 import com.common.image.photodraweeview.PhotoDraweeView;
 import com.common.image.uikit.MultiTouchViewPager;
 import com.common.image.uikit.SlideDotView;
+import com.common.utils.AppLog;
 import com.common.utils.DisplayUtils;
 
 /**
@@ -156,7 +156,7 @@ public class ImageBrowserActivity extends FragmentActivity {
                 @Override
                 public void onSuccess(String s, View view, int width, int height) {
                     if (width > 0 && height > 0) {
-                        Log.v(TAG, "update image width:" + width + " height:" + height);
+                        AppLog.v(TAG, "update image width:" + width + " height:" + height);
                         imageView.update(width, height);
                     }
                 }

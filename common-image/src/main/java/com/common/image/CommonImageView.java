@@ -7,8 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 
+import com.common.utils.AppLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
@@ -21,7 +21,6 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.common.image.R;
 
 /**
  * Created by houlijiang on 15/4/2.
@@ -86,7 +85,7 @@ public class CommonImageView extends SimpleDraweeView {
                 }
                 setHierarchy(h);
             } catch (Exception e) {
-                Log.e(TAG, "common image get attr error, e:" + e.getLocalizedMessage());
+                AppLog.e(TAG, "common image get attr error, e:" + e.getLocalizedMessage());
             } finally {
                 a.recycle();
                 b.recycle();
@@ -107,13 +106,13 @@ public class CommonImageView extends SimpleDraweeView {
         mListener = new BaseControllerListener<ImageInfo>() {
             @Override
             public void onSubmit(String id, Object callerContext) {
-                Log.v(TAG, "start load image id:" + id);
+                AppLog.v(TAG, "start load image id:" + id);
             }
 
             @Override
             public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable animatable) {
                 super.onFinalImageSet(id, imageInfo, animatable);
-                Log.v(TAG, "load image id:" + id + " success");
+                AppLog.v(TAG, "load image id:" + id + " success");
                 IImageLoadListener listener = null;
                 synchronized (CommonImageView.this) {
                     if (mImageLoadListener != null) {
@@ -129,13 +128,13 @@ public class CommonImageView extends SimpleDraweeView {
                         }
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "success callback e:" + e.getLocalizedMessage());
+                    AppLog.e(TAG, "success callback e:" + e.getLocalizedMessage());
                 }
             }
 
             @Override
             public void onFailure(String id, Throwable throwable) {
-                Log.v(TAG, "load image id:" + id + " failed");
+                AppLog.v(TAG, "load image id:" + id + " failed");
                 IImageLoadListener listener = null;
                 synchronized (CommonImageView.this) {
                     if (mImageLoadListener != null) {
@@ -147,13 +146,13 @@ public class CommonImageView extends SimpleDraweeView {
                         listener.onFailed(id, CommonImageView.this, null);
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "fail callback e:" + e.getLocalizedMessage());
+                    AppLog.e(TAG, "fail callback e:" + e.getLocalizedMessage());
                 }
             }
 
             @Override
             public void onRelease(String id) {
-                Log.v(TAG, "release image id:" + id);
+                AppLog.v(TAG, "release image id:" + id);
                 synchronized (CommonImageView.this) {
                     mImageLoadListener = null;
                 }
@@ -167,7 +166,7 @@ public class CommonImageView extends SimpleDraweeView {
         try {
             super.setImageDrawable(drawable);
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when setImageDrawable, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when setImageDrawable, e:" + e.getLocalizedMessage());
         }
     }
 
@@ -193,7 +192,7 @@ public class CommonImageView extends SimpleDraweeView {
     }
 
     public void setImageLoadListener(IImageLoadListener listener) {
-        Log.v(TAG, "set image load listener");
+        AppLog.v(TAG, "set image load listener");
         synchronized (this) {
             mImageLoadListener = listener;
         }

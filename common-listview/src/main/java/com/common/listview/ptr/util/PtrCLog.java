@@ -2,6 +2,8 @@ package com.common.listview.ptr.util;
 
 import android.util.Log;
 
+import com.common.utils.AppLog;
+
 /**
  * An encapsulation of {@link Log}, enable log level and print log with parameters.
  *
@@ -81,7 +83,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_DEBUG) {
             return;
         }
-        Log.d(tag, msg);
+        AppLog.d(tag, msg);
     }
 
     /**
@@ -98,7 +100,7 @@ public class PtrCLog {
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.d(tag, msg);
+        AppLog.d(tag, msg);
     }
 
     /**
@@ -112,7 +114,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_DEBUG) {
             return;
         }
-        Log.d(tag, msg, throwable);
+        AppLog.d(tag, msg, throwable);
     }
 
     /**
@@ -212,7 +214,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_ERROR) {
             return;
         }
-        Log.e(tag, msg);
+        AppLog.e(tag, msg);
     }
 
     /**
@@ -229,7 +231,7 @@ public class PtrCLog {
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.e(tag, msg);
+        AppLog.e(tag, msg);
     }
 
     /**
@@ -243,7 +245,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_ERROR) {
             return;
         }
-        Log.e(tag, msg, throwable);
+        AppLog.e(tag, msg, throwable);
     }
 
     /**

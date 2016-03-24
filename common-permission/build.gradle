@@ -23,4 +23,5 @@ dependencies {
 
     //权限工具类使用了
     compile 'io.reactivex:rxjava:1.1.0'
+    compile project(':common-utils')
 }

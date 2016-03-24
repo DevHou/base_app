@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -135,7 +134,7 @@ public class FileUtils {
 
             }
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when check sdcard", e);
+            AppLog.e(TAG, "catch exception when check sdcard, e:" + e.getLocalizedMessage());
         }
         return Environment.getExternalStorageDirectory().getPath();
     }
@@ -146,11 +145,11 @@ public class FileUtils {
      * @return 创建的文件路径
      */
     public static File createDirIfNotExists(String path) {
-        Log.d(TAG, "check path:" + path);
+        AppLog.d(TAG, "check path:" + path);
         File file = new File(path);
         if (!file.exists()) {
             if (!file.mkdirs()) {
-                Log.e(TAG, "Problem creating Image folder, path:" + file.getPath());
+                AppLog.e(TAG, "Problem creating Image folder, path:" + file.getPath());
                 return null;
             } else {
                 File mediaFile = new File(file.getPath() + "/.nomedia");
@@ -161,7 +160,7 @@ public class FileUtils {
                         return null;
                     }
                 } catch (IOException e) {
-                    Log.e(TAG, "create file error, e:", e);
+                    AppLog.e(TAG, "create file error, e:" + e.getLocalizedMessage());
                     return null;
                 }
             }
@@ -243,7 +242,7 @@ public class FileUtils {
                 cachePath = context.getCacheDir().getAbsolutePath();
             }
         } catch (Exception e) {
-            Log.e(TAG, "get good cache dir error, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "get good cache dir error, e:" + e.getLocalizedMessage());
             cachePath = context.getCacheDir().getAbsolutePath();
         }
         return cachePath;
@@ -290,7 +289,7 @@ public class FileUtils {
                 filePath = context.getFilesDir().getAbsolutePath();
             }
         } catch (Exception e) {
-            Log.e(TAG, "get good file dir error, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "get good file dir error, e:" + e.getLocalizedMessage());
             filePath = context.getFilesDir().getAbsolutePath();
         }
         return filePath;

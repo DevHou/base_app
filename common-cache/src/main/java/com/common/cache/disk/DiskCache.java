@@ -1,7 +1,8 @@
 package com.common.cache.disk;
 
 import android.text.TextUtils;
-import android.util.Log;
+
+import com.common.utils.AppLog;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -38,7 +39,7 @@ public class DiskCache {
         try {
             open(dir, appVersion, maxSize);
         } catch (IOException e) {
-            Log.e(TAG, "init disk cache error, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "init disk cache error, e:" + e.getLocalizedMessage());
             return false;
         }
         return true;
@@ -72,7 +73,7 @@ public class DiskCache {
         try {
             diskLruCache.close();
         } catch (IOException e) {
-            Log.e(TAG, "catch exception when close cache, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when close cache, e:" + e.getLocalizedMessage());
         }
         diskLruCache = null;
     }
@@ -86,12 +87,12 @@ public class DiskCache {
         try {
             diskLruCache.delete();
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when delete dir:" + dir + " e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when delete dir:" + dir + " e:" + e.getLocalizedMessage());
         }
         try {
             diskLruCache = DiskLruCache.open(dir, mAppVersion, 1, maxSize);
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when reopen dir:" + dir + " e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when reopen dir:" + dir + " e:" + e.getLocalizedMessage());
         }
     }
 
@@ -99,7 +100,7 @@ public class DiskCache {
         try {
             return diskLruCache.remove(toInternalKey(key));
         } catch (IOException e) {
-            Log.e(TAG, "catch exception when remove key, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when remove key, e:" + e.getLocalizedMessage());
             return false;
         }
     }
@@ -116,10 +117,10 @@ public class DiskCache {
             }
             String timeStr = (String) meta.get(TIMEOUT_KEY);
             long timeout = Long.parseLong(timeStr);
-            Log.d(TAG, "read meta timeout:" + timeout + " current time:" + System.currentTimeMillis());
+            AppLog.d(TAG, "read meta timeout:" + timeout + " current time:" + System.currentTimeMillis());
             return ((timeout - System.currentTimeMillis()) <= 0);
         } catch (NumberFormatException e) {
-            Log.e(TAG, "catch io exception when parse long, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when parse long, e:" + e.getLocalizedMessage());
             return false;
         }
     }
@@ -149,7 +150,7 @@ public class DiskCache {
         try {
             snapshot = diskLruCache.get(toInternalKey(key));
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when get snapshot, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when get snapshot, e:" + e.getLocalizedMessage());
         }
         if (snapshot == null) {
             return null;
@@ -158,12 +159,12 @@ public class DiskCache {
             Map<String, Serializable> meta = readMetadata(snapshot);
             if (ifTimeout(meta)) {
                 delete(key);
-                Log.d(TAG, "timeout key:" + key);
+                AppLog.d(TAG, "timeout key:" + key);
                 return null;
             }
             return new InputStreamEntry(snapshot, meta);
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when new InputStreamEntry, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when new InputStreamEntry, e:" + e.getLocalizedMessage());
         }
         return null;
     }
@@ -182,7 +183,7 @@ public class DiskCache {
             }
             return entry.getString();
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when read string from cache, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when read string from cache, e:" + e.getLocalizedMessage());
             return "";
         }
     }
@@ -201,7 +202,7 @@ public class DiskCache {
         try {
             snapshot = diskLruCache.get(toInternalKey(key));
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when get snapshot when read, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when get snapshot when read, e:" + e.getLocalizedMessage());
         }
         if (snapshot == null) {
             return null;
@@ -210,12 +211,12 @@ public class DiskCache {
             Map<String, Serializable> meta = readMetadata(snapshot);
             if (ifTimeout(meta)) {
                 delete(key);
-                Log.d(TAG, "timeout key:" + key);
+                AppLog.d(TAG, "timeout key:" + key);
                 return null;
             }
             return new StringEntry(snapshot.getString(VALUE_IDX), meta);
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when read from snapshot, e;" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when read from snapshot, e;" + e.getLocalizedMessage());
             return null;
         } finally {
             snapshot.close();
@@ -233,7 +234,7 @@ public class DiskCache {
         try {
             snapshot = diskLruCache.get(toInternalKey(key));
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when get snapshot when read, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when get snapshot when read, e:" + e.getLocalizedMessage());
             return false;
         }
         if (snapshot == null) {
@@ -243,12 +244,12 @@ public class DiskCache {
             Map<String, Serializable> meta = readMetadata(snapshot);
             if (ifTimeout(meta)) {
                 delete(key);
-                Log.d(TAG, "timeout key:" + key);
+                AppLog.d(TAG, "timeout key:" + key);
                 return false;
             }
             return true;
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when read from snapshot, e;" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when read from snapshot, e;" + e.getLocalizedMessage());
             return false;
         } finally {
             snapshot.close();
@@ -325,7 +326,7 @@ public class DiskCache {
             os = openStream(key, annotations);
             Util.copyStream(is, os);
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when write stream, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when write stream, e:" + e.getLocalizedMessage());
             return false;
         } finally {
             Util.closeQuietly(os);
@@ -372,7 +373,7 @@ public class DiskCache {
             cos = openStream(key, annotations);
             cos.write(value.getBytes());
         } catch (IOException e) {
-            Log.e(TAG, "catch io exception when write string, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch io exception when write string, e:" + e.getLocalizedMessage());
             return false;
         } finally {
             Util.closeQuietly(cos);

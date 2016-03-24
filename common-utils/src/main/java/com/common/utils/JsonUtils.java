@@ -25,7 +25,7 @@ public class JsonUtils {
         try {
             return gson.fromJson(result, classOfT);
         } catch (JsonSyntaxException e) {
-            Log.e(TAG, "catch exception when format json str:" + result);
+            AppLog.e(TAG, "catch exception when format json str:" + result);
             throw e;
         }
     }
