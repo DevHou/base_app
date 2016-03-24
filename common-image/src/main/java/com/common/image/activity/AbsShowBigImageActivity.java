@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
 import com.common.image.IImageLoadListener;
@@ -12,6 +11,7 @@ import com.common.image.ImageLoadError;
 import com.common.image.ImageLoader;
 import com.common.image.ImageOptions;
 import com.common.image.photodraweeview.PhotoDraweeView;
+import com.common.utils.AppLog;
 
 import java.io.File;
 
@@ -66,7 +66,7 @@ public abstract class AbsShowBigImageActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String s, View view, int width, int height) {
                 if (width > 0 && height > 0) {
-                    Log.v(TAG, "update image width:" + width + " height:" + height);
+                    AppLog.v(TAG, "update image width:" + width + " height:" + height);
                     mImageView.update(width, height);
                 }
             }

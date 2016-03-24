@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.common.listview.ptr.PtrFrameLayout;
 import com.common.listview.ptr.PtrHandler;
 import com.common.listview.ptr.PtrUIHandler;
 import com.common.listview.ptr.indicator.PtrIndicator;
+import com.common.utils.AppLog;
 
 /**
  * 包含的功能：下拉刷新，自动加载更多，右侧快速索引
@@ -208,7 +208,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
      */
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.d(TAG, "AppBarLayout offset:" + verticalOffset);
+        AppLog.d(TAG, "AppBarLayout offset:" + verticalOffset);
         mAppBarOffset = verticalOffset;
     }
 
@@ -531,7 +531,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                Log.d(TAG, "onRefreshBegin");
+                AppLog.d(TAG, "onRefreshBegin");
                 mOutRefreshListener.onRefreshBegin();
             }
         });
@@ -542,32 +542,32 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             mRefreshLayout.addPtrUIHandler(new PtrUIHandler() {
                 @Override
                 public void onUIReset(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIReset");
+                    AppLog.d(TAG, "onUIReset");
                     handler.onUIReset();
                 }
 
                 @Override
                 public void onUIRefreshPrepare(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIRefreshPrepare");
+                    AppLog.d(TAG, "onUIRefreshPrepare");
                     handler.onUIRefreshPrepare();
                 }
 
                 @Override
                 public void onUIRefreshBegin(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIRefreshBegin");
+                    AppLog.d(TAG, "onUIRefreshBegin");
                     handler.onUIRefreshBegin();
                 }
 
                 @Override
                 public void onUIRefreshComplete(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIRefreshComplete");
+                    AppLog.d(TAG, "onUIRefreshComplete");
                     handler.onUIRefreshComplete();
                 }
 
                 @Override
                 public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status,
                     PtrIndicator ptrIndicator) {
-                    Log.d(TAG, "onUIPositionChange");
+                    AppLog.d(TAG, "onUIPositionChange");
                     PtrStatus ptrStatus;
                     switch (status) {
                         case PtrFrameLayout.PTR_STATUS_INIT:

@@ -85,7 +85,7 @@ public class AppUtils {
             try {
                 app.intent.setClassName(event.getPackageName(), event.getClassName());
             } catch (Exception e) {
-                Log.e(TAG, "catch exception when set class name for " + app.packageName);
+                AppLog.e(TAG, "catch exception when set class name for " + app.packageName);
                 continue;
             }
             app.icon = null;
@@ -128,7 +128,7 @@ public class AppUtils {
                         || resolveInfo.activityInfo.packageName.equalsIgnoreCase(packageName)) {
                         continue;
                     }
-                    Log.v(TAG, "get recent running task:" + resolveInfo.activityInfo.packageName);
+                    AppLog.v(TAG, "get recent running task:" + resolveInfo.activityInfo.packageName);
                     RecentApp app = new RecentApp();
                     app.packageName = resolveInfo.activityInfo.packageName;
                     app.intent = intent;
@@ -183,10 +183,10 @@ public class AppUtils {
         for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
             if (appProcess.processName.equals(context.getPackageName())) {
                 if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
-                    Log.d("background", appProcess.processName);
+                    AppLog.d("background", appProcess.processName);
                     return false;
                 } else {
-                    Log.i("foreground", appProcess.processName);
+                    AppLog.i("foreground", appProcess.processName);
                     return true;
                 }
             }
@@ -204,7 +204,7 @@ public class AppUtils {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            Log.e(TAG, "class not found:" + className);
+            AppLog.e(TAG, "class not found:" + className);
             return null;
         }
     }
@@ -251,9 +251,9 @@ public class AppUtils {
             Bundle bundle = ai.metaData;
             return bundle.getString(key);
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
+            AppLog.e(TAG, "Failed to load meta-data, NameNotFound: " + e.getMessage());
         } catch (NullPointerException e) {
-            Log.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
+            AppLog.e(TAG, "Failed to load meta-data, NullPointer: " + e.getMessage());
         }
         return null;
     }
@@ -270,7 +270,7 @@ public class AppUtils {
             packInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
             return packInfo;
         } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "catch exception when get version, e:" + e.getMessage());
+            AppLog.e(TAG, "catch exception when get version, e:" + e.getMessage());
             return null;
         }
     }
@@ -297,7 +297,7 @@ public class AppUtils {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
         String mac = info.getMacAddress();
-        Log.i(TAG, "MAC:" + mac);
+        AppLog.i(TAG, "MAC:" + mac);
         return mac;
     }
 
@@ -308,7 +308,7 @@ public class AppUtils {
         long ut = SystemClock.elapsedRealtime() / 1000;
         int h = (int) ((ut / 3600));
         int m = (int) ((ut / 60) % 60);
-        Log.i(TAG, "boot time:" + h + ":" + m);
+        AppLog.i(TAG, "boot time:" + h + ":" + m);
         return h + ":" + m;
     }
 

@@ -19,6 +19,8 @@ package com.android.volley;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.common.utils.AppLog;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,20 +54,20 @@ public class VolleyLog {
 
     public static void v(String format, Object... args) {
         if (DEBUG) {
-            Log.v(TAG, buildMessage(format, args));
+            AppLog.v(TAG, buildMessage(format, args));
         }
     }
 
     public static void d(String format, Object... args) {
-        Log.d(TAG, buildMessage(format, args));
+        AppLog.d(TAG, buildMessage(format, args));
     }
 
     public static void e(String format, Object... args) {
-        Log.e(TAG, buildMessage(format, args));
+        AppLog.e(TAG, buildMessage(format, args));
     }
 
     public static void e(Throwable tr, String format, Object... args) {
-        Log.e(TAG, buildMessage(format, args), tr);
+        AppLog.e(TAG, buildMessage(format, args), tr);
     }
 
     public static void wtf(String format, Object... args) {

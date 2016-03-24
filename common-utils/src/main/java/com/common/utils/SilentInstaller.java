@@ -324,7 +324,7 @@ public class SilentInstaller {
                 && (commandResult.responseMsg.contains("Success") || commandResult.responseMsg.contains("success"))) {
             return DELETE_SUCCEEDED;
         }
-        Log.e(TAG,
+        AppLog.e(TAG,
                 new StringBuilder().append("uninstallSilent successMsg:").append(commandResult.responseMsg)
                         .append(", ErrorMsg:").append(commandResult.errorMsg).toString());
         if (commandResult.errorMsg == null) {
@@ -386,7 +386,7 @@ public class SilentInstaller {
             return INSTALL_SUCCEEDED;
         }
 
-        Log.e(TAG,
+        AppLog.e(TAG,
                 new StringBuilder().append("installSilent successMsg:").append(commandResult.responseMsg)
                         .append(", ErrorMsg:").append(commandResult.errorMsg).toString());
         if (commandResult.errorMsg == null) {

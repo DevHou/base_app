@@ -2,7 +2,6 @@ package com.common.network.volley;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -18,6 +17,7 @@ import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
 import com.common.network.IHttpWorker;
+import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
 
 import java.io.File;
@@ -99,7 +99,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     try {
                                         handler.onSuccess(response, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "get call success e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "get call success e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -128,7 +128,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                         }
                                         handler.onFailed(e, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "get call error e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "get call error e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -171,7 +171,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     try {
                                         handler.onSuccess(response, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "post call success e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "post call success e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -200,7 +200,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                         }
                                         handler.onFailed(e, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "post call fail e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "post call fail e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -241,7 +241,7 @@ public class VolleyHttpWorker implements IHttpWorker {
         try {
             requestBuilder.url(url);
         } catch (final Exception e) {
-            Log.e(TAG, "download url invalid, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "download url invalid, e:" + e.getLocalizedMessage());
             if (handler != null) {
                 DispatchUtils.getInstance().postInBackground(new Runnable() {
                     @Override
@@ -251,7 +251,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                 new HttpResponseError(HttpResponseError.ERROR_URL_INVALID, e.getLocalizedMessage());
                             handler.onFailed(error, param);
                         } catch (Exception e) {
-                            Log.e(TAG, "download call fail e:" + e.getLocalizedMessage());
+                            AppLog.e(TAG, "download call fail e:" + e.getLocalizedMessage());
                         }
                     }
                 });
@@ -274,7 +274,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     new HttpResponseError(HttpResponseError.ERROR_UNKNOWN, e.getLocalizedMessage());
                                 handler.onFailed(error, param);
                             } catch (Exception e) {
-                                Log.e(TAG, "download call fail e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "download call fail e:" + e.getLocalizedMessage());
                             }
                         }
                     });
@@ -297,7 +297,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                         new HttpResponseError(HttpResponseError.ERROR_UNKNOWN, e.getLocalizedMessage());
                                     handler.onFailed(error, param);
                                 } catch (Exception e) {
-                                    Log.e(TAG, "download call success e:" + e.getLocalizedMessage());
+                                    AppLog.e(TAG, "download call success e:" + e.getLocalizedMessage());
                                 }
                             }
                         });
@@ -311,7 +311,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                             try {
                                 handler.onSuccess(file, param);
                             } catch (Exception e) {
-                                Log.e(TAG, "download call success e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "download call success e:" + e.getLocalizedMessage());
                             }
                         }
                     });
@@ -382,7 +382,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     new HttpResponseError(HttpResponseError.ERROR_UNKNOWN, e.getLocalizedMessage());
                                 handler.onFailed(error, param);
                             } catch (Exception e) {
-                                Log.e(TAG, "upload call fail e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "upload call fail e:" + e.getLocalizedMessage());
                             }
                         }
                     });
@@ -400,12 +400,12 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     final Result result = HttpWorker.handlerResult(response.body().string(), classOfT);
                                     handler.onSuccess(result, param);
                                 } catch (Exception e) {
-                                    Log.e(TAG, "upload call success e:" + e.getLocalizedMessage());
+                                    AppLog.e(TAG, "upload call success e:" + e.getLocalizedMessage());
                                 }
                             }
                         });
                     } catch (Exception e) {
-                        Log.e(TAG, "parse result for upload e:" + e.getLocalizedMessage());
+                        AppLog.e(TAG, "parse result for upload e:" + e.getLocalizedMessage());
                     }
                 }
             }
@@ -558,7 +558,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                 // 必须调用flush，否则最后一部分数据可能不会被写入
                 bufferedSink.flush();
             } catch (Exception e) {
-                Log.e(TAG, "写入错误，e:" + e.getLocalizedMessage());
+                AppLog.e(TAG, "写入错误，e:" + e.getLocalizedMessage());
             }
 
         }

@@ -4,16 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.common.image.config.ConfigConstants;
+import com.common.image.utils.Utils;
+import com.common.utils.AppLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.common.image.config.ConfigConstants;
-import com.common.image.utils.Utils;
 
 import java.io.File;
 
@@ -203,7 +203,7 @@ public class ImageLoader {
                             try {
                                 options.getProcessor().process(bitmap);
                             } catch (Exception e) {
-                                Log.e(TAG, "post process image error, e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "post process image error, e:" + e.getLocalizedMessage());
                             }
                         }
                     }).build();

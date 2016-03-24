@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 
+import com.common.utils.AppLog;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
-import com.common.image.R;
 
 public class RoundedImageView extends CommonImageView {
 
@@ -54,7 +53,7 @@ public class RoundedImageView extends CommonImageView {
             }
             return h;
         } catch (Exception e) {
-            Log.e(TAG, "circle image get attr error, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "circle image get attr error, e:" + e.getLocalizedMessage());
         } finally {
             a.recycle();
         }
