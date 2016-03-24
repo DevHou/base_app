@@ -3,7 +3,7 @@ package com.common.app.base.error;
 import android.content.Context;
 
 import com.common.app.R;
-import com.common.app.base.utils.AppLog;
+import com.common.utils.AppLog;
 
 
 /**

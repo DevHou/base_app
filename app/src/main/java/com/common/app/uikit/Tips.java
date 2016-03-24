@@ -1,8 +1,9 @@
 package com.common.app.uikit;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
+
+import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 16/1/26.
@@ -48,7 +49,7 @@ public class Tips {
      * 如果已经在显示就不显示了
      */
     public static void showDeadlineMessage(final Context act, final String msg) {
-        Log.d(TAG, "value:" + (toast == null) + " " + (toast == null || toast.getView() == null) + " "
+        AppLog.d(TAG, "value:" + (toast == null) + " " + (toast == null || toast.getView() == null) + " "
             + (toast == null || toast.getView() == null || toast.getView().isShown()));
         if (toast == null || toast.getView() == null || !toast.getView().isShown()) {
             showMessage(act, msg);

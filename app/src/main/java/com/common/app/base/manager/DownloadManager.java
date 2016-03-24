@@ -1,25 +1,24 @@
 package com.common.app.base.manager;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
+import android.support.annotation.NonNull;
+
+import com.common.network.HttpResponseError;
+import com.common.network.HttpWorker;
+import com.common.network.IHttpParams;
+import com.common.network.IHttpResponse;
+import com.common.utils.AppLog;
+import com.common.utils.DispatchUtils;
+import com.common.utils.ResourceManager;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
-import android.support.annotation.NonNull;
-import android.util.Log;
-
-import com.common.app.base.utils.AppLog;
-import com.common.network.HttpResponseError;
-import com.common.network.HttpWorker;
-import com.common.network.IHttpParams;
-import com.common.network.IHttpResponse;
-import com.common.utils.DispatchUtils;
-import com.common.utils.ResourceManager;
 
 /**
  * Created by houlijiang on 16/1/23.
@@ -62,12 +61,12 @@ public class DownloadManager {
                             try {
                                 maps = item.paramsCreator.createReqHeader(item);
                             } catch (Exception e) {
-                                Log.e(TAG, "create req header error, e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "create req header error, e:" + e.getLocalizedMessage());
                             }
                             try {
                                 params = item.paramsCreator.createReqParams(item);
                             } catch (Exception e) {
-                                Log.e(TAG, "create req params error, e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "create req params error, e:" + e.getLocalizedMessage());
                             }
                         }
                         HttpWorker.download(item.origin, item.url, maps, item.target, params,

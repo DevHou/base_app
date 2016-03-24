@@ -71,11 +71,11 @@ public class VolleyLog {
     }
 
     public static void wtf(String format, Object... args) {
-        Log.wtf(TAG, buildMessage(format, args));
+        AppLog.wtf(TAG, buildMessage(format, args));
     }
 
     public static void wtf(Throwable tr, String format, Object... args) {
-        Log.wtf(TAG, buildMessage(format, args), tr);
+        AppLog.wtf(TAG, buildMessage(format, args), tr);
     }
 
     /**

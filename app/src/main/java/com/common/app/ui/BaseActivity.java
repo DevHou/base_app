@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.common.app.base.utils.EventUtils;
 import com.common.app.event.ExitAppEvent;
 import com.common.image.CommonImageView;
 import com.common.image.ImageLoader;
+import com.common.utils.AppLog;
 import com.common.utils.DisplayUtils;
 import com.common.utils.InputMethodUtils;
 
@@ -309,7 +309,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param listener 回调
      */
     public void setCustomMenu(CustomMenuItem[] menus, IOnMenuClick listener) {
-        Log.v(TAG, "setCustomMenu items");
+        AppLog.v(TAG, "setCustomMenu items");
         mCustomMenuItems = menus;
         mOnMenuClick = listener;
         refreshTitleButtons();
@@ -321,7 +321,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param enable 是否可用
      */
     public void setRightState(boolean enable) {
-        Log.v(TAG, "setRightState, will set enable:" + enable);
+        AppLog.v(TAG, "setRightState, will set enable:" + enable);
         mRightState = enable ? RIGHT_STATE_ENABLE : RIGHT_STATE_DISABLE;
         refreshTitleButtons();
     }

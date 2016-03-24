@@ -1,20 +1,11 @@
 package com.common.app.base.manager;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.common.app.base.utils.AppLog;
 import com.common.network.FileWrapper;
 import com.common.network.HttpResponseError;
 import com.common.network.HttpResponseResult;
@@ -22,9 +13,17 @@ import com.common.network.HttpStringResponse;
 import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
+import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
 import com.common.utils.JsonUtils;
 import com.common.utils.ResourceManager;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by houlijiang on 16/1/23.
@@ -70,12 +69,12 @@ public class UploadManager {
                             try {
                                 header = item.paramsCreator.createReqHeader(item);
                             } catch (Exception e) {
-                                Log.e(TAG, "create req header error, e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "create req header error, e:" + e.getLocalizedMessage());
                             }
                             try {
                                 params = item.paramsCreator.createReqParams(item);
                             } catch (Exception e) {
-                                Log.e(TAG, "create req params error, e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "create req params error, e:" + e.getLocalizedMessage());
                             }
                         }
                         Map<String, FileWrapper> files = new HashMap<>();
@@ -108,7 +107,7 @@ public class UploadManager {
 
                                 @Override
                                 public void onFailed(@NonNull HttpResponseError error, Object param) {
-                                    Log.v(TAG, "upload failed, will retry");
+                                    AppLog.v(TAG, "upload failed, will retry");
                                     // 失败了就再加入队列
                                     UploadItem di = (UploadItem) param;
                                     if (di.isCanceled) {
@@ -119,7 +118,7 @@ public class UploadManager {
 
                                 @Override
                                 public void onProgress(final long donebytes, final long totalbytes, final Object param) {
-                                    Log.v(TAG, "done:" + donebytes + " taotal:" + totalbytes);
+                                    AppLog.v(TAG, "done:" + donebytes + " taotal:" + totalbytes);
                                     DispatchUtils.getInstance().postInMain(new Runnable() {
                                         @Override
                                         public void run() {

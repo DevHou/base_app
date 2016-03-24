@@ -20,6 +20,11 @@ public class AppLog {
             Log.v(tag, msg);
     }
 
+    public static void v(String tag, String msg, Throwable t) {
+        if (!isOnline)
+            Log.v(tag, msg, t);
+    }
+
     public static void d(String tag, String msg) {
         if (!isOnline)
             Log.d(tag, msg);
@@ -35,9 +40,29 @@ public class AppLog {
             Log.i(tag, msg);
     }
 
+    public static void i(String tag, String msg, Throwable t) {
+        if (!isOnline)
+            Log.i(tag, msg, t);
+    }
+
+    public static void wtf(String tag, String msg) {
+        if (!isOnline)
+            Log.wtf(tag, msg);
+    }
+
+    public static void wtf(String tag, String msg, Throwable t) {
+        if (!isOnline)
+            Log.wtf(tag, msg, t);
+    }
+
     public static void w(String tag, String msg) {
         if (!isOnline)
             Log.w(tag, msg);
+    }
+
+    public static void w(String tag, String msg, Throwable t) {
+        if (!isOnline)
+            Log.w(tag, msg, t);
     }
 
     public static void e(String tag, String msg) {

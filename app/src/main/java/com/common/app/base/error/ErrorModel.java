@@ -2,7 +2,7 @@ package com.common.app.base.error;
 
 import android.text.TextUtils;
 
-import com.common.app.base.utils.AppLog;
+import com.common.utils.AppLog;
 
 
 /**
