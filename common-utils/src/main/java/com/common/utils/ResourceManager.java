@@ -1,7 +1,5 @@
 package com.common.utils;
 
-import android.util.Log;
-
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Collections;

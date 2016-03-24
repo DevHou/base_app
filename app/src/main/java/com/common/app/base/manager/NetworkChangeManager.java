@@ -1,7 +1,5 @@
 package com.common.app.base.manager;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +8,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 
-import com.common.app.base.utils.AppLog;
+import com.common.utils.AppLog;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by houlijiang on 15/11/28.

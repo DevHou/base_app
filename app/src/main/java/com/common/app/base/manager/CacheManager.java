@@ -1,14 +1,13 @@
 package com.common.app.base.manager;
 
-import java.io.File;
-
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.common.app.base.utils.AppLog;
 import com.common.cache.disk.DiskCache;
+import com.common.utils.AppLog;
+
+import java.io.File;
 
 /**
  * Created by houlijiang on 15/11/28.
@@ -78,7 +77,7 @@ public class CacheManager {
             try {
                 return Long.parseLong(value);
             } catch (Exception e) {
-                Log.e(TAG, "parse long error, e:" + e.getLocalizedMessage());
+                AppLog.e(TAG, "parse long error, e:" + e.getLocalizedMessage());
                 return null;
             }
         }

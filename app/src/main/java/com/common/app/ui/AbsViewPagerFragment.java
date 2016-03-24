@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import com.common.app.R;
 import com.common.app.uikit.UnScrollViewPager;
 import com.common.app.uikit.indicator.IIconPagerAdapter;
 import com.common.app.uikit.indicator.IPageIndicator;
+import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 15/12/10.
@@ -135,7 +135,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
 
     @Override
     public void onPageSelected(int arg0) {
-        Log.d(TAG, "onPageSelected i:" + arg0);
+        AppLog.d(TAG, "onPageSelected i:" + arg0);
     }
 
     public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter implements IIconPagerAdapter {

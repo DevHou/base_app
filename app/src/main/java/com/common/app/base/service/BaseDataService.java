@@ -9,7 +9,7 @@ import com.common.app.base.model.BooleanDataModel;
 import com.common.app.base.model.DataModel;
 import com.common.app.base.model.ListDataModel;
 import com.common.app.base.model.NullableDataModel;
-import com.common.app.base.utils.AppLog;
+import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
 
 /**

@@ -1,23 +1,23 @@
 package com.common.app.base.api;
 
-import java.util.Map;
-
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.common.app.base.error.ErrorConst;
-import com.common.app.base.utils.AppLog;
 import com.common.network.HttpResponseError;
 import com.common.network.HttpStringResponse;
 import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
+import com.common.utils.AppLog;
 import com.common.utils.JsonUtils;
 import com.common.utils.ResourceManager;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
+
+import java.util.Map;
 
 /**
  * Created by houlijiang on 16/1/22.

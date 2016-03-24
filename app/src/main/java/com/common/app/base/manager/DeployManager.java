@@ -1,19 +1,18 @@
 package com.common.app.base.manager;
 
-import java.io.UnsupportedEncodingException;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import android.Manifest;
 import android.content.Context;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.Log;
 
-import com.common.app.base.utils.AppLog;
 import com.common.permission.AppPermissions;
+import com.common.utils.AppLog;
 import com.common.utils.AppUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by houlijiang on 15/11/28.
@@ -54,7 +53,7 @@ public class DeployManager {
             try {
                 uuid = UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")).toString();
             } catch (UnsupportedEncodingException e) {
-                Log.e(TAG, "create uuid error, e:" + e.getLocalizedMessage());
+                AppLog.e(TAG, "create uuid error, e:" + e.getLocalizedMessage());
                 uuid = UUID.randomUUID().toString();
             }
         }

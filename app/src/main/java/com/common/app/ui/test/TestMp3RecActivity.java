@@ -4,16 +4,16 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.common.app.R;
 import com.common.app.ui.BaseActivity;
-import com.common.permission.AppPermissions;
-import com.common.utils.FileUtils;
 import com.common.mp3recorder.RecMicToMp3;
+import com.common.permission.AppPermissions;
+import com.common.utils.AppLog;
+import com.common.utils.FileUtils;
 
 import java.io.File;
 
@@ -129,7 +129,7 @@ public class TestMp3RecActivity extends BaseActivity implements View.OnClickList
                     });
                     mediaPlayer.start();
                 } catch (Exception e) {
-                    Log.e(TAG, "catch exception when play voice, e:" + e.getLocalizedMessage());
+                    AppLog.e(TAG, "catch exception when play voice, e:" + e.getLocalizedMessage());
                     Toast.makeText(this, "播放音频失败", Toast.LENGTH_SHORT).show();
                 }
                 break;

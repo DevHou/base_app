@@ -6,7 +6,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +15,7 @@ import com.common.listview.BaseListCell;
 import com.common.listview.BaseListDataAdapter;
 import com.common.listview.ptr.PtrFrameLayout;
 import com.common.listview.ptr.PtrHandler;
+import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 16/2/1.
@@ -134,7 +134,7 @@ public class TestPtrActivity extends BaseActivity implements AppBarLayout.OnOffs
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.d(TAG, "AppBarLayout offset:" + verticalOffset);
+        AppLog.d(TAG, "AppBarLayout offset:" + verticalOffset);
         mAppBarOffset = verticalOffset;
     }
 

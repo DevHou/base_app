@@ -1,14 +1,16 @@
 package com.common.app.base.manager;
 
-import java.io.File;
-
 import android.content.Context;
 
+import com.common.app.BuildConfig;
 import com.common.app.base.error.ErrorConst;
 import com.common.image.ImageLoader;
 import com.common.network.HttpWorker;
+import com.common.utils.AppLog;
 import com.common.utils.FileUtils;
 import com.common.utils.ResourceManager;
+
+import java.io.File;
 
 /**
  * Created by houlijiang on 15/12/2.
@@ -46,6 +48,8 @@ public class Manager {
      * 注意 这里初始化必须使用内部存储，因为6.0可能没有外部存储权限，如果实时获取权限，代码逻辑不好处理
      */
     public static boolean initForProcess(Context context, DeployManager.EnvironmentType type) {
+        // 初始化log
+        AppLog.setIsOnline(BuildConfig.IS_ONLINE);
         // 配置环境
         DeployManager.init(context, type);
         // 初始化错误模块

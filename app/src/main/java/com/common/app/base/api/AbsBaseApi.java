@@ -3,7 +3,7 @@ package com.common.app.base.api;
 import android.text.TextUtils;
 
 import com.common.app.base.manager.DeployManager;
-import com.common.app.base.utils.AppLog;
+import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 16/1/23.
