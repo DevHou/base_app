@@ -1,5 +1,9 @@
 package com.common.app.base.manager;
 
+import java.io.UnsupportedEncodingException;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import android.Manifest;
 import android.content.Context;
 import android.os.Build;
@@ -10,10 +14,6 @@ import android.util.Log;
 import com.common.app.base.utils.AppLog;
 import com.common.permission.AppPermissions;
 import com.common.utils.AppUtils;
-
-import java.io.UnsupportedEncodingException;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by houlijiang on 15/11/28.

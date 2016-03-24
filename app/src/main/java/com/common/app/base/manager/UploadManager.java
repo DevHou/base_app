@@ -1,5 +1,12 @@
 package com.common.app.base.manager;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
@@ -18,13 +25,6 @@ import com.common.network.IHttpResponse;
 import com.common.utils.DispatchUtils;
 import com.common.utils.JsonUtils;
 import com.common.utils.ResourceManager;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by houlijiang on 16/1/23.

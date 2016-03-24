@@ -1,5 +1,7 @@
 package com.common.app.base.api;
 
+import java.util.Map;
+
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -16,8 +18,6 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-
-import java.util.Map;
 
 /**
  * Created by houlijiang on 16/1/22.

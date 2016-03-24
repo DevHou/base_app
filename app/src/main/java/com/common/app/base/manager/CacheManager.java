@@ -1,5 +1,7 @@
 package com.common.app.base.manager;
 
+import java.io.File;
+
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -7,8 +9,6 @@ import android.util.Log;
 
 import com.common.app.base.utils.AppLog;
 import com.common.cache.disk.DiskCache;
-
-import java.io.File;
 
 /**
  * Created by houlijiang on 15/11/28.

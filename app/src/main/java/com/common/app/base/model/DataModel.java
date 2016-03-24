@@ -1,7 +1,7 @@
 package com.common.app.base.model;
 
-import com.google.gson.JsonSyntaxException;
 import com.common.utils.JsonUtils;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.Serializable;
 

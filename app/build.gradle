@@ -32,7 +32,12 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
 
     compile 'org.greenrobot:eventbus:3.0.0'
-    
-    compile project(':app-base')
+
+    compile project(':common-cache')
+    compile project(':common-image')
+    compile project(':common-listview')
+    compile project(':common-network')
+    compile project(':common-permission')
+    compile project(':common-utils')
     compile project(':common-mp3recorder')
 }
