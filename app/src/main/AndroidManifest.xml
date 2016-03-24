@@ -4,6 +4,8 @@
     android:versionCode="2"
     android:versionName="1.0.0">
 
+    <!-- 网络变化监听模块用 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
