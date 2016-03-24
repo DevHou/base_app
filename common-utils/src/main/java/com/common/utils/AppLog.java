@@ -11,6 +11,10 @@ public class AppLog {
 
     private static boolean isOnline = true;
 
+    public static void setIsOnline(boolean b) {
+        isOnline = b;
+    }
+
     public static void v(String tag, String msg) {
         if (!isOnline)
             Log.v(tag, msg);
