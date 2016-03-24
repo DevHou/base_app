@@ -1,5 +1,6 @@
 package com.common.network;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 /**
@@ -44,39 +45,39 @@ public class HttpResponseError {
         reason = msg;
     }
 
-    public String getReason() {
+    public String getReason(Context context) {
         if (TextUtils.isEmpty(reason)) {
             switch (code) {
                 case ERROR_PARSE: {
-                    reason = "数据解析错误";
+                    reason = context.getString(R.string.common_network_parse_error);
                     break;
                 }
                 case ERROR_TIMEOUT: {
-                    reason = "连接超时";
+                    reason = context.getString(R.string.common_network_timeout);
                     break;
                 }
                 case ERROR_SERVER_ERROR: {
-                    reason = "服务器错误";
+                    reason = context.getString(R.string.common_network_server_error);
                     break;
                 }
                 case ERROR_AUTH: {
-                    reason = "认证失败";
+                    reason = context.getString(R.string.common_network_auth_error);
                     break;
                 }
                 case ERROR_AUTH_FILTER: {
-                    reason = "授权失败";
+                    reason = context.getString(R.string.common_network_auth_fail);
                     break;
                 }
                 case ERROR_CUSTOM_PROCESS: {
-                    reason = "数据处理错误";
+                    reason = context.getString(R.string.common_network_process_error);
                     break;
                 }
                 case ERROR_UNKNOWN: {
-                    reason = "未知错误";
+                    reason = context.getString(R.string.common_network_unknown);
                     break;
                 }
                 case ERROR_URL_INVALID: {
-                    reason = "网址无效";
+                    reason = context.getString(R.string.common_network_url_invalid);
                     break;
                 }
             }
