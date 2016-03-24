@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">app</string>
-    <string name="gsx_list_loading">加载中…</string>
+    <string name="gsx_list_loading">Loading…</string>
 </resources>
