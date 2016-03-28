@@ -35,11 +35,10 @@ public class ErrorConst {
     public static final long ERROR_CODE_FAIL = 1012020002;
     public static final long ERROR_CODE_NETWORK_FAIL = 1012020003;
     public static final long ERROR_CODE_NETWORK_CACHE_ERROR = 1012020004;
-    public static final long ERROR_CODE_NETWORK_GET_RESULT_ERROR = 1012020004;
+    public static final long ERROR_CODE_NETWORK_GET_RESULT_ERROR = 1012020005;
     public static final long ERROR_CODE_JSON_PARSE = 1012021006;
     public static final long ERROR_CODE_JSON_NO_CODE = 1012021007;
     public static final long ERROR_CODE_CALL_BACK = 1012021008;
-
     public static final long ERROR_CODE_CANCEL = 1012020009;
     /**
      * 网络没有连接

@@ -191,7 +191,11 @@ public class ApiUtils {
         switch (error.getCode()) {
             case HttpResponseError.ERROR_AUTH: {
                 apiResult.code = ErrorConst.ERROR_UNKNOWN;
+                break;
             }
+            default:
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_GET_RESULT_ERROR;
+                break;
         }
         apiResult.message = error.getReason(null);
         return apiResult;
