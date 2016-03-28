@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">common-network</string>
     <string name="common_network_parse_error">数据解析错误</string>
     <string name="common_network_timeout">网络超时</string>
     <string name="common_network_server_error">服务器异常</string>
