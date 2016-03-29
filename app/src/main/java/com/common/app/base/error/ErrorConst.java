@@ -5,7 +5,6 @@ import android.content.Context;
 import com.common.app.R;
 import com.common.utils.AppLog;
 
-
 /**
  * Created by hyj on 11/5/15.
  * 
@@ -31,33 +30,32 @@ public class ErrorConst {
      */
     public static final long ERROR_UNKNOWN = -1;
     // ============= 网络层错误=================
-    public static final long ERROR_CODE_SUCCESS_EMPTY = 1012020001;
-    public static final long ERROR_CODE_FAIL = 1012020002;
-    public static final long ERROR_CODE_NETWORK_FAIL = 1012020003;
-    public static final long ERROR_CODE_NETWORK_CACHE_ERROR = 1012020004;
-    public static final long ERROR_CODE_NETWORK_GET_RESULT_ERROR = 1012020005;
-    public static final long ERROR_CODE_JSON_PARSE = 1012021006;
-    public static final long ERROR_CODE_JSON_NO_CODE = 1012021007;
-    public static final long ERROR_CODE_CALL_BACK = 1012021008;
-    public static final long ERROR_CODE_CANCEL = 1012020009;
-    /**
-     * 网络没有连接
-     */
-    public static final long ERROR_CODE_NETWORK_DISCONNECTION = 1012020010;
-
-    /**
-     * 网络请求url空
-     */
-    public static final long ERROR_CODE_NETWORK_URL_EMPTY = 1012020011;
-
-    /**
-     * 网络请求MediaType为空
-     */
-    public static final long ERROR_CODE_NETWORK_MEDIA_TYPE_EMPTY = 1012020012;
+    // 访问不到服务器
+    public static final long ERROR_CODE_NETWORK_FAIL = 1012020001;
+    // 授权失败
+    public static final long ERROR_CODE_NETWORK_AUTH_FAIL = 1012020002;
+    // 网络层解析结果错误
+    public static final long ERROR_CODE_NETWORK_PARSE_RESULT_ERROR = 1012020003;
+    // 服务器异常
+    public static final long ERROR_CODE_NETWORK_SERVER_ERROR = 1012020004;
+    // 网络超时
+    public static final long ERROR_CODE_NETWORK_TIME_OUT = 1012021005;
+    // url不合法
+    public static final long ERROR_CODE_NETWORK_URL_INVALID = 1012021006;
+    // 回调错误
+    public static final long ERROR_CODE_NETWORK_CALL_BACK = 1012021007;
+    // 网络取消
+    public static final long ERROR_CODE_CANCEL = 1012020008;
+    // 网络没有连接
+    public static final long ERROR_CODE_NETWORK_DISCONNECTION = 1012020009;
+    // 网络请求url空
+    public static final long ERROR_CODE_NETWORK_URL_EMPTY = 1012020010;
     // =====================API层错误=====================
-    public static final long ERROR_CODE_API_PARAMS_ERROR = 1012020013;
+    public static final long ERROR_CODE_API_PARAMS_ERROR = 1012020011;
+    public static final long ERROR_CODE_API_FAIL = 1012020012;
     // =====================service层错误=====================
-    public static final long ERROR_SERVICE_JSON_EMPTY = 1012021014;
+    public static final long ERROR_CODE_SERVICE_JSON_EMPTY = 1012021013;
+    public static final long ERROR_CODE_SERVICE_PARSE_ERROR = 1012021014;
     // =====================UI层错误=====================
 
     // =====================其他错误=====================
@@ -67,37 +65,43 @@ public class ErrorConst {
 
     public static String getMessage(long code) {
         if (ErrorConst.ERROR_CODE_SUCCESS == code) {
-            return getString(R.string.TX_ERROR_CODE_SUCCESS);
+            return getString(R.string.error_code_success);
         } else if (ErrorConst.ERROR_CODE_NETWORK_FAIL == code) {
-            return getString(R.string.TX_ERROR_CODE_NETWORK_FAIL);
-        } else if (ErrorConst.ERROR_CODE_JSON_PARSE == code) {
-            return getString(R.string.TX_ERROR_CODE_JSON_PARSE);
-        } else if (ErrorConst.ERROR_CODE_API_PARAMS_ERROR == code) {
-            return getString(R.string.TX_ERROR_CODE_API_PARAMS_ERROR);
-        } else if (ErrorConst.ERROR_SERVICE_JSON_EMPTY == code) {
-            return getString(R.string.TX_ERROR_SERVICE_JSON_EMPTY);
-        } else if (ErrorConst.ERROR_CODE_NETWORK_DISCONNECTION == code) {
-            return getString(R.string.TX_ERROR_CODE_NETWORK_DISCONNECTION);
-        } else if (ErrorConst.ERROR_CODE_CALL_BACK == code) {
-            return getString(R.string.TX_ERROR_CODE_CALL_BACK);
+            return getString(R.string.error_code_network_fail);
+        } else if (ErrorConst.ERROR_CODE_NETWORK_AUTH_FAIL == code) {
+            return getString(R.string.error_code_network_auth_fail);
+        } else if (ErrorConst.ERROR_CODE_NETWORK_PARSE_RESULT_ERROR == code) {
+            return getString(R.string.error_code_network_parse_result_error);
+        } else if (ErrorConst.ERROR_CODE_NETWORK_SERVER_ERROR == code) {
+            return getString(R.string.error_code_network_server_error);
+        } else if (ErrorConst.ERROR_CODE_NETWORK_TIME_OUT == code) {
+            return getString(R.string.error_code_network_time_out);
+        } else if (ErrorConst.ERROR_CODE_NETWORK_URL_INVALID == code) {
+            return getString(R.string.error_code_network_url_invalid);
+        } else if (ErrorConst.ERROR_CODE_NETWORK_CALL_BACK == code) {
+            return getString(R.string.error_code_network_callback_error);
         } else if (ErrorConst.ERROR_CODE_CANCEL == code) {
-            return getString(R.string.TX_ERROR_CODE_CANCEL);
-        } else if (ErrorConst.ERROR_CODE_NETWORK_CACHE_ERROR == code) {
-            return getString(R.string.TX_ERROR_CODE_NETWORK_CACHE_ERROR);
-        } else if (ErrorConst.ERROR_CODE_NETWORK_GET_RESULT_ERROR == code) {
-            return getString(R.string.TX_ERROR_CODE_NETWORK_GET_RESULT_ERROR);
-        } else if (ErrorConst.ERROR_CODE_NETWORK_MEDIA_TYPE_EMPTY == code) {
-            return getString(R.string.TX_ERROR_CODE_NETWORK_MEDIA_TYPE_EMPTY);
+            return getString(R.string.error_code_network_cancel);
+        } else if (ErrorConst.ERROR_CODE_NETWORK_DISCONNECTION == code) {
+            return getString(R.string.error_code_network_disconnection);
         } else if (ErrorConst.ERROR_CODE_NETWORK_URL_EMPTY == code) {
-            return getString(R.string.TX_ERROR_CODE_NETWORK_URL_EMPTY);
+            return getString(R.string.error_code_network_url_invalid);
+        } else if (ErrorConst.ERROR_CODE_API_PARAMS_ERROR == code) {
+            return getString(R.string.error_code_api_params_error);
+        } else if (ErrorConst.ERROR_CODE_API_FAIL == code) {
+            return getString(R.string.error_code_api_error);
+        } else if (ErrorConst.ERROR_CODE_SERVICE_JSON_EMPTY == code) {
+            return getString(R.string.error_code_service_json_empty);
+        } else if (ErrorConst.ERROR_CODE_SERVICE_PARSE_ERROR == code) {
+            return getString(R.string.error_code_service_parse_error);
         } else if (ErrorConst.ERROR_CODE_RUNTIME_ILLEGAL_ACCESS == code) {
-            return getString(R.string.TX_ERROR_CODE_RUNTIME_ILLEGAL_ACCESS);
+            return getString(R.string.error_code_runtime_illegal_access);
         } else if (ErrorConst.ERROR_CODE_RUNTIME_INVOCATION == code) {
-            return getString(R.string.TX_ERROR_CODE_RUNTIME_INVOCATION);
+            return getString(R.string.error_code_runtime_invocation);
         } else if (ErrorConst.ERROR_CODE_RUNTIME_NO_METHOD == code) {
-            return getString(R.string.TX_ERROR_CODE_RUNTIME_NO_METHOD);
+            return getString(R.string.error_code_runtime_no_method);
         } else {
-            return getString(R.string.TX_ERROR_CODE_NETWORK_FAIL);
+            return getString(R.string.error_code_unknown);
         }
     }
 

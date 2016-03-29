@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.common.app.App;
 import com.common.app.R;
 import com.common.app.base.manager.DownloadManager;
 import com.common.app.base.manager.NetworkChangeManager;
@@ -24,6 +23,8 @@ import java.util.List;
 
 /**
  * Created by houlijiang on 16/1/20.
+ * 
+ * 测试网络库
  */
 public class TestNetActivity extends BaseActivity implements View.OnClickListener,
     NetworkChangeManager.INetChangedListener {
@@ -104,7 +105,7 @@ public class TestNetActivity extends BaseActivity implements View.OnClickListene
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTvStatus.setText("下载失败：" + error.getReason(App.getInstance()));
+                            mTvStatus.setText("下载失败：" + error.getReason());
                         }
                     });
                 }

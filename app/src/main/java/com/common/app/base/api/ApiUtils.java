@@ -190,14 +190,39 @@ public class ApiUtils {
         ApiResultModel apiResult = new ApiResultModel();
         switch (error.getCode()) {
             case HttpResponseError.ERROR_AUTH: {
-                apiResult.code = ErrorConst.ERROR_UNKNOWN;
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_AUTH_FAIL;
+                break;
+            }
+            case HttpResponseError.ERROR_AUTH_FILTER: {
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_AUTH_FAIL;
+                break;
+            }
+            case HttpResponseError.ERROR_SERVER_ERROR: {
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_SERVER_ERROR;
+                break;
+            }
+            case HttpResponseError.ERROR_PARSE: {
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_PARSE_RESULT_ERROR;
+                break;
+            }
+            case HttpResponseError.ERROR_TIMEOUT: {
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_TIME_OUT;
+                break;
+            }
+            case HttpResponseError.ERROR_CUSTOM_PROCESS: {
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_CALL_BACK;
+                break;
+            }
+            case HttpResponseError.ERROR_URL_INVALID: {
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_URL_INVALID;
                 break;
             }
             default:
-                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_GET_RESULT_ERROR;
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_FAIL;
                 break;
         }
-        apiResult.message = error.getReason(null);
+        AppLog.e(TAG,"network e:"+ error.getReason());
+        apiResult.message = ErrorConst.getMessage(apiResult.code);
         return apiResult;
     }
 
@@ -231,7 +256,7 @@ public class ApiUtils {
 
                 if (jsonObject.has("code")) {
                     if (jsonObject.get("code") instanceof JsonNull) {
-                        model.code = ErrorConst.ERROR_CODE_FAIL;
+                        model.code = ErrorConst.ERROR_CODE_NETWORK_PARSE_RESULT_ERROR;
                     } else {
                         model.code = jsonObject.get("code").getAsInt();
                     }
@@ -288,12 +313,12 @@ public class ApiUtils {
                 }
             } catch (JsonSyntaxException e) {
                 AppLog.e(TAG, "parse json error, e:" + e.getLocalizedMessage());
-                apiResult.code = ErrorConst.ERROR_CODE_JSON_PARSE;
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_PARSE_RESULT_ERROR;
                 apiResult.result = o.data;
                 mListener.onRequestCompleted(apiResult, param);
             } catch (Exception e) {
                 AppLog.e(TAG, "error, e:" + e.getLocalizedMessage());
-                apiResult.code = ErrorConst.ERROR_CODE_JSON_PARSE;
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_CALL_BACK;
                 apiResult.result = o.data;
                 mListener.onRequestCompleted(apiResult, param);
             }

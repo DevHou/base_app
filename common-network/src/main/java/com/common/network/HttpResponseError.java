@@ -1,6 +1,5 @@
 package com.common.network;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 /**
@@ -45,42 +44,9 @@ public class HttpResponseError {
         reason = msg;
     }
 
-    public String getReason(Context context) {
+    public String getReason() {
         if (TextUtils.isEmpty(reason)) {
-            switch (code) {
-                case ERROR_PARSE: {
-                    reason = context.getString(R.string.common_network_parse_error);
-                    break;
-                }
-                case ERROR_TIMEOUT: {
-                    reason = context.getString(R.string.common_network_timeout);
-                    break;
-                }
-                case ERROR_SERVER_ERROR: {
-                    reason = context.getString(R.string.common_network_server_error);
-                    break;
-                }
-                case ERROR_AUTH: {
-                    reason = context.getString(R.string.common_network_auth_error);
-                    break;
-                }
-                case ERROR_AUTH_FILTER: {
-                    reason = context.getString(R.string.common_network_auth_fail);
-                    break;
-                }
-                case ERROR_CUSTOM_PROCESS: {
-                    reason = context.getString(R.string.common_network_process_error);
-                    break;
-                }
-                case ERROR_UNKNOWN: {
-                    reason = context.getString(R.string.common_network_unknown);
-                    break;
-                }
-                case ERROR_URL_INVALID: {
-                    reason = context.getString(R.string.common_network_url_invalid);
-                    break;
-                }
-            }
+            return "";
         }
         return reason;
     }
