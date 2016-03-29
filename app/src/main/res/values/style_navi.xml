@@ -15,7 +15,7 @@
 
     <!-- 标题栏文字 -->
     <style name="navi_bar_text_title">
-        <item name="android:textColor">@color/app_white</item>
+        <item name="android:textColor">@color/app_text_white</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
     </style>
@@ -34,7 +34,7 @@
 
     <!--标题栏样式-->
     <style name="navi_bar_title">
-        <item name="android:background">@color/app_blue</item>
+        <item name="android:background">@color/app_title_bar_bg</item>
         <item name="android:layout_height">@dimen/navi_bar_height</item>
         <item name="android:layout_width">match_parent</item>
     </style>

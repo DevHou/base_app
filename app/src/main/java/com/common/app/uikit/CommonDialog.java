@@ -173,7 +173,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             if (mBuilder.mButtons.length > 1 && i != mBuilder.mButtons.length - 1) {
                 View line = new View(mBuilder.mContext);
                 line.setLayoutParams(new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT));
-                line.setBackgroundColor(getResources().getColor(R.color.app_black));
+                line.setBackgroundColor(getResources().getColor(R.color.app_divider));
                 layoutBtns.addView(line);
             }
         }
