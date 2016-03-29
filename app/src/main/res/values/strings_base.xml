@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="error_code_success">成功</string>
-    <string name="error_code_unknown">未知错误</string>
-    <string name="error_code_network_fail">网络不给力，请稍候再试</string>
-    <string name="error_code_network_auth_fail">授权失败</string>
-    <string name="error_code_network_disconnection">没有网络连接</string>
-    <string name="error_code_network_parse_result_error">服务器返回数据错误</string>
-    <string name="error_code_network_server_error">服务器错误</string>
-    <string name="error_code_network_time_out">请求超时</string>
-    <string name="error_code_network_url_invalid">无效url</string>
-    <string name="error_code_network_callback_error">网络数据处理错误</string>
-    <string name="error_code_network_cancel">网络请求取消</string>
-    <string name="error_code_api_params_error">请求参数错误</string>
-    <string name="error_code_api_error">请求处理失败</string>
-    <string name="error_code_service_json_empty">请求数据为空</string>
-    <string name="error_code_service_parse_error">请求数据解析错误</string>
-    <string name="error_code_runtime_illegal_access">运行时错误</string>
-    <string name="error_code_runtime_invocation">运行时错误</string>
-    <string name="error_code_runtime_no_method">运行时错误</string>
+    <string name="error_code_success">Success</string>
+    <string name="error_code_unknown">Unknown error</string>
+    <string name="error_code_network_fail">Network error</string>
+    <string name="error_code_network_auth_fail">Auth error</string>
+    <string name="error_code_network_disconnection">network not connect</string>
+    <string name="error_code_network_parse_result_error">Server return result error</string>
+    <string name="error_code_network_server_error">Server error</string>
+    <string name="error_code_network_time_out">Network timeout</string>
+    <string name="error_code_network_url_invalid">url invalid</string>
+    <string name="error_code_network_callback_error">parse data error</string>
+    <string name="error_code_network_cancel">network cancel</string>
+    <string name="error_code_api_params_error">api params error</string>
+    <string name="error_code_api_error">api error</string>
+    <string name="error_code_service_json_empty">Server return empty</string>
+    <string name="error_code_service_parse_error">Server error</string>
+    <string name="error_code_runtime_illegal_access">Runtime error</string>
+    <string name="error_code_runtime_invocation">Runtime error</string>
+    <string name="error_code_runtime_no_method">Runtime error</string>
 </resources>
