@@ -51,7 +51,7 @@ public class BaseDataService {
                 if (!TextUtils.isEmpty(result.result) && !"\"\"".equals(result.result)) {
                     model = DataModel.doParse(result.result, modelClass);
                     if (model == null) {
-                        error = ErrorModel.errorWithCode(ErrorConst.ERROR_CODE_JSON_PARSE);
+                        error = ErrorModel.errorWithCode(ErrorConst.ERROR_CODE_SERVICE_PARSE_ERROR);
                     } else {
                         if (model instanceof ListDataModel) {
                             ((ListDataModel) model).pageInfo = new ListDataModel.PageInfo();
@@ -75,10 +75,10 @@ public class BaseDataService {
                     // 如果是可空，则不判断data是否是空
                     serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS, result.message);
                 } else {
-                    error = ErrorModel.errorWithCode(ErrorConst.ERROR_SERVICE_JSON_EMPTY);
+                    error = ErrorModel.errorWithCode(ErrorConst.ERROR_CODE_SERVICE_JSON_EMPTY);
                 }
             } catch (Exception e) {
-                error = ErrorModel.errorWithCode(ErrorConst.ERROR_CODE_JSON_PARSE, e);
+                error = ErrorModel.errorWithCode(ErrorConst.ERROR_CODE_SERVICE_PARSE_ERROR, e);
                 error.print(TAG);
             }
         } else {
