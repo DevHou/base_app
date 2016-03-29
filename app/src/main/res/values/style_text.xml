@@ -18,7 +18,7 @@
 
     <style name="text_white_base">
         <item name="android:textColor">@color/selector_text_white</item>
-        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="android:textColorHint">@color/app_text_hint</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <!--<item name="android:shadowColor">@color/text_white_shadow</item>-->
