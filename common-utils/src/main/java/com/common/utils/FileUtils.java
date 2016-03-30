@@ -145,13 +145,24 @@ public class FileUtils {
      * @return 创建的文件路径
      */
     public static File createDirIfNotExists(String path) {
+        return createDirIfNotExists(path, true);
+    }
+
+    /**
+     * 在SDCARD中创建目录
+     * 
+     * @param noMedia 是否创建nomedia文件
+     *
+     * @return 创建的文件路径
+     */
+    public static File createDirIfNotExists(String path, boolean noMedia) {
         AppLog.d(TAG, "check path:" + path);
         File file = new File(path);
         if (!file.exists()) {
             if (!file.mkdirs()) {
                 AppLog.e(TAG, "Problem creating Image folder, path:" + file.getPath());
                 return null;
-            } else {
+            } else if (noMedia) {
                 File mediaFile = new File(file.getPath() + "/.nomedia");
                 try {
                     if (mediaFile.createNewFile()) {
