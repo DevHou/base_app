@@ -20,6 +20,29 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <!-- 标题栏样式 -->
+    <style name="ToolbarStyle" parent="BaseToolbarStyle">
+        <!-- 标题的颜色 -->
+        <item name="android:textColorPrimary">@color/app_primary_text</item>
+        <!--<item name="android:textColorPrimaryInverse">@color/white</item>-->
+        <!-- 右侧三个点和左侧三条杠的颜色 -->
+        <item name="android:textColorSecondary">@color/app_primary_text</item>
+        <!-- action菜单文字的颜色，只是显示在bar上的而不是popup菜单里的 -->
+        <item name="android:actionMenuTextColor">@color/app_primary_text</item>
+        <!-- action菜单文字的样式，只是显示在bar上的而不是popup菜单里的 -->
+        <item name="android:actionMenuTextAppearance">@style/Toolbar.MenuText</item>
+        <!-- 背景色，如果不单独设置popup的背景色，则也是这个颜色 -->
+        <item name="android:background">@color/app_title_bar_bg</item>
+        <!-- 返回按钮icon，貌似不管用，需要在代码里设置 -->
+        <item name="android:homeAsUpIndicator">@drawable/ic_title_back</item>
+        <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
+        <item name="contentInsetStart">0dip</item>
+        <item name="contentInsetLeft">0dip</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <!--21以后用android:popupTheme-->
+        <item name="android:popupTheme">@style/Toolbar.PopupStyle</item>
+    </style>
+
     <!-- 标题栏更多操作弹出窗样式 -->
     <style name="Toolbar.PopupStyle" parent="Widget.AppCompat.PopupMenu.Overflow">
         <!-- 弹出窗不覆盖在title上面 -->

@@ -21,3 +21,6 @@
   **[] $VALUES;
   public *;
 }
+
+-keep class com.facebook.imagepipeline.gif.** { *; }
+-keep class com.facebook.imagepipeline.webp.* { *; }
