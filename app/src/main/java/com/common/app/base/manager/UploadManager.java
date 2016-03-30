@@ -13,6 +13,7 @@ import com.common.network.HttpStringResponse;
 import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
+import com.common.network.INetCall;
 import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
 import com.common.utils.JsonUtils;
@@ -56,7 +57,7 @@ public class UploadManager {
             @Override
             public boolean handleMessage(Message message) {
                 try {
-                    UploadItem item = mUploadQueue.poll(2000, TimeUnit.MILLISECONDS);
+                    final UploadItem item = mUploadQueue.poll(2000, TimeUnit.MILLISECONDS);
                     if (item != null) {
                         AppLog.v(TAG, "upload url:" + item.url);
                         if (TextUtils.isEmpty(item.name) || item.target == null) {
@@ -79,64 +80,67 @@ public class UploadManager {
                         }
                         Map<String, FileWrapper> files = new HashMap<>();
                         files.put(item.name, item.target);
-                        HttpWorker.upload(item.origin, item.url, header, files, params, HttpStringResponse.class,
-                            new IHttpResponse<HttpStringResponse>() {
-                                @Override
-                                public void onSuccess(@NonNull final HttpStringResponse result, final Object param) {
-                                    DispatchUtils.getInstance().postInMain(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            UploadItem di = (UploadItem) param;
-                                            if (di.isCanceled) {
-                                                return;
-                                            }
-                                            if (di.callback != null) {
-                                                try {
-                                                    UploadResult uploadResult = new UploadResult();
-                                                    uploadResult.result =
-                                                        JsonUtils.parseString(result.data, di.resultClass);
-                                                    di.callback.onFinish(true, uploadResult, di.param);
-                                                } catch (Exception e) {
-                                                    AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
+                        item.call =
+                            HttpWorker.upload(item.origin, item.url, header, files, params, HttpStringResponse.class,
+                                new IHttpResponse<HttpStringResponse>() {
+                                    @Override
+                                    public void onSuccess(@NonNull final HttpStringResponse result, final Object param) {
+                                        DispatchUtils.getInstance().postInMain(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                UploadItem di = (UploadItem) param;
+                                                if (di.isCanceled) {
+                                                    return;
                                                 }
+                                                if (di.callback != null) {
+                                                    try {
+                                                        UploadResult uploadResult = new UploadResult();
+                                                        uploadResult.result =
+                                                            JsonUtils.parseString(result.data, di.resultClass);
+                                                        di.callback.onFinish(true, uploadResult, di.param);
+                                                    } catch (Exception e) {
+                                                        AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
+                                                    }
+                                                }
+                                                AppLog.v(TAG, "upload success url:" + di.url);
                                             }
-                                            AppLog.v(TAG, "upload success url:" + di.url);
-                                        }
-                                    });
-                                }
-
-                                @Override
-                                public void onFailed(@NonNull HttpResponseError error, Object param) {
-                                    AppLog.v(TAG, "upload failed, will retry");
-                                    // 失败了就再加入队列
-                                    UploadItem di = (UploadItem) param;
-                                    if (di.isCanceled) {
-                                        return;
+                                        });
+                                        mUploadFilter.remove(item.url);
                                     }
-                                    addToUploadQueueForce(di);
-                                }
 
-                                @Override
-                                public void onProgress(final long donebytes, final long totalbytes, final Object param) {
-                                    AppLog.v(TAG, "done:" + donebytes + " taotal:" + totalbytes);
-                                    DispatchUtils.getInstance().postInMain(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            UploadItem di = (UploadItem) param;
-                                            if (di.isCanceled) {
-                                                return;
-                                            }
-                                            if (di.callback != null) {
-                                                try {
-                                                    di.callback.progress(donebytes, totalbytes, di.param);
-                                                } catch (Exception e) {
-                                                    AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
+                                    @Override
+                                    public void onFailed(@NonNull HttpResponseError error, Object param) {
+                                        AppLog.v(TAG, "upload failed, will retry");
+                                        // 失败了就再加入队列
+                                        UploadItem di = (UploadItem) param;
+                                        if (di.isCanceled) {
+                                            return;
+                                        }
+                                        addToUploadQueueForce(di);
+                                    }
+
+                                    @Override
+                                    public void onProgress(final long donebytes, final long totalbytes,
+                                        final Object param) {
+                                        AppLog.v(TAG, "done:" + donebytes + " taotal:" + totalbytes);
+                                        DispatchUtils.getInstance().postInMain(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                UploadItem di = (UploadItem) param;
+                                                if (di.isCanceled) {
+                                                    return;
+                                                }
+                                                if (di.callback != null) {
+                                                    try {
+                                                        di.callback.progress(donebytes, totalbytes, di.param);
+                                                    } catch (Exception e) {
+                                                        AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
+                                                    }
                                                 }
                                             }
-                                        }
-                                    });
-                                }
-                            }, item);
+                                        });
+                                    }
+                                }, item);
                     }
                 } catch (InterruptedException e) {
                     AppLog.e(TAG, "interrupted exception when upload");
@@ -218,11 +222,16 @@ public class UploadManager {
         public UploadCallback callback;// 下载回调
         public UploadParamsCreator paramsCreator;// 下载参数构造器
 
+        protected INetCall call;
+
         private int retry;// 重试次数
         private boolean isCanceled = false;// 是否取消
 
         @Override
         public boolean cancel() {
+            if (call != null) {
+                call.cancel();
+            }
             isCanceled = true;
             return true;
         }

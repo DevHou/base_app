@@ -9,6 +9,7 @@ import com.common.network.HttpResponseError;
 import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
+import com.common.network.INetCall;
 import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
 import com.common.utils.ResourceManager;
@@ -69,64 +70,66 @@ public class DownloadManager {
                                 AppLog.e(TAG, "create req params error, e:" + e.getLocalizedMessage());
                             }
                         }
-                        HttpWorker.download(item.origin, item.url, maps, item.target, params,
-                            new IHttpResponse<File>() {
-                                @Override
-                                public void onSuccess(@NonNull File file, final Object param) {
-                                    DispatchUtils.getInstance().postInMain(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            DownloadItem di = (DownloadItem) param;
-                                            if (di.isCanceled) {
-                                                return;
+                        item.call =
+                            HttpWorker.download(item.origin, item.url, maps, item.target, params,
+                                new IHttpResponse<File>() {
+                                    @Override
+                                    public void onSuccess(@NonNull File file, final Object param) {
+                                        DispatchUtils.getInstance().postInMain(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                DownloadItem di = (DownloadItem) param;
+                                                if (di.isCanceled) {
+                                                    return;
+                                                }
+                                                if (di.callback != null) {
+                                                    try {
+                                                        di.callback.onFinish(true, di.param);
+                                                    } catch (Exception e) {
+                                                        AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
+                                                    }
+                                                }
+                                                AppLog.v(TAG, "download success url:" + di.url);
                                             }
-                                            if (di.callback != null) {
-                                                try {
-                                                    di.callback.onFinish(true, di.param);
-                                                } catch (Exception e) {
-                                                    AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
+                                        });
+                                        mDownloadFilter.remove(item.url);
+                                    }
+
+                                    @Override
+                                    public void onFailed(@NonNull HttpResponseError error, Object param) {
+                                        // 失败了就再加入队列
+                                        DownloadItem di = (DownloadItem) param;
+                                        // 删除以免下次下载时误以为文件存在不下载了
+                                        if (di.target != null && di.target.exists()) {
+                                            di.target.delete();
+                                        }
+                                        if (di.isCanceled) {
+                                            return;
+                                        }
+                                        addToDownloadQueueForce(di);
+                                    }
+
+                                    @Override
+                                    public void onProgress(final long donebytes, final long totalbytes,
+                                        final Object param) {
+                                        DispatchUtils.getInstance().postInMain(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                DownloadItem di = (DownloadItem) param;
+                                                if (di.isCanceled) {
+                                                    return;
+                                                }
+                                                if (di.callback != null) {
+                                                    try {
+                                                        di.callback.progress(donebytes, totalbytes, di.param);
+                                                    } catch (Exception e) {
+                                                        AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
+                                                    }
                                                 }
                                             }
-                                            AppLog.v(TAG, "download success url:" + di.url);
-                                        }
-                                    });
-                                    mDownloadFilter.remove(item.url);
-                                }
-
-                                @Override
-                                public void onFailed(@NonNull HttpResponseError error, Object param) {
-                                    // 失败了就再加入队列
-                                    DownloadItem di = (DownloadItem) param;
-                                    // 删除以免下次下载时误以为文件存在不下载了
-                                    if (di.target != null && di.target.exists()) {
-                                        di.target.delete();
+                                        });
                                     }
-                                    if (di.isCanceled) {
-                                        return;
-                                    }
-                                    addToDownloadQueueForce(di);
-                                }
-
-                                @Override
-                                public void onProgress(final long donebytes, final long totalbytes, final Object param) {
-                                    DispatchUtils.getInstance().postInMain(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            DownloadItem di = (DownloadItem) param;
-                                            if (di.isCanceled) {
-                                                return;
-                                            }
-                                            if (di.callback != null) {
-                                                try {
-                                                    di.callback.progress(donebytes, totalbytes, di.param);
-                                                } catch (Exception e) {
-                                                    AppLog.e(TAG, "callback error, e:" + e.getLocalizedMessage());
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            }, item);
+                                }, item);
                     }
                 } catch (InterruptedException e) {
                     AppLog.e(TAG, "interrupted exception when download");
@@ -203,11 +206,17 @@ public class DownloadManager {
         public DownloadCallback callback;// 下载回调
         public DownloadParamsCreator paramsCreator;// 下载参数构造器
 
+        protected INetCall call;
+
         private int retry;// 重试次数
         private boolean isCanceled = false;// 是否取消
 
         @Override
         public boolean cancel() {
+            if (call != null) {
+                // 先暂时不停止了，下载可以后台继续下
+                // call.cancel();
+            }
             isCanceled = true;
             AppLog.v(TAG, "item:" + url + " cancel");
             return true;

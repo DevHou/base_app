@@ -17,6 +17,7 @@ import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
 import com.common.network.IHttpWorker;
+import com.common.network.INetCall;
 import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
 
@@ -48,6 +49,8 @@ import okio.Source;
  *
  * volley是纯内存操作的，所有请求和结果先放在内存再处理，所以在它基础上做上传下载大文件可能出现问题
  * 这里的上传下载用的OkHttp原生处理
+ * 
+ * 普通请求支持cancel，但上传下载没有支持cancel，可以由调用者自己通过INetCall控制
  */
 public class VolleyHttpWorker implements IHttpWorker {
 
@@ -83,8 +86,9 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param param 自定义参数
      */
     @Override
-    public <Result extends HttpResponseResult> void doGet(final Object origin, String url, Map<String, String> header,
-        IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler, final Object param) {
+    public <Result extends HttpResponseResult> INetCall doGet(final Object origin, String url,
+        Map<String, String> header, IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler,
+        final Object param) {
 
         GsonRequest<Result> req =
             new GsonRequest<>(Request.Method.GET, origin, url, header, classOfT, (HttpParams) params,
@@ -138,6 +142,7 @@ public class VolleyHttpWorker implements IHttpWorker {
         req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
+        return new RequestCall(req);
     }
 
     /**
@@ -154,7 +159,7 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param <Result> 结果
      */
     @Override
-    public <Result extends HttpResponseResult> void doPost(final Object origin, String url, IHttpParams params,
+    public <Result extends HttpResponseResult> INetCall doPost(final Object origin, String url, IHttpParams params,
         String contentType, Map<String, String> headers, Class<Result> classOfT, final IHttpResponse<Result> handler,
         final Object param) {
 
@@ -211,12 +216,13 @@ public class VolleyHttpWorker implements IHttpWorker {
         req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
+        return new RequestCall(req);
     }
 
     /**
      * 下载文件
      *
-     * @param context 绑定的对象
+     * @param tag 绑定的对象
      * @param url url
      * @param header header
      * @param file 下载的文件存储位置
@@ -225,7 +231,7 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param param 自定义参数
      */
     @Override
-    public void download(Object context, String url, Map<String, String> header, final File file, IHttpParams params,
+    public INetCall download(Object tag, String url, Map<String, String> header, final File file, IHttpParams params,
         final IHttpResponse<File> handler, final Object param) {
 
         OkHttpClient copy = mHttpClient.newBuilder().addNetworkInterceptor(new Interceptor() {
@@ -256,17 +262,20 @@ public class VolleyHttpWorker implements IHttpWorker {
                     }
                 });
             }
-            return;
+            return new OkHttpCall(null);
         }
 
-        copy.newCall(requestBuilder.build()).enqueue(new Callback() {
+        Call call = copy.newCall(requestBuilder.build());
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
+                AppLog.v(TAG, "download failed, e", e);
                 if (handler != null) {
                     DispatchUtils.getInstance().postInBackground(new Runnable() {
                         @Override
                         public void run() {
                             try {
+                                file.deleteOnExit();
                                 if (call.isCanceled()) {
                                     return;
                                 }
@@ -282,17 +291,21 @@ public class VolleyHttpWorker implements IHttpWorker {
             }
 
             @Override
-            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+            public void onResponse(final Call call, okhttp3.Response response) throws IOException {
                 try {
                     BufferedSink sink = Okio.buffer(Okio.sink(file));
                     sink.writeAll(response.body().source());
                     sink.close();
                 } catch (final Exception e) {
+                    AppLog.v(TAG, "copy download file, e", e);
                     if (handler != null) {
                         DispatchUtils.getInstance().postInBackground(new Runnable() {
                             @Override
                             public void run() {
                                 try {
+                                    if (call.isCanceled()) {
+                                        return;
+                                    }
                                     HttpResponseError error =
                                         new HttpResponseError(HttpResponseError.ERROR_UNKNOWN, e.getLocalizedMessage());
                                     handler.onFailed(error, param);
@@ -304,7 +317,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                     }
                     return;
                 }
-                if (handler != null) {
+                if (handler != null && !call.isCanceled()) {
                     DispatchUtils.getInstance().postInBackground(new Runnable() {
                         @Override
                         public void run() {
@@ -318,12 +331,13 @@ public class VolleyHttpWorker implements IHttpWorker {
                 }
             }
         });
+        return new OkHttpCall(call);
     }
 
     /**
      * 上传
      *
-     * @param context 绑定的对象
+     * @param tag 绑定的对象
      * @param url url
      * @param headers 自定义http头
      * @param files 上传的文件
@@ -334,7 +348,7 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param <Result> 结果
      */
     @Override
-    public <Result extends HttpResponseResult> void upload(Object context, String url, Map<String, String> headers,
+    public <Result extends HttpResponseResult> INetCall upload(Object tag, String url, Map<String, String> headers,
         Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
         final IHttpResponse<Result> handler, final Object param) {
 
@@ -367,9 +381,11 @@ public class VolleyHttpWorker implements IHttpWorker {
 
         ProgressRequestBody req = new ProgressRequestBody<>(requestBody.build(), handler, param);
         requestBuilder.post(req);
-        mHttpClient.newCall(requestBuilder.build()).enqueue(new Callback() {
+        Call call = mHttpClient.newCall(requestBuilder.build());
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
+                AppLog.v(TAG, "upload failed, e", e);
                 if (handler != null) {
                     DispatchUtils.getInstance().postInBackground(new Runnable() {
                         @Override
@@ -390,8 +406,8 @@ public class VolleyHttpWorker implements IHttpWorker {
             }
 
             @Override
-            public void onResponse(Call call, final okhttp3.Response response) throws IOException {
-                if (handler != null) {
+            public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
+                if (handler != null && !call.isCanceled()) {
                     try {
                         DispatchUtils.getInstance().postInBackground(new Runnable() {
                             @Override
@@ -410,6 +426,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                 }
             }
         });
+        return new OkHttpCall(call);
     }
 
     /**
