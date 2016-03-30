@@ -61,9 +61,9 @@ public class HttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    public static <Result extends HttpResponseResult> void get(Object tag, String url, IHttpParams params,
+    public static <Result extends HttpResponseResult> INetCall get(Object tag, String url, IHttpParams params,
         final Class<Result> classOfT, IHttpResponse<Result> handler, Object param) {
-        mHttpWorker.doGet(tag, url, null, params, classOfT, handler, param);
+        return mHttpWorker.doGet(tag, url, null, params, classOfT, handler, param);
     }
 
     /**
@@ -78,9 +78,9 @@ public class HttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    public static <Result extends HttpResponseResult> void get(Object tag, String url, Map<String, String> header,
+    public static <Result extends HttpResponseResult> INetCall get(Object tag, String url, Map<String, String> header,
         IHttpParams params, final Class<Result> classOfT, IHttpResponse<Result> handler, Object param) {
-        mHttpWorker.doGet(tag, url, header, params, classOfT, handler, param);
+        return mHttpWorker.doGet(tag, url, header, params, classOfT, handler, param);
     }
 
     /**
@@ -96,10 +96,10 @@ public class HttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    public static <Result extends HttpResponseResult> void post(Object tag, String url, IHttpParams params,
+    public static <Result extends HttpResponseResult> INetCall post(Object tag, String url, IHttpParams params,
         String contentType, Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler,
         Object param) {
-        mHttpWorker.doPost(tag, url, params, contentType, headers, classOfT, handler, param);
+        return mHttpWorker.doPost(tag, url, params, contentType, headers, classOfT, handler, param);
     }
 
     /**
@@ -112,9 +112,13 @@ public class HttpWorker {
      * @param handler 回调
      * @param param 自定义参数
      */
-    public static void download(Object tag, String url, Map<String, String> header, File file, IHttpParams params,
+    public static INetCall download(Object tag, String url, Map<String, String> header, File file, IHttpParams params,
         IHttpResponse<File> handler, Object param) {
-        mHttpWorker.download(tag, url, header, file, params, handler, param);
+        Object t = null;
+        if (tag != null) {
+            t = tag.hashCode();
+        }
+        return mHttpWorker.download(t, url, header, file, params, handler, param);
     }
 
     /**
@@ -130,10 +134,14 @@ public class HttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    public static <Result extends HttpResponseResult> void upload(Object tag, String url,
+    public static <Result extends HttpResponseResult> INetCall upload(Object tag, String url,
         Map<String, String> headers, Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
         IHttpResponse<Result> handler, Object param) {
-        mHttpWorker.upload(tag, url, headers, files, params, classOfT, handler, param);
+        Object t = null;
+        if (tag != null) {
+            t = tag.hashCode();
+        }
+        return mHttpWorker.upload(t, url, headers, files, params, classOfT, handler, param);
     }
 
     /**
