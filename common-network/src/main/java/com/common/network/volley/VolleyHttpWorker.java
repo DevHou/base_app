@@ -50,7 +50,7 @@ import okio.Source;
  * volley是纯内存操作的，所有请求和结果先放在内存再处理，所以在它基础上做上传下载大文件可能出现问题
  * 这里的上传下载用的OkHttp原生处理
  * 
- * 普通请求支持cancel，但上传下载没有支持cancel，可以由调用者自己通过INetCall控制
+ * 普通请求支持按tag cancel，但上传下载没有支持，可以由调用者自己通过INetCall控制
  */
 public class VolleyHttpWorker implements IHttpWorker {
 
