@@ -58,7 +58,8 @@ public class ImageBrowserActivity extends FragmentActivity {
             intent.putExtra(INTENT_IN_SERIAL_IMAGE_OPTION, options);
         }
         context.startActivity(intent);
-        ((Activity) context).overridePendingTransition(R.anim.common_image_brower_fade_in, R.anim.common_image_brower_fade_out);
+        ((Activity) context).overridePendingTransition(R.anim.common_image_brower_fade_in,
+            R.anim.common_image_brower_fade_out);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class ImageBrowserActivity extends FragmentActivity {
         setContentView(R.layout.common_fragment_large_image);
 
         if (!getIntent().hasExtra(INTENT_IN_STR_ARRAY_IMAGES)) {
-            Toast.makeText(this, "图片地址为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.image_browser_image_list_empty), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

@@ -259,10 +259,10 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
                 // int lastVisibleItemPosition = -1;
                 if (layoutManagerType == null) {
-                    if (layoutManager instanceof LinearLayoutManager) {
-                        layoutManagerType = LAYOUT_MANAGER_TYPE.LINEAR;
-                    } else if (layoutManager instanceof GridLayoutManager) {
+                    if (layoutManager instanceof GridLayoutManager) {
                         layoutManagerType = LAYOUT_MANAGER_TYPE.GRID;
+                    } else if (layoutManager instanceof LinearLayoutManager) {
+                        layoutManagerType = LAYOUT_MANAGER_TYPE.LINEAR;
                     } else if (layoutManager instanceof StaggeredGridLayoutManager) {
                         layoutManagerType = LAYOUT_MANAGER_TYPE.STAGGERED_GRID;
                     } else {
