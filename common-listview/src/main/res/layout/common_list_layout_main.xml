@@ -27,26 +27,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@id/common_list_abs_list_view_lv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@id/common_list_abs_list_view_lv"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dip"
-                    android:layout_weight="1"
-                    android:scrollbars="vertical"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-                <ViewStub
-                    android:id="@id/common_list_abs_list_view_load_more"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="20dip"
-                    android:visibility="invisible" />
-            </LinearLayout>
         </com.common.listview.ptr.PtrFrameLayout>
 
         <ViewStub

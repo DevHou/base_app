@@ -16,4 +16,9 @@ public interface IAbsListDataAdapter {
      * 是否是空
      */
     boolean isEmpty();
+
+    /**
+     * 设置加载更多view
+     */
+    void setLoadMoreView(int resourceId);
 }

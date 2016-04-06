@@ -19,6 +19,10 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
         super();
     }
 
+    public BaseListDataAdapter(IOnLoadMore listener) {
+        super(listener);
+    }
+
     /**
      * 如果列表只有一种cell，则构造时直接指定，否则需要重载bindCellType
      * 
@@ -36,7 +40,7 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getViewType(int position) {
         return DEFAULT_CELL_TYPE;
     }
 

@@ -10,7 +10,6 @@ import android.widget.Toast;
 import com.common.app.R;
 import com.common.app.ui.BaseListActivity;
 import com.common.listview.AbsListDataAdapter;
-import com.common.listview.AbsListView;
 import com.common.listview.BaseListCell;
 import com.common.listview.BaseListDataAdapter;
 
@@ -35,7 +34,11 @@ public class TestListViewActivity extends BaseListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRecyclerListView.setOnLoadMoreListener(new AbsListView.IOnLoadMore() {
+    }
+
+    @Override
+    protected AbsListDataAdapter getAdapter(Context context) {
+        return new MyAdapter(new AbsListDataAdapter.IOnLoadMore() {
             @Override
             public void onLoadMore() {
                 new Handler().postDelayed(new Runnable() {
@@ -51,11 +54,6 @@ public class TestListViewActivity extends BaseListActivity {
                 }, 2000);
             }
         });
-    }
-
-    @Override
-    protected AbsListDataAdapter getAdapter(Context context) {
-        return new MyAdapter();
     }
 
     @Override
@@ -109,6 +107,10 @@ public class TestListViewActivity extends BaseListActivity {
     }
 
     public class MyAdapter extends BaseListDataAdapter<Data> {
+
+        public MyAdapter(IOnLoadMore listener) {
+            super(listener);
+        }
 
         @Override
         protected BaseListCell<Data> createCell(int type) {
