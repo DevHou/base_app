@@ -23,6 +23,8 @@ public class DeployManager {
 
     private static final String TAG = DeployManager.class.getSimpleName();
 
+    private static final String KEY_UUID = "key_device_uuid";
+
     // 环境改变观察者
     private static final ConcurrentLinkedQueue<IEnvironmentChangedListener> mListeners = new ConcurrentLinkedQueue<>();
 
@@ -33,7 +35,6 @@ public class DeployManager {
     private static String platform = "android";
     private static String os = "android";
     private static String imei = "";// DeviceInfo.IMEI
-    private static String mac = "";// DeviceInfo.MAC
     private static EnvironmentType environmentType = EnvironmentType.TYPE_TEST;
 
     public static boolean init(Context context, EnvironmentType type) {
@@ -48,7 +49,10 @@ public class DeployManager {
         }
 
         if (TextUtils.isEmpty(deviceId)) {
-            uuid = UUID.randomUUID().toString();
+            uuid = CacheManager.getInstance().getString(KEY_UUID);
+            if (TextUtils.isEmpty(uuid)) {
+                uuid = UUID.randomUUID().toString();
+            }
         } else {
             try {
                 uuid = UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")).toString();
@@ -57,8 +61,7 @@ public class DeployManager {
                 uuid = UUID.randomUUID().toString();
             }
         }
-        // device_mac = getMacAddress();
-        mac = uuid;
+        CacheManager.getInstance().put(KEY_UUID, uuid);
 
         version = AppUtils.getAppVersion(context);
         channel = AppUtils.getMetaData(context, "channel");
@@ -112,10 +115,6 @@ public class DeployManager {
 
     public static String getImei() {
         return imei;
-    }
-
-    public static String getMac() {
-        return mac;
     }
 
     public static EnvironmentType getEnvironmentType() {
