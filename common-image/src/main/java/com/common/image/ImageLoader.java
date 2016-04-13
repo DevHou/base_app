@@ -1,19 +1,10 @@
 package com.common.image;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.common.image.config.ConfigConstants;
-import com.common.image.utils.Utils;
-import com.common.utils.AppLog;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.imagepipeline.request.BasePostprocessor;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.common.image.glide.GlideImageLoader;
 
 import java.io.File;
 
@@ -21,6 +12,12 @@ import java.io.File;
  * Created by houlijiang on 14/11/21.
  * 
  * 图片加载工具类
+ *
+ * 切换时需要改的地方
+ * 此类的mImageLoader实例
+ * 圆角图 圆图 BigImageView的父类
+ * 具体实现里的圆角图 原图里的重载方法
+ * 具体ImageLoader实现的displayImage的imageView变量
  */
 public class ImageLoader {
 
@@ -28,6 +25,10 @@ public class ImageLoader {
 
     // url后处理回调
     private static IUrlProcessor mProcessor;
+
+    // private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
+
+    private static GlideImageLoader mImageLoader = new GlideImageLoader();
 
     /**
      * 初始化
@@ -46,7 +47,7 @@ public class ImageLoader {
      * @param cacheDir 缓存存储的目录
      */
     public static void init(Context context, File cacheDir, IUrlProcessor filter) {
-        Fresco.initialize(context, ConfigConstants.getImagePipelineConfig(context, cacheDir));// 图片缓存初始化配置
+        mImageLoader.init(context, cacheDir);
         if (filter != null) {
             mProcessor = filter;
         }
@@ -149,82 +150,7 @@ public class ImageLoader {
      */
     public static void displayImage(Uri uri, final CommonImageView imageView, final ImageOptions options,
         final IImageLoadListener listener) {
-        if (uri == null) {
-            // 显示空的图片的
-            if (options != null) {
-                if (options.getImageForEmptyUri() != null) {
-                    if (imageView.getHierarchy() != null) {
-                        imageView.getHierarchy().setPlaceholderImage(options.getImageForEmptyUri());
-                    } else {
-                        imageView.setImageDrawable(options.getImageForEmptyUri());
-                    }
-                } else if (options.getImageResForEmptyUri() != 0) {
-                    imageView.setImageURI(Uri.parse("res:///" + String.valueOf(options.getImageResForEmptyUri())));
-                }
-            }
-            if (listener != null) {
-                listener.onFailed("", imageView, new ImageLoadError(ImageLoadError.ERROR_NONE_URI, ""));
-            }
-            return;
-        }
-        // 根据option设置显示
-        if (options != null) {
-            // 配置失败、加载中的显示图片
-            GenericDraweeHierarchyBuilder builder =
-                new GenericDraweeHierarchyBuilder(imageView.getContext().getResources());
-            if (options.getImageOnLoading() != null) {
-                builder.setPlaceholderImage(options.getImageOnLoading(),
-                    Utils.convertScaleType(options.getLoadingScaleType()));
-            } else if (options.getImageResOnLoading() != 0) {
-                builder.setPlaceholderImage(
-                    Utils.getDrawableFromResource(imageView.getContext(), options.getImageResOnLoading()),
-                    Utils.convertScaleType(options.getLoadingScaleType()));
-            }
-            if (options.getImageOnFail() != null) {
-                builder.setFailureImage(options.getImageOnFail(), Utils.convertScaleType(options.getFailScaleType()));
-            } else if (options.getImageResOnFail() != 0) {
-                builder.setFailureImage(
-                    Utils.getDrawableFromResource(imageView.getContext(), options.getImageResOnFail()),
-                    Utils.convertScaleType(options.getFailScaleType()));
-            }
-            // 设置scaleType
-            builder.setActualImageScaleType(Utils.convertScaleType(options.getImageScaleType()));
-            // 圆角参数重新设置回去
-            if (imageView.hasHierarchy()) {
-                builder.setRoundingParams(imageView.getHierarchy().getRoundingParams());
-            }
-            imageView.setHierarchy(builder.build());
-            // 设置后处理回调
-            if (options.getProcessor() != null) {
-                ImageRequest request =
-                    ImageRequestBuilder.newBuilderWithSource(uri).setPostprocessor(new BasePostprocessor() {
-                        @Override
-                        public void process(Bitmap bitmap) {
-                            try {
-                                options.getProcessor().process(bitmap);
-                            } catch (Exception e) {
-                                AppLog.e(TAG, "post process image error, e:" + e.getLocalizedMessage());
-                            }
-                        }
-                    }).build();
-
-                PipelineDraweeController controller =
-                    (PipelineDraweeController) Fresco.newDraweeControllerBuilder().setImageRequest(request)
-                        .setOldController(imageView.getController()).build();
-                imageView.setController(controller);
-            }
-        }
-        // 设置图片加载回调
-        if (listener != null) {
-            imageView.setImageLoadListener(listener);
-        }
-
-        if (options != null && options.getImageSize() != null && options.getImageSize().width > 0
-            && options.getImageSize().height > 0) {
-            imageView.setImageURI(uri, options.getImageSize().width, options.getImageSize().height);
-        } else {
-            imageView.setImageURI(uri);
-        }
+        mImageLoader.displayImage(uri, imageView, options, listener);
     }
 
     /**

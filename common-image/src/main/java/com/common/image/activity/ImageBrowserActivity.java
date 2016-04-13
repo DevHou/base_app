@@ -19,13 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.common.image.BigImageView;
 import com.common.image.IImageLoadListener;
 import com.common.image.ImageLoadError;
 import com.common.image.ImageLoader;
 import com.common.image.ImageOptions;
 import com.common.image.R;
-import com.common.image.photodraweeview.OnPhotoTapListener;
-import com.common.image.photodraweeview.PhotoDraweeView;
+import com.common.image.fresco.photodraweeview.OnPhotoTapListener;
 import com.common.image.uikit.MultiTouchViewPager;
 import com.common.image.uikit.SlideDotView;
 import com.common.utils.AppLog;
@@ -162,8 +162,7 @@ public class ImageBrowserActivity extends FragmentActivity {
      * 生成单页view
      */
     protected View createPageView(Context context) {
-        View convertView = LayoutInflater.from(context).inflate(R.layout.common_fragment_large_image_item, null);
-        return convertView;
+        return LayoutInflater.from(context).inflate(R.layout.common_fragment_large_image_item, null);
     }
 
     /**
@@ -171,10 +170,8 @@ public class ImageBrowserActivity extends FragmentActivity {
      * 
      * @param view 单页View
      */
-    protected PhotoDraweeView getPhotoView(View view) {
-        PhotoDraweeView imageView =
-            (PhotoDraweeView) view.findViewById(R.id.common_fragment_large_image_item_photoview);
-        return imageView;
+    protected BigImageView getPhotoView(View view) {
+        return (BigImageView) view.findViewById(R.id.common_fragment_large_image_item_photoview);
     }
 
     // ==================子类可以重载方法来定制UI=====================end
@@ -198,8 +195,8 @@ public class ImageBrowserActivity extends FragmentActivity {
         public View instantiateItem(ViewGroup container, int position) {
 
             View convertView = createPageView(container.getContext());
-            final PhotoDraweeView imageView = getPhotoView(convertView);
-            imageView.setOnPhotoTapListener(mOnPhotoTapListener);
+            final BigImageView imageView = getPhotoView(convertView);
+            //imageView.setOnPhotoTapListener(mOnPhotoTapListener);
 
             String url = getItem(position);
 
