@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.common.app.R;
 import com.common.app.uikit.UnScrollViewPager;
+import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 15/12/10.
@@ -49,20 +50,6 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
         mAdapter = new SampleFragmentPagerAdapter(getAdapterFragmentManager());
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
         updateTab();
     }
 
@@ -97,6 +84,44 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
             View view = getFragmentTabView(i);
             tab.setCustomView(view);
         }
+        // 设置监听，setupWithViewPager里面做了默认设置，所以要在它之后再设置一遍
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+                onPageTabSelected(tab.getCustomView());
+                AppLog.d(TAG, "onTabSelected:" + tab.toString());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                AppLog.d(TAG, "onTabUnselected:" + tab.toString());
+                onPageTabUnSelected(tab.getCustomView());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                AppLog.d(TAG, "onTabReselected:" + tab.toString());
+            }
+        });
+    }
+
+    /**
+     * tab 被选中
+     *
+     * @param view 自定义的view
+     */
+    protected void onPageTabSelected(View view) {
+
+    }
+
+    /**
+     * tab 被取消选中
+     *
+     * @param view 自定义view
+     */
+    protected void onPageTabUnSelected(View view) {
+
     }
 
     /**
