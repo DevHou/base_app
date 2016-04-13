@@ -265,6 +265,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     public void setIfHasMore(boolean hasMore) {
         mHasMore = hasMore;
+        noDataChanged();
     }
 
     public boolean isLoadMore(int position) {
@@ -290,7 +291,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     @Override
     final public int getItemViewType(int position) {
         // AppLog.v(TAG, "get view type for " + position);
-        if (position == mData.size()) {
+        if (mHasMore && position == mData.size()) {
             return TYPE_LOAD_MORE;
         }
         return getViewType(position);
