@@ -1,4 +1,4 @@
-package com.common.image.config;
+package com.common.image.fresco.config;
 
 import android.content.Context;
 import android.net.Uri;
@@ -19,7 +19,7 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.common.image.CommonImageView;
+import com.common.image.fresco.CommonImageView;
 
 import java.io.File;
 

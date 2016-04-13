@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.common.image.BigImageView;
 import com.common.image.IImageLoadListener;
 import com.common.image.ImageLoadError;
 import com.common.image.ImageLoader;
 import com.common.image.ImageOptions;
-import com.common.image.photodraweeview.PhotoDraweeView;
 import com.common.utils.AppLog;
 
 import java.io.File;
@@ -24,7 +24,7 @@ public abstract class AbsShowBigImageActivity extends AppCompatActivity {
 
     private static final String TAG = AbsShowBigImageActivity.class.getSimpleName();
 
-    protected PhotoDraweeView mImageView;
+    protected BigImageView mImageView;
 
     /**
      * 获取layout id
@@ -40,7 +40,7 @@ public abstract class AbsShowBigImageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
-        mImageView = (PhotoDraweeView) findViewById(getImageViewId());
+        mImageView = (BigImageView) findViewById(getImageViewId());
     }
 
     protected void showImage(String url, ImageOptions options) {

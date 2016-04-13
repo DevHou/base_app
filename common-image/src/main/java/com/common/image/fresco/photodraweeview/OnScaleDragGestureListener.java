@@ -1,4 +1,4 @@
-package com.common.image.photodraweeview;
+package com.common.image.fresco.photodraweeview;
 
 /**
  * ****************************************************************************

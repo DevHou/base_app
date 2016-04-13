@@ -1,4 +1,4 @@
-package com.common.image.photodraweeview;
+package com.common.image.fresco.photodraweeview;
 
 import android.graphics.RectF;
 import android.view.GestureDetector;

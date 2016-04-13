@@ -1,4 +1,4 @@
-package com.common.image.photodraweeview;
+package com.common.image.fresco.photodraweeview;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;

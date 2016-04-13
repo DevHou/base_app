@@ -50,8 +50,6 @@ public class Manager {
     public static boolean initForProcess(Context context, DeployManager.EnvironmentType type) {
         // 初始化log
         AppLog.setIsOnline(BuildConfig.IS_ONLINE);
-        // 配置环境
-        DeployManager.init(context, type);
         // 初始化错误模块
         ErrorConst.init(context);
 
@@ -71,6 +69,8 @@ public class Manager {
         FileUtils.createDirIfNotExists(imageCacheDir);
         File imageCache = new File(imageCacheDir);
         ImageLoader.init(context, imageCache);
+        // 配置环境
+        DeployManager.init(context, type);
         // 网络变化监听初始化
         NetworkChangeManager.getInstance().init(context);
         // 资源管理器初始化

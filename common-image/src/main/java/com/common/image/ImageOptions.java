@@ -26,6 +26,7 @@ public class ImageOptions implements Serializable {
     private ScaleType failScaleType = ScaleType.FIT_CENTER;
     private ImageProcessor processor = null;
     private ImageSize imageSize = null;
+    private boolean mIsGif = false;
 
     public int getImageResOnLoading() {
         return imageResOnLoading;
@@ -131,6 +132,14 @@ public class ImageOptions implements Serializable {
         this.imageProgress = imageProgress;
     }
 
+    public boolean getIfGif() {
+        return mIsGif;
+    }
+
+    public void setIsGif(boolean isGif) {
+        mIsGif = isGif;
+    }
+
     public static class Builder {
 
         ImageOptions options;
@@ -194,6 +203,11 @@ public class ImageOptions implements Serializable {
             return this;
         }
 
+        public Builder setIfGif(boolean isGif) {
+            options.setIsGif(isGif);
+            return this;
+        }
+
         public ImageOptions build() {
             return options;
         }
@@ -203,7 +217,7 @@ public class ImageOptions implements Serializable {
         FIT_XY, FIT_START, FIT_CENTER, FIT_END, CENTER, CENTER_INSIDE, CENTER_CROP, FOCUS_CROP;
     }
 
-    public static class ImageSize implements Serializable{
+    public static class ImageSize implements Serializable {
         public int width;
         public int height;
 
