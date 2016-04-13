@@ -45,9 +45,9 @@ public class GlideImageLoader implements IImageLoader {
             // 显示空的图片的
             if (options != null) {
                 if (options.getImageForEmptyUri() != null) {
-                    manager.load(options.getImageForEmptyUri());
+                    manager.load(options.getImageForEmptyUri()).into(imageView);
                 } else if (options.getImageResForEmptyUri() != 0) {
-                    manager.load(options.getImageResForEmptyUri());
+                    manager.load(options.getImageResForEmptyUri()).into(imageView);
                 }
             }
             if (listener != null) {
