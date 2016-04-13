@@ -25,7 +25,6 @@ import com.common.image.ImageLoadError;
 import com.common.image.ImageLoader;
 import com.common.image.ImageOptions;
 import com.common.image.R;
-import com.common.image.fresco.photodraweeview.OnPhotoTapListener;
 import com.common.image.uikit.MultiTouchViewPager;
 import com.common.image.uikit.SlideDotView;
 import com.common.utils.AppLog;
@@ -177,14 +176,6 @@ public class ImageBrowserActivity extends FragmentActivity {
     // ==================子类可以重载方法来定制UI=====================end
 
     private class PhotoImagePagerAdapter extends PagerAdapter {
-
-        private OnPhotoTapListener mOnPhotoTapListener = new OnPhotoTapListener() {
-
-            @Override
-            public void onPhotoTap(View view, float x, float y) {
-                finish();
-            }
-        };
 
         @Override
         public int getCount() {

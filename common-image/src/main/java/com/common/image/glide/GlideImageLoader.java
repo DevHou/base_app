@@ -65,8 +65,8 @@ public class GlideImageLoader implements IImageLoader {
 
             if (options.getImageResOnFail() != 0) {
                 request.error(options.getImageResOnFail());
-            } else if (options.getImageForEmptyUri() != null) {
-                request.error(options.getImageForEmptyUri());
+            } else if (options.getImageOnFail() != null) {
+                request.error(options.getImageOnFail());
             }
 
             if (options.getImageResOnLoading() != 0) {
