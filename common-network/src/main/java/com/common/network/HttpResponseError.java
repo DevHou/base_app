@@ -14,9 +14,9 @@ public class HttpResponseError {
      */
     public static final int ERROR_PARSE = 501;
     public static final int ERROR_TIMEOUT = 600;
+    public static final int ERROR_CONNECT = 650;
     public static final int ERROR_SERVER_ERROR = 700;
     public static final int ERROR_AUTH = 800;
-    public static final int ERROR_AUTH_FILTER = 850;
     public static final int ERROR_CUSTOM_PROCESS = 900;
     public static final int ERROR_UNKNOWN = 950;
     public static final int ERROR_URL_INVALID = 1000;

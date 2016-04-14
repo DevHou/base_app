@@ -21,8 +21,12 @@ public class VolleyUtils {
     public static HttpResponseError getResponseError(VolleyError error) {
 
         HttpResponseError e;
-        if (error instanceof TimeoutError || isNetworkProblem(error)) {
+        if (error instanceof TimeoutError) {
             e = new HttpResponseError(HttpResponseError.ERROR_TIMEOUT);
+        } else if (isNetworkProblem(error)) {
+            e = new HttpResponseError(HttpResponseError.ERROR_CONNECT);
+        } else if (error instanceof AuthFailureError) {
+            e = new HttpResponseError(HttpResponseError.ERROR_AUTH);
         } else if (error instanceof ParseError) {
             e = new HttpResponseError(HttpResponseError.ERROR_PARSE);
         } else if (isServerProblem(error)) {
@@ -34,11 +38,11 @@ public class VolleyUtils {
     }
 
     private static boolean isNetworkProblem(Object error) {
-        return (error instanceof NetworkError) || (error instanceof NoConnectionError);
+        return (error instanceof NoConnectionError) || (error instanceof NetworkError);
     }
 
     private static boolean isServerProblem(Object error) {
-        return (error instanceof ServerError) || (error instanceof AuthFailureError);
+        return (error instanceof ServerError);
     }
 
 }

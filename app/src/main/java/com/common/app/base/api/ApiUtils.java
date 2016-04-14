@@ -193,16 +193,16 @@ public class ApiUtils {
                 apiResult.code = ErrorConst.ERROR_CODE_NETWORK_AUTH_FAIL;
                 break;
             }
-            case HttpResponseError.ERROR_AUTH_FILTER: {
-                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_AUTH_FAIL;
-                break;
-            }
             case HttpResponseError.ERROR_SERVER_ERROR: {
                 apiResult.code = ErrorConst.ERROR_CODE_NETWORK_SERVER_ERROR;
                 break;
             }
             case HttpResponseError.ERROR_PARSE: {
                 apiResult.code = ErrorConst.ERROR_CODE_NETWORK_PARSE_RESULT_ERROR;
+                break;
+            }
+            case HttpResponseError.ERROR_CONNECT: {
+                apiResult.code = ErrorConst.ERROR_CODE_NETWORK_DISCONNECTION;
                 break;
             }
             case HttpResponseError.ERROR_TIMEOUT: {
