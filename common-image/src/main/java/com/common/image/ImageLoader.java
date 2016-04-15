@@ -18,6 +18,7 @@ import java.io.File;
  * 圆角图 圆图 BigImageView的父类
  * 具体实现里的圆角图 原图里的重载方法
  * 具体ImageLoader实现的displayImage的imageView变量
+ * FrescoPhotoView init方法
  */
 public class ImageLoader {
 
@@ -26,7 +27,7 @@ public class ImageLoader {
     // url后处理回调
     private static IUrlProcessor mProcessor;
 
-    // private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
+    //private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
 
     private static GlideImageLoader mImageLoader = new GlideImageLoader();
 

@@ -62,6 +62,7 @@ public abstract class AbsListActivity extends BaseActivity implements AbsListVie
             mRecyclerListView.setIndex(indexer);
         }
         mRecyclerListView.setAdapter(mAdapter);
+        mAdapter.setIsLoading();
         loadFirstPage();
 
         mListHeaderView = mRecyclerListView.getHeaderView();

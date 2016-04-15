@@ -65,6 +65,7 @@ public abstract class AbsListFragment extends BaseFragment implements AbsListVie
             mRecyclerListView.setIndex(indexer);
         }
         mRecyclerListView.setAdapter(mAdapter);
+        mAdapter.setIsLoading();
         loadFirstPage();
 
         mListHeaderView = mRecyclerListView.getHeaderView();
