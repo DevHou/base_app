@@ -171,7 +171,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         synchronized (this) {
                             mIsReloading = true;
                             // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
-                            notifyDataSetChanged();
+                            // if (!isEmpty()) {
+                            // notifyDataSetChanged();
+                            // }
                         }
                         break;
                     }
@@ -260,12 +262,14 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      */
     public void setIsLoading() {
         mIsReloading = true;
-        mHandler.obtainMessage(HANDLE_RELOADING).sendToTarget();
+        // mHandler.obtainMessage(HANDLE_RELOADING).sendToTarget();
     }
 
     public void setIfHasMore(boolean hasMore) {
         mHasMore = hasMore;
-        noDataChanged();
+        if (!mIsReloading) {
+            noDataChanged();
+        }
     }
 
     public boolean isLoadMore(int position) {

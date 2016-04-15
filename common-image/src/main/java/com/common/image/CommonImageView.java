@@ -21,4 +21,8 @@ public class CommonImageView extends com.common.image.glide.CommonImageView {
     public CommonImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
+
+    public void setImageOnClickListener(IOnImageClickListener listener) {
+
+    }
 }

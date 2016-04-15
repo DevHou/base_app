@@ -8,8 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.View;
 
 import com.common.image.CommonImageView;
+import com.common.image.IOnImageClickListener;
 
 import uk.co.senab.photoview.IPhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -50,6 +52,31 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
             setScaleType(mPendingScaleType);
             mPendingScaleType = null;
         }
+    }
+
+    /**
+     * 转一遍回调
+     */
+    @Override
+    public void setImageOnClickListener(final IOnImageClickListener listener) {
+        setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float x, float y) {
+                listener.onImageClick(view, x, y);
+            }
+
+            @Override
+            public void onOutsidePhotoTap() {
+
+            }
+        });
+        setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.onImageLongClick(v);
+                return false;
+            }
+        });
     }
 
     /**
