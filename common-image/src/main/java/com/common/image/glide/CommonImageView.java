@@ -40,38 +40,51 @@ public class CommonImageView extends ImageView {
             TypedArray b = context.obtainStyledAttributes(attrs, attributeIds);
             try {
                 int imageId = a.getResourceId(R.styleable.CommonImageView_imageSrc, 0);
-                int imageScaleTypeInt =
-                    a.getInt(R.styleable.CommonImageView_imageScaleType, ImageScaleType.centerCrop.value());
+                int imageScaleTypeInt = a.getInt(R.styleable.CommonImageView_imageScaleType, -1);
 
-                ScaleType scaleType = ScaleType.CENTER;
-                if (imageScaleTypeInt == ImageScaleType.center.value()) {
-                    scaleType = ScaleType.CENTER;
-                } else if (imageScaleTypeInt == ImageScaleType.centerCrop.value()) {
-                    scaleType = ScaleType.CENTER_CROP;
-                } else if (imageScaleTypeInt == ImageScaleType.centerInside.value()) {
-                    scaleType = ScaleType.CENTER_INSIDE;
-                } else if (imageScaleTypeInt == ImageScaleType.fitCenter.value()) {
-                    scaleType = ScaleType.FIT_CENTER;
-                } else if (imageScaleTypeInt == ImageScaleType.fitEnd.value()) {
-                    scaleType = ScaleType.FIT_END;
-                } else if (imageScaleTypeInt == ImageScaleType.fitStart.value()) {
-                    scaleType = ScaleType.FIT_START;
-                } else if (imageScaleTypeInt == ImageScaleType.fitXY.value()) {
-                    scaleType = ScaleType.FIT_XY;
+                if (imageScaleTypeInt != -1) {
+                    ScaleType scaleType = ScaleType.CENTER;
+                    if (imageScaleTypeInt == ImageScaleType.center.value()) {
+                        scaleType = ScaleType.CENTER;
+                    } else if (imageScaleTypeInt == ImageScaleType.centerCrop.value()) {
+                        scaleType = ScaleType.CENTER_CROP;
+                    } else if (imageScaleTypeInt == ImageScaleType.centerInside.value()) {
+                        scaleType = ScaleType.CENTER_INSIDE;
+                    } else if (imageScaleTypeInt == ImageScaleType.fitCenter.value()) {
+                        scaleType = ScaleType.FIT_CENTER;
+                    } else if (imageScaleTypeInt == ImageScaleType.fitEnd.value()) {
+                        scaleType = ScaleType.FIT_END;
+                    } else if (imageScaleTypeInt == ImageScaleType.fitStart.value()) {
+                        scaleType = ScaleType.FIT_START;
+                    } else if (imageScaleTypeInt == ImageScaleType.fitXY.value()) {
+                        scaleType = ScaleType.FIT_XY;
+                    }
+                    setScaleType(scaleType);
                 }
 
                 int resourceId = b.getResourceId(0, 0);
                 if (resourceId != 0 && imageId == 0) {
                     imageId = resourceId;
                 }
-                setScaleType(scaleType);
-                setImageResource(imageId);
+
+                loadImage(imageId);
             } catch (Exception e) {
                 AppLog.e(TAG, "common image get attr error, e:" + e.getLocalizedMessage());
             } finally {
                 a.recycle();
                 b.recycle();
             }
+        }
+    }
+
+    /**
+     * 加载资源图片
+     * 
+     * @param resId 资源ID
+     */
+    protected void loadImage(int resId) {
+        if (resId != 0) {
+            setImageResource(resId);
         }
     }
 

@@ -16,6 +16,7 @@ import com.common.image.IImageLoadListener;
 import com.common.image.IImageLoader;
 import com.common.image.ImageLoadError;
 import com.common.image.ImageOptions;
+import com.common.utils.AppLog;
 
 import java.io.File;
 import java.io.InputStream;
@@ -26,6 +27,10 @@ import okhttp3.OkHttpClient;
  * Created by houlijiang on 16/4/12.
  * 
  * 图片加载的glide实现
+ *
+ * 目前这个库的问题：
+ * ImageView 不能用setTag，因为glide内部用了，否则会抛异常
+ * PlaceHolder 被拉伸了，这个暂时可以通过在XML中设置 scaleType=center来解决
  */
 public class GlideImageLoader implements IImageLoader {
 
@@ -39,7 +44,7 @@ public class GlideImageLoader implements IImageLoader {
     @Override
     public void displayImage(Uri uri, CommonImageView iv, ImageOptions options, IImageLoadListener listener) {
         com.common.image.glide.CommonImageView imageView = iv;
-        //com.common.image.glide.CommonImageView imageView = null;
+        // com.common.image.glide.CommonImageView imageView = null;
         RequestManager manager = Glide.with(imageView.getContext());
         if (uri == null) {
             // 显示空的图片的
@@ -55,14 +60,20 @@ public class GlideImageLoader implements IImageLoader {
             }
             return;
         }
-        DrawableTypeRequest<Uri> request = manager.load(uri);
-        if (options != null) {
-            if (options.getImageResForEmptyUri() != 0) {
-                request.error(options.getImageResForEmptyUri());
-            } else if (options.getImageForEmptyUri() != null) {
-                request.error(options.getImageForEmptyUri());
+        DrawableTypeRequest request;
+        // 特殊处理资源加载
+        if ("res".equals(uri.getScheme())) {
+            int resId = 0;
+            try {
+                resId = Integer.parseInt(uri.getLastPathSegment());
+            } catch (Exception e) {
+                AppLog.e(TAG, "parse res error:" + e.getLocalizedMessage());
             }
-
+            request = manager.load(resId);
+        } else {
+            request = manager.load(uri);
+        }
+        if (options != null) {
             if (options.getImageResOnFail() != 0) {
                 request.error(options.getImageResOnFail());
             } else if (options.getImageOnFail() != null) {
@@ -100,7 +111,7 @@ public class GlideImageLoader implements IImageLoader {
         if (bit != null) {
             request.bitmapTransform(bit);
         }
-        request.crossFade(100).diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        request.diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
 
     }
 }
