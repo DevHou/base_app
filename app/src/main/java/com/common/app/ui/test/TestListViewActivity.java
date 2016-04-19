@@ -2,7 +2,6 @@ package com.common.app.ui.test;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +27,9 @@ import com.common.listview.BaseListDataAdapter;
  */
 public class TestListViewActivity extends BaseListActivity {
 
-    AuthDataService mDataService = (AuthDataService) DataServiceManager.getService(AuthDataService.SERVICE_KEY);
+    private static final String TAG = TestListViewActivity.class.getSimpleName();
+
+    private AuthDataService mDataService = (AuthDataService) DataServiceManager.getService(AuthDataService.SERVICE_KEY);
 
     private int mPageNum;
     private boolean mHasMore;
@@ -54,12 +55,7 @@ public class TestListViewActivity extends BaseListActivity {
         return new MyAdapter(new AbsListDataAdapter.IOnLoadMore() {
             @Override
             public void onLoadMore() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        loadList();
-                    }
-                }, 2000);
+                loadList(false);
             }
         });
     }
@@ -67,13 +63,13 @@ public class TestListViewActivity extends BaseListActivity {
     @Override
     protected void loadFirstPage() {
         initFirstPage();
-        loadList();
+        loadList(true);
     }
 
     @Override
     public void onListRefresh() {
         initFirstPage();
-        loadList();
+        loadList(false);
     }
 
     private void initFirstPage() {
@@ -81,22 +77,26 @@ public class TestListViewActivity extends BaseListActivity {
         mHasMore = true;
     }
 
-    private void loadList() {
+    private void loadList(boolean readCache) {
 
-        mDataService.getTestList(this, mPageNum, new IDataServiceCallback<TestDataModel>() {
+        mDataService.getTestList(this, readCache, mPageNum, new IDataServiceCallback<TestDataModel>() {
             @Override
             public void onSuccess(DataServiceResultModel result, TestDataModel obj, Object param) {
                 int pageNum = (int) param;
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
                     mAdapter.clearData();
                     mRecyclerListView.stopRefresh();
+                    // 先置成不可加载更多防止因为读取缓存导致循环读取
                     mAdapter.setIsLoading();
                     mAdapter.setIfHasMore(false);
                 }
                 mHasMore = obj.pageInfo.hasMore;
-                mAdapter.setIfHasMore(mHasMore);
+                if (!result.isCache) {
+                    // 不是缓存的才设置是否能加载更多并且增加页码数
+                    mAdapter.setIfHasMore(mHasMore);
+                    mPageNum++;
+                }
                 mAdapter.addAll(obj.list);
-                mPageNum++;
             }
 
             @Override

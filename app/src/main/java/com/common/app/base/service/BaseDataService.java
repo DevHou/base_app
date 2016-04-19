@@ -43,8 +43,14 @@ public class BaseDataService {
         if (modelClass == BooleanDataModel.class) {
             model = (T) new BooleanDataModel();
             ((BooleanDataModel) model).isSuccess = false;
-        } else if (modelClass == NullableDataModel.class) {
-            model = (T) new NullableDataModel();
+        } else if (NullableDataModel.class.isAssignableFrom(modelClass)) {
+            try {
+                model = modelClass.newInstance();
+            } catch (InstantiationException e) {
+                AppLog.e(TAG, "NullableDataModel newInstance e:" + e.getLocalizedMessage());
+            } catch (IllegalAccessException e) {
+                AppLog.e(TAG, "NullableDataModel newInstance e:" + e.getLocalizedMessage());
+            }
         }
         if (result.code == ErrorConst.ERROR_CODE_SUCCESS) {
             try {
@@ -122,6 +128,16 @@ public class BaseDataService {
                 }
             }
         });
+    }
+
+    /**
+     * 直接用缓存数据model回调
+     */
+    protected static <T extends DataModel> void doCacheCallback(final T model, final ErrorModel errorModel,
+        final IDataServiceCallback<T> listener, final Object param) {
+        DataServiceResultModel m = createSuccessResultModel();
+        m.isCache = true;
+        doCallback(m, model, errorModel, listener, param);
     }
 
     /**
