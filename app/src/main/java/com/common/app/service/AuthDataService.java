@@ -58,11 +58,11 @@ public class AuthDataService extends BaseDataService {
         }, param);
     }
 
-    public void getTestList(Object origin, final int pageNum, final IDataServiceCallback<TestDataModel> callback,
-        final Object param) {
+    public void getTestList(Object origin, final boolean readCache, final int pageNum,
+        final IDataServiceCallback<TestDataModel> callback, final Object param) {
 
         final String cacheKey = AuthManager.getInstance().getUserUniqueId() + TestDataModel.CACHE_KEY;
-        if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
+        if (readCache && pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
             // 取缓存数据
             TestDataModel m = null;
             try {
@@ -72,7 +72,8 @@ public class AuthDataService extends BaseDataService {
                 CacheManager.getInstance().remove(cacheKey);
             }
             if (m != null) {
-                doCallback(m, null, callback, param);
+                AppLog.d(TAG, "read data from cache");
+                doCacheCallback(m, null, callback, param);
             }
         }
 

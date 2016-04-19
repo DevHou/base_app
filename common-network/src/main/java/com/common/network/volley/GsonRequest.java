@@ -83,7 +83,7 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
         } catch (UnsupportedEncodingException e) {
             json = new String(response.data);
         }
-        AppLog.v(TAG, "volley return string:" + json);
+        AppLog.v(TAG, "url:" + getUrl() + "\nvolley return string:" + json);
         try {
             T result = HttpWorker.handlerResult(json, clazz);
             return Response.success(result, HttpHeaderParser.parseCacheHeaders(response));

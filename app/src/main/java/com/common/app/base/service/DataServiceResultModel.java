@@ -15,6 +15,7 @@ public class DataServiceResultModel {
 
     public long code;
     public String message;
+    public boolean isCache = false;
 
     public DataServiceResultModel(long code, String message) {
         this.code = code;
