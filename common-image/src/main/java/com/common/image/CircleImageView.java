@@ -8,7 +8,7 @@ import android.util.AttributeSet;
  * 
  * 只是通过继承不同库的具体实现切换
  */
-public class CircleImageView extends com.common.image.glide.CircleImageView {
+public class CircleImageView extends com.common.image.fresco.CircleImageView {
 
     public CircleImageView(Context context) {
         super(context);
