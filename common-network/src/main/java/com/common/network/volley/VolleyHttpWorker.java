@@ -1,6 +1,7 @@
 package com.common.network.volley;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -21,9 +22,12 @@ import com.common.network.INetCall;
 import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
 
+import org.apache.http.protocol.HTTP;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -89,6 +93,34 @@ public class VolleyHttpWorker implements IHttpWorker {
     public <Result extends HttpResponseResult> INetCall doGet(final Object origin, String url,
         Map<String, String> header, IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler,
         final Object param) {
+
+        if (params != null && params.getParams() != null && params.getParams().size() > 0) {
+            boolean first = true;
+            try {
+                Uri uri = Uri.parse(url);
+                if (uri.getQuery() != null) {
+                    first = false;
+                }
+            } catch (Exception e) {
+                AppLog.e(TAG, "parse url e:" + e.getLocalizedMessage());
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Map.Entry<String, String> kv : params.getParams().entrySet()) {
+                try {
+                    if (first) {
+                        stringBuilder.append("?").append(kv.getKey()).append("=")
+                            .append(URLEncoder.encode(kv.getValue(), HTTP.UTF_8));
+                    } else {
+                        stringBuilder.append("&").append(kv.getKey()).append("=")
+                            .append(URLEncoder.encode(kv.getValue(), HTTP.UTF_8));
+                    }
+                    first = false;
+                } catch (UnsupportedEncodingException e) {
+                    AppLog.e(TAG, "create url params e:" + e.getLocalizedMessage());
+                }
+            }
+            url += stringBuilder.toString();
+        }
 
         GsonRequest<Result> req =
             new GsonRequest<>(Request.Method.GET, origin, url, header, classOfT, (HttpParams) params,
