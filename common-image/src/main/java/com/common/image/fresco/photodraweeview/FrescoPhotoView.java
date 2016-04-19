@@ -32,7 +32,7 @@ public class FrescoPhotoView extends CommonImageView implements IAttacher {
 
     protected void init() {
         if (mFrescoAttacher == null || mFrescoAttacher.getDraweeView() == null) {
-            //mFrescoAttacher = new Attacher(this);
+            mFrescoAttacher = new Attacher(this);
         }
     }
 

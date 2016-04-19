@@ -8,7 +8,7 @@ import android.util.AttributeSet;
  * 
  * 只是通过继承不同库的具体实现切换
  */
-public class CommonImageView extends com.common.image.glide.CommonImageView {
+public class CommonImageView extends com.common.image.fresco.CommonImageView {
 
     public CommonImageView(Context context) {
         super(context);
