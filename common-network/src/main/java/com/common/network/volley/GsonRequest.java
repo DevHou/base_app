@@ -57,6 +57,7 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
                 AppLog.v(TAG, "    key:" + entry.getKey() + " \tvalue:" + entry.getValue());
             }
         }
+
     }
 
     @Override
