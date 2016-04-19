@@ -71,7 +71,7 @@ public class BaseDataService {
                     // boolean类型返回值
                     ((BooleanDataModel) model).isSuccess = true;
                     serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS, result.message);
-                } else if (modelClass == NullableDataModel.class) {
+                } else if (NullableDataModel.class.isAssignableFrom(modelClass)) {
                     // 如果是可空，则不判断data是否是空
                     serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS, result.message);
                 } else {

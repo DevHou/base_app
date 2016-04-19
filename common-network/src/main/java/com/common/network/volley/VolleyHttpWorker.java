@@ -107,13 +107,8 @@ public class VolleyHttpWorker implements IHttpWorker {
             StringBuilder stringBuilder = new StringBuilder();
             for (Map.Entry<String, String> kv : params.getParams().entrySet()) {
                 try {
-                    if (first) {
-                        stringBuilder.append("?").append(kv.getKey()).append("=")
-                            .append(URLEncoder.encode(kv.getValue(), HTTP.UTF_8));
-                    } else {
-                        stringBuilder.append("&").append(kv.getKey()).append("=")
-                            .append(URLEncoder.encode(kv.getValue(), HTTP.UTF_8));
-                    }
+                    stringBuilder.append(first ? "?" : "&").append(kv.getKey()).append("=")
+                        .append(URLEncoder.encode(kv.getValue(), HTTP.UTF_8));
                     first = false;
                 } catch (UnsupportedEncodingException e) {
                     AppLog.e(TAG, "create url params e:" + e.getLocalizedMessage());
