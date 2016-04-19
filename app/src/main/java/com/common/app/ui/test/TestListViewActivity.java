@@ -8,7 +8,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.common.app.R;
+import com.common.app.api.ApiConstants;
+import com.common.app.api.TestDataModel;
+import com.common.app.base.error.ErrorModel;
+import com.common.app.base.manager.DataServiceManager;
+import com.common.app.base.service.DataServiceResultModel;
+import com.common.app.base.service.IDataServiceCallback;
+import com.common.app.service.AuthDataService;
 import com.common.app.ui.BaseListActivity;
+import com.common.app.uikit.Tips;
 import com.common.listview.AbsListDataAdapter;
 import com.common.listview.BaseListCell;
 import com.common.listview.BaseListDataAdapter;
@@ -19,6 +27,11 @@ import com.common.listview.BaseListDataAdapter;
  * 测试列表控件
  */
 public class TestListViewActivity extends BaseListActivity {
+
+    AuthDataService mDataService = (AuthDataService) DataServiceManager.getService(AuthDataService.SERVICE_KEY);
+
+    private int mPageNum;
+    private boolean mHasMore;
 
     @Override
     protected boolean bindContentView() {
@@ -44,12 +57,7 @@ public class TestListViewActivity extends BaseListActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Data[] data = new Data[30];
-                        for (int i = 0; i < data.length; i++) {
-                            data[i] = new Data();
-                            data[i].name = "这是测试文本，index：" + i;
-                        }
-                        mAdapter.addAll(data);
+                        loadList();
                     }
                 }, 2000);
             }
@@ -58,38 +66,36 @@ public class TestListViewActivity extends BaseListActivity {
 
     @Override
     protected void loadFirstPage() {
+        initFirstPage();
         loadList();
     }
 
     @Override
     public void onListRefresh() {
+        initFirstPage();
         loadList();
     }
 
-    private void loadList(){
-        final Data[] data = new Data[30];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = new Data();
-            data[i].name = "这是测试文本，index：" + i;
-        }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerListView.stopRefresh();
-                mAdapter.addAll(data);
-            }
-        }, 2000);
+    private void initFirstPage() {
+        mPageNum = ApiConstants.API_LIST_FIRST_PAGE;
+        mHasMore = true;
+    }
 
+    private void loadList() {
 
-       /* mDataService.getTeacherList(this, mCategoryId, mPageNum, new IDataServiceCallback<TeacherListModel>() {
+        mDataService.getTestList(this, mPageNum, new IDataServiceCallback<TestDataModel>() {
             @Override
-            public void onSuccess(DataServiceResultModel result, TeacherListModel obj, Object param) {
+            public void onSuccess(DataServiceResultModel result, TestDataModel obj, Object param) {
                 int pageNum = (int) param;
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
                     mAdapter.clearData();
+                    mRecyclerListView.stopRefresh();
+                    mAdapter.setIsLoading();
+                    mAdapter.setIfHasMore(false);
                 }
-                mAdapter.addAll(obj.list);
                 mHasMore = obj.pageInfo.hasMore;
+                mAdapter.setIfHasMore(mHasMore);
+                mAdapter.addAll(obj.list);
                 mPageNum++;
             }
 
@@ -99,33 +105,33 @@ public class TestListViewActivity extends BaseListActivity {
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
                     showErrorView(result);
                 } else {
-                    Tips.showMessage(TeacherListActivity.this, result.message);
+                    Tips.showMessage(TestListViewActivity.this, result.message);
                 }
             }
-        }, mPageNum);*/
+        }, mPageNum);
 
     }
 
-    public class MyAdapter extends BaseListDataAdapter<Data> {
+    public class MyAdapter extends BaseListDataAdapter<TestDataModel.DataItem> {
 
         public MyAdapter(IOnLoadMore listener) {
             super(listener);
         }
 
         @Override
-        protected BaseListCell<Data> createCell(int type) {
+        protected BaseListCell<TestDataModel.DataItem> createCell(int type) {
             return new ItemCell();
         }
     }
 
-    public class ItemCell implements BaseListCell<Data>, View.OnClickListener {
+    public class ItemCell implements BaseListCell<TestDataModel.DataItem>, View.OnClickListener {
 
         private TextView tv;
         private View btn1;
         private View btn2;
 
         @Override
-        public void setData(Data model, int position) {
+        public void setData(TestDataModel.DataItem model, int position) {
             tv.setText(model.name);
             btn1.setTag(model.name);
             btn2.setTag(model.name);
@@ -152,7 +158,4 @@ public class TestListViewActivity extends BaseListActivity {
         }
     }
 
-    public class Data {
-        public String name;
-    }
 }
