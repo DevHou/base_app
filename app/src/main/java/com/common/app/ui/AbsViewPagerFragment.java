@@ -104,6 +104,14 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
                 AppLog.d(TAG, "onTabReselected:" + tab.toString());
             }
         });
+        // 设置默认页，因为第一页没有回调
+        try {
+            int curr = mViewPager.getCurrentItem();
+            TabLayout.Tab tab = mTabLayout.getTabAt(curr);
+            onPageTabSelected(tab.getCustomView());
+        } catch (Exception e) {
+            AppLog.d(TAG, "set default first tab e:" + e.getLocalizedMessage());
+        }
     }
 
     /**
