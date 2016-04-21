@@ -58,7 +58,6 @@ public class FrescoPhotoView extends CommonImageView implements IAttacher {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         return super.onTouchEvent(event);
     }
 

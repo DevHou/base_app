@@ -22,7 +22,21 @@ public class CommonImageView extends com.common.image.fresco.CommonImageView {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * 设置点击回调，子类应该重写
+     * 
+     * @param listener 回调
+     */
     public void setImageOnClickListener(IOnImageClickListener listener) {
 
+    }
+
+    /**
+     * 更新图片大小，子类可以重写
+     * 
+     * @param imageInfoWidth 图片实际宽
+     * @param imageInfoHeight 图片实际高
+     */
+    public void update(int imageInfoWidth, int imageInfoHeight) {
     }
 }
