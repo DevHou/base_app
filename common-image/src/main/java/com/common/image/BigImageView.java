@@ -8,7 +8,7 @@ import com.common.image.fresco.photodraweeview.FrescoPhotoView;
 /**
  * Created by houlijiang on 16/4/13.
  * 
- * 大图查看
+ * 大图查看，什么也不干只是通过继承不同实现对外统一接口
  */
 public class BigImageView extends FrescoPhotoView {
 
@@ -24,9 +24,4 @@ public class BigImageView extends FrescoPhotoView {
         super(context, attrs, defStyle);
     }
 
-    /**
-     * 子类重写
-     */
-    public void update(int width, int height) {
-    }
 }
