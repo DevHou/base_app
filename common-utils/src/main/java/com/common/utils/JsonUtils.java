@@ -18,6 +18,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -32,32 +34,57 @@ public class JsonUtils {
     private static final String TAG = JsonUtils.class.getSimpleName();
 
     // 支持转换成Date 和 Calendar类型
-    public static Gson gson = createDefaultBuilder().create();
+    public static Gson gson = createDefaultBuilder(null).create();
 
     public static class CalendarAdapter implements JsonSerializer<Calendar>, JsonDeserializer<Calendar> {
+
+        private String format;
+        private SimpleDateFormat formatter;
+
+        public CalendarAdapter(String format) {
+            this.format = format;
+            if (!TextUtils.isEmpty(format)) {
+                formatter = new SimpleDateFormat(format);
+            }
+        }
 
         public Calendar deserialize(JsonElement json, Type type, JsonDeserializationContext context)
             throws JsonParseException {
             Calendar calendar = Calendar.getInstance();
-            // Calendar 的 time 有问题, 使用 Date
-            calendar.setTime(new Date(json.getAsJsonPrimitive().getAsLong()));
+            if (TextUtils.isEmpty(format)) {
+                // 如果没传入格式文本则作为时间戳处理
+                calendar.setTime(new Date(json.getAsJsonPrimitive().getAsLong()));
+            } else {
+                try {
+                    String dateStr = json.getAsString();
+                    Date date = formatter.parse(dateStr);
+                    calendar.setTime(date);
+                } catch (ParseException e) {
+                    AppLog.e(TAG, "parse date error, e:" + e.getLocalizedMessage());
+                }
+
+            }
             return calendar;
         }
 
         public JsonElement serialize(Calendar calendar, Type type, JsonSerializationContext context) {
-            return new JsonPrimitive(calendar.getTimeInMillis());
+            if (TextUtils.isEmpty(format)) {
+                return new JsonPrimitive(calendar.getTimeInMillis());
+            } else {
+                return new JsonPrimitive(formatter.format(calendar.getTime()));
+            }
         }
 
     }
 
-    private static GsonBuilder createDefaultBuilder() {
+    private static GsonBuilder createDefaultBuilder(String format) {
         return new GsonBuilder().registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
             @Override
             public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
                 throws JsonParseException {
                 return new Date(json.getAsJsonPrimitive().getAsLong());
             }
-        }).registerTypeHierarchyAdapter(Calendar.class, new CalendarAdapter());
+        }).registerTypeHierarchyAdapter(Calendar.class, new CalendarAdapter(format));
     }
 
     /**
@@ -66,7 +93,7 @@ public class JsonUtils {
      * @param format 格式如"yyyy-MM-dd HH:mm:ss"
      */
     public static void setDateFormat(String format) {
-        gson = createDefaultBuilder().setDateFormat(format).create();
+        gson = createDefaultBuilder(format).create();
     }
 
     public static <T> T parseString(String result, Class<T> classOfT) {
