@@ -27,7 +27,14 @@
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
-
 -dontwarn rx.**
 
+#okhttp
 -dontwarn okio.**
+
+#eventbus
+-keep class org.greenrobot.eventbus.**
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }

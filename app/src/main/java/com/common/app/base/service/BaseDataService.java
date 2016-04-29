@@ -73,6 +73,13 @@ public class BaseDataService {
                         }
                         serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS);
                     }
+                } else if ("\"\"".equals(result.result)) {
+                    model = modelClass.newInstance();
+                    if (ListDataModel.class.isAssignableFrom(modelClass)) {
+                        ((ListDataModel) model).pageInfo = new ListDataModel.PageInfo();
+                        ((ListDataModel) model).pageInfo.hasMore = false;
+                    }
+                    serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS);
                 } else if (modelClass == BooleanDataModel.class) {
                     // boolean类型返回值
                     ((BooleanDataModel) model).isSuccess = true;
@@ -137,6 +144,10 @@ public class BaseDataService {
         final IDataServiceCallback<T> listener, final Object param) {
         DataServiceResultModel m = createSuccessResultModel();
         m.isCache = true;
+        if (model != null && model instanceof ListDataModel) {
+            ((ListDataModel) model).pageInfo = new ListDataModel.PageInfo();
+            ((ListDataModel) model).pageInfo.hasMore = false;
+        }
         doCallback(m, model, errorModel, listener, param);
     }
 
