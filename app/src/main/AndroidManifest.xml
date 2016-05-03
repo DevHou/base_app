@@ -4,6 +4,8 @@
     android:versionCode="2"
     android:versionName="1.0.0">
 
+    <!-- 网络变化监听模块用 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
@@ -30,6 +32,8 @@
         <activity android:name=".ui.test.TestCacheActivity" />
         <activity android:name=".ui.test.TestImageBrowserActivity" />
         <activity android:name=".ui.test.TestPtrActivity" />
+        <activity android:name=".ui.test.TestContextMenuActivity" />
+        <activity android:name=".ui.test.TestViewPagerFragmentActivity" />
 
         <activity android:name=".ui.test.LoginActivity" />
     </application>

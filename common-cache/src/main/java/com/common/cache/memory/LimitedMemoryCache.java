@@ -1,6 +1,6 @@
 package com.common.cache.memory;
 
-import android.util.Log;
+import com.common.utils.AppLog;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -33,7 +33,7 @@ public abstract class LimitedMemoryCache<K, V> extends BaseMemoryCache<K, V> {
         this.sizeLimit = sizeLimit;
         cacheSize = new AtomicInteger();
         if (sizeLimit > MAX_NORMAL_CACHE_SIZE) {
-            Log.w(TAG, "You set too large memory cache size (more than " + MAX_NORMAL_CACHE_SIZE_IN_MB + " Mb)");
+            AppLog.w(TAG, "You set too large memory cache size (more than " + MAX_NORMAL_CACHE_SIZE_IN_MB + " Mb)");
         }
     }
 

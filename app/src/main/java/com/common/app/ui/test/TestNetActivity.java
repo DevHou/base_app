@@ -2,7 +2,6 @@ package com.common.app.ui.test;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,6 +14,7 @@ import com.common.app.ui.BaseActivity;
 import com.common.network.HttpResponseError;
 import com.common.network.HttpWorker;
 import com.common.network.IHttpResponse;
+import com.common.utils.AppLog;
 import com.common.utils.FileUtils;
 
 import java.io.File;
@@ -23,6 +23,8 @@ import java.util.List;
 
 /**
  * Created by houlijiang on 16/1/20.
+ * 
+ * 测试网络库
  */
 public class TestNetActivity extends BaseActivity implements View.OnClickListener,
     NetworkChangeManager.INetChangedListener {
@@ -110,7 +112,7 @@ public class TestNetActivity extends BaseActivity implements View.OnClickListene
 
                 @Override
                 public void onProgress(final long donebytes, final long totalbytes, Object param) {
-                    Log.d(TAG, "下载中：" + donebytes + "/" + totalbytes);
+                    AppLog.d(TAG, "下载中：" + donebytes + "/" + totalbytes);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

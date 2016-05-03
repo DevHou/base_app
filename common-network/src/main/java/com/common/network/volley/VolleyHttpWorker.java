@@ -1,8 +1,8 @@
 package com.common.network.volley;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -18,11 +18,16 @@ import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
 import com.common.network.IHttpWorker;
+import com.common.network.INetCall;
+import com.common.utils.AppLog;
 import com.common.utils.DispatchUtils;
+
+import org.apache.http.protocol.HTTP;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +53,8 @@ import okio.Source;
  *
  * volley是纯内存操作的，所有请求和结果先放在内存再处理，所以在它基础上做上传下载大文件可能出现问题
  * 这里的上传下载用的OkHttp原生处理
+ * 
+ * 普通请求支持按tag cancel，但上传下载没有支持，可以由调用者自己通过INetCall控制
  */
 public class VolleyHttpWorker implements IHttpWorker {
 
@@ -83,8 +90,32 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param param 自定义参数
      */
     @Override
-    public <Result extends HttpResponseResult> void doGet(final Object origin, String url, Map<String, String> header,
-        IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler, final Object param) {
+    public <Result extends HttpResponseResult> INetCall doGet(final Object origin, String url,
+        Map<String, String> header, IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler,
+        final Object param) {
+
+        if (params != null && params.getParams() != null && params.getParams().size() > 0) {
+            boolean first = true;
+            try {
+                Uri uri = Uri.parse(url);
+                if (uri.getQuery() != null) {
+                    first = false;
+                }
+            } catch (Exception e) {
+                AppLog.e(TAG, "parse url e:" + e.getLocalizedMessage());
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Map.Entry<String, String> kv : params.getParams().entrySet()) {
+                try {
+                    stringBuilder.append(first ? "?" : "&").append(kv.getKey()).append("=")
+                        .append(URLEncoder.encode(kv.getValue(), HTTP.UTF_8));
+                    first = false;
+                } catch (UnsupportedEncodingException e) {
+                    AppLog.e(TAG, "create url params e:" + e.getLocalizedMessage());
+                }
+            }
+            url += stringBuilder.toString();
+        }
 
         GsonRequest<Result> req =
             new GsonRequest<>(Request.Method.GET, origin, url, header, classOfT, (HttpParams) params,
@@ -99,7 +130,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     try {
                                         handler.onSuccess(response, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "get call success e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "get call success e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -128,7 +159,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                         }
                                         handler.onFailed(e, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "get call error e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "get call error e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -138,6 +169,7 @@ public class VolleyHttpWorker implements IHttpWorker {
         req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
+        return new RequestCall(req);
     }
 
     /**
@@ -154,7 +186,7 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param <Result> 结果
      */
     @Override
-    public <Result extends HttpResponseResult> void doPost(final Object origin, String url, IHttpParams params,
+    public <Result extends HttpResponseResult> INetCall doPost(final Object origin, String url, IHttpParams params,
         String contentType, Map<String, String> headers, Class<Result> classOfT, final IHttpResponse<Result> handler,
         final Object param) {
 
@@ -171,7 +203,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     try {
                                         handler.onSuccess(response, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "post call success e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "post call success e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -200,7 +232,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                         }
                                         handler.onFailed(e, param);
                                     } catch (Exception e) {
-                                        Log.e(TAG, "post call fail e:" + e.getLocalizedMessage());
+                                        AppLog.e(TAG, "post call fail e:" + e.getLocalizedMessage());
                                     }
                                 }
                             });
@@ -211,12 +243,13 @@ public class VolleyHttpWorker implements IHttpWorker {
         req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
+        return new RequestCall(req);
     }
 
     /**
      * 下载文件
      *
-     * @param context 绑定的对象
+     * @param tag 绑定的对象
      * @param url url
      * @param header header
      * @param file 下载的文件存储位置
@@ -225,7 +258,7 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param param 自定义参数
      */
     @Override
-    public void download(Object context, String url, Map<String, String> header, final File file, IHttpParams params,
+    public INetCall download(Object tag, String url, Map<String, String> header, final File file, IHttpParams params,
         final IHttpResponse<File> handler, final Object param) {
 
         OkHttpClient copy = mHttpClient.newBuilder().addNetworkInterceptor(new Interceptor() {
@@ -240,33 +273,36 @@ public class VolleyHttpWorker implements IHttpWorker {
         okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
         try {
             requestBuilder.url(url);
-        }catch (final Exception e){
-            Log.e(TAG,"download url invalid, e:"+e.getLocalizedMessage());
+        } catch (final Exception e) {
+            AppLog.e(TAG, "download url invalid, e:" + e.getLocalizedMessage());
             if (handler != null) {
                 DispatchUtils.getInstance().postInBackground(new Runnable() {
                     @Override
                     public void run() {
                         try {
                             HttpResponseError error =
-                                    new HttpResponseError(HttpResponseError.ERROR_URL_INVALID, e.getLocalizedMessage());
+                                new HttpResponseError(HttpResponseError.ERROR_URL_INVALID, e.getLocalizedMessage());
                             handler.onFailed(error, param);
                         } catch (Exception e) {
-                            Log.e(TAG, "download call fail e:" + e.getLocalizedMessage());
+                            AppLog.e(TAG, "download call fail e:" + e.getLocalizedMessage());
                         }
                     }
                 });
             }
-            return;
+            return new OkHttpCall(null);
         }
 
-        copy.newCall(requestBuilder.build()).enqueue(new Callback() {
+        Call call = copy.newCall(requestBuilder.build());
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
+                AppLog.v(TAG, "download failed, e", e);
                 if (handler != null) {
                     DispatchUtils.getInstance().postInBackground(new Runnable() {
                         @Override
                         public void run() {
                             try {
+                                file.deleteOnExit();
                                 if (call.isCanceled()) {
                                     return;
                                 }
@@ -274,7 +310,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     new HttpResponseError(HttpResponseError.ERROR_UNKNOWN, e.getLocalizedMessage());
                                 handler.onFailed(error, param);
                             } catch (Exception e) {
-                                Log.e(TAG, "download call fail e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "download call fail e:" + e.getLocalizedMessage());
                             }
                         }
                     });
@@ -282,48 +318,53 @@ public class VolleyHttpWorker implements IHttpWorker {
             }
 
             @Override
-            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+            public void onResponse(final Call call, okhttp3.Response response) throws IOException {
                 try {
                     BufferedSink sink = Okio.buffer(Okio.sink(file));
                     sink.writeAll(response.body().source());
                     sink.close();
                 } catch (final Exception e) {
+                    AppLog.v(TAG, "copy download file, e", e);
                     if (handler != null) {
                         DispatchUtils.getInstance().postInBackground(new Runnable() {
                             @Override
                             public void run() {
                                 try {
+                                    if (call.isCanceled()) {
+                                        return;
+                                    }
                                     HttpResponseError error =
                                         new HttpResponseError(HttpResponseError.ERROR_UNKNOWN, e.getLocalizedMessage());
                                     handler.onFailed(error, param);
                                 } catch (Exception e) {
-                                    Log.e(TAG, "download call success e:" + e.getLocalizedMessage());
+                                    AppLog.e(TAG, "download call success e:" + e.getLocalizedMessage());
                                 }
                             }
                         });
                     }
                     return;
                 }
-                if (handler != null) {
+                if (handler != null && !call.isCanceled()) {
                     DispatchUtils.getInstance().postInBackground(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 handler.onSuccess(file, param);
                             } catch (Exception e) {
-                                Log.e(TAG, "download call success e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "download call success e:" + e.getLocalizedMessage());
                             }
                         }
                     });
                 }
             }
         });
+        return new OkHttpCall(call);
     }
 
     /**
      * 上传
      *
-     * @param context 绑定的对象
+     * @param tag 绑定的对象
      * @param url url
      * @param headers 自定义http头
      * @param files 上传的文件
@@ -334,7 +375,7 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param <Result> 结果
      */
     @Override
-    public <Result extends HttpResponseResult> void upload(Object context, String url, Map<String, String> headers,
+    public <Result extends HttpResponseResult> INetCall upload(Object tag, String url, Map<String, String> headers,
         Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
         final IHttpResponse<Result> handler, final Object param) {
 
@@ -367,9 +408,11 @@ public class VolleyHttpWorker implements IHttpWorker {
 
         ProgressRequestBody req = new ProgressRequestBody<>(requestBody.build(), handler, param);
         requestBuilder.post(req);
-        mHttpClient.newCall(requestBuilder.build()).enqueue(new Callback() {
+        Call call = mHttpClient.newCall(requestBuilder.build());
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {
+                AppLog.v(TAG, "upload failed, e", e);
                 if (handler != null) {
                     DispatchUtils.getInstance().postInBackground(new Runnable() {
                         @Override
@@ -382,7 +425,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     new HttpResponseError(HttpResponseError.ERROR_UNKNOWN, e.getLocalizedMessage());
                                 handler.onFailed(error, param);
                             } catch (Exception e) {
-                                Log.e(TAG, "upload call fail e:" + e.getLocalizedMessage());
+                                AppLog.e(TAG, "upload call fail e:" + e.getLocalizedMessage());
                             }
                         }
                     });
@@ -390,8 +433,8 @@ public class VolleyHttpWorker implements IHttpWorker {
             }
 
             @Override
-            public void onResponse(Call call, final okhttp3.Response response) throws IOException {
-                if (handler != null) {
+            public void onResponse(final Call call, final okhttp3.Response response) throws IOException {
+                if (handler != null && !call.isCanceled()) {
                     try {
                         DispatchUtils.getInstance().postInBackground(new Runnable() {
                             @Override
@@ -400,16 +443,17 @@ public class VolleyHttpWorker implements IHttpWorker {
                                     final Result result = HttpWorker.handlerResult(response.body().string(), classOfT);
                                     handler.onSuccess(result, param);
                                 } catch (Exception e) {
-                                    Log.e(TAG, "upload call success e:" + e.getLocalizedMessage());
+                                    AppLog.e(TAG, "upload call success e:" + e.getLocalizedMessage());
                                 }
                             }
                         });
                     } catch (Exception e) {
-                        Log.e(TAG, "parse result for upload e:" + e.getLocalizedMessage());
+                        AppLog.e(TAG, "parse result for upload e:" + e.getLocalizedMessage());
                     }
                 }
             }
         });
+        return new OkHttpCall(call);
     }
 
     /**
@@ -553,9 +597,13 @@ public class VolleyHttpWorker implements IHttpWorker {
                 bufferedSink = Okio.buffer(sink(sink));
             }
             // 写入
-            requestBody.writeTo(bufferedSink);
-            // 必须调用flush，否则最后一部分数据可能不会被写入
-            bufferedSink.flush();
+            try {
+                requestBody.writeTo(bufferedSink);
+                // 必须调用flush，否则最后一部分数据可能不会被写入
+                bufferedSink.flush();
+            } catch (Exception e) {
+                AppLog.e(TAG, "写入错误，e:" + e.getLocalizedMessage());
+            }
 
         }
 

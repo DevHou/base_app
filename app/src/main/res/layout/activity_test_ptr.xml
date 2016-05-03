@@ -34,7 +34,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <com.houlijiang.common.listview.ptr.PtrFrameLayout
+            <com.common.listview.ptr.PtrFrameLayout
                 android:id="@+id/test_ptr_ptr"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -45,7 +45,7 @@
                     android:layout_height="match_parent"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            </com.houlijiang.common.listview.ptr.PtrFrameLayout>
+            </com.common.listview.ptr.PtrFrameLayout>
 
         </LinearLayout>
     </RelativeLayout>

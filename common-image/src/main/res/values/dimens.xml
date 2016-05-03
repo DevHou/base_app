@@ -1,5 +1,4 @@
 <resources>
-
-    <dimen name="dot_size">2dp</dimen>
-
+    <dimen name="common_image_dot_size">2dp</dimen>
+    <dimen name="common_image_dot_margin">6dp</dimen>
 </resources>

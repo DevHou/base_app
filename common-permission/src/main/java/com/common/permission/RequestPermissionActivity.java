@@ -10,7 +10,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
+
+import com.common.utils.AppLog;
 
 /**
  * 申请权限的activity，这个给AppPermission的request方法使用，外部不应该直接使用
@@ -76,7 +77,7 @@ public class RequestPermissionActivity extends Activity {
         try {
             AppPermissions.getInstance(this).onRequestPermissionsResult(requestCode, permissions, grantResults);
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when on permission result, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when on permission result, ", e);
         }
         finish();
     }

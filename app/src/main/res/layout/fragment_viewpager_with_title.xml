@@ -3,24 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/tx_viewpager_ll_indicator"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/common_viewpager_tl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dip">
+        android:layout_height="wrap_content" />
 
-        <com.common.app.uikit.indicator.PageTabLabel
-            android:id="@+id/common_viewpager_indicator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-    <com.common.app.uikit.UnScrollViewPager
+    <com.em.motif.uikit.UnScrollViewPager
         android:id="@+id/common_viewpager_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tx_viewpager_ll_indicator"
-        android:background="@color/app_view_background" />
+        android:layout_below="@id/common_viewpager_tl"
+        android:background="@color/app_window_bg" />
 
 </RelativeLayout>

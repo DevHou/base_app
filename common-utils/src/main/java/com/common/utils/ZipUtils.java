@@ -1,7 +1,5 @@
 package com.common.utils;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -37,7 +35,7 @@ public class ZipUtils {
             ZipInputStream zin = new ZipInputStream(fin);
             ZipEntry ze = null;
             while ((ze = zin.getNextEntry()) != null) {
-                Log.d(TAG, "Unzipping " + ze.getName());
+                AppLog.d(TAG, "Unzipping " + ze.getName());
 
                 if (ze.isDirectory()) {
                     _dirChecker(ze.getName());
@@ -52,7 +50,7 @@ public class ZipUtils {
             }
             zin.close();
         } catch (Exception e) {
-            Log.e("Decompress", "unzip", e);
+            AppLog.e("Decompress", "unzip e:" + e.getLocalizedMessage());
         }
     }
 

@@ -3,8 +3,10 @@ package com.common.listview;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,9 +25,11 @@ import java.util.List;
  * > 任何对数据的操作都调用notifyDataChanged了，使用时不需要再次调用
  */
 public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsListDataAdapter.ViewHolder> implements
-        IAbsListDataAdapter {
+    IAbsListDataAdapter {
 
     private static final String TAG = AbsListDataAdapter.class.getSimpleName();
+
+    protected static final int TYPE_LOAD_MORE = Integer.MAX_VALUE;
 
     public static final int HANDLE_ADD_TO_FRONT = 1;
     public static final int HANDLE_ADD_ALL = 2;
@@ -38,14 +42,22 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     public static final int HANDLE_NO_DATA_CHANGED = 9;
     public static final int HANDLE_RELOADING = 10;
     public static final int HANDLE_EXCHANGE = 11;
+    public static final int HANDLE_LOAD_MORE = 12;
 
     protected List<T> mData;
     protected boolean mIsReloading = false;
+    protected boolean mHasMore = true;
+    protected int mLoadMoreId = 0;// 加载更多view ID
+    private IOnLoadMore mIOnLoadMore;
     // 如果数据变换太频繁会抛Cannot call this method while RecyclerView is computing a layout or scrolling异常
     // 所以这里使用handler把数据修改串行起来
     private Handler mHandler;
 
     public AbsListDataAdapter() {
+        this(null);
+    }
+
+    public AbsListDataAdapter(IOnLoadMore loadMore) {
         mData = new ArrayList<>();
         mHandler = new Handler() {
             @Override
@@ -159,7 +171,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         synchronized (this) {
                             mIsReloading = true;
                             // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
-                            notifyDataSetChanged();
+                            // if (!isEmpty()) {
+                            // notifyDataSetChanged();
+                            // }
                         }
                         break;
                     }
@@ -180,9 +194,16 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         }
                         break;
                     }
+                    case HANDLE_LOAD_MORE: {
+                        if (mHasMore && mIOnLoadMore != null) {
+                            mIOnLoadMore.onLoadMore();
+                        }
+                        break;
+                    }
                 }
             }
         };
+        mIOnLoadMore = loadMore;
     }
 
     public void addToFront(T[] data) {
@@ -241,7 +262,22 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      */
     public void setIsLoading() {
         mIsReloading = true;
-        mHandler.obtainMessage(HANDLE_RELOADING).sendToTarget();
+        // mHandler.obtainMessage(HANDLE_RELOADING).sendToTarget();
+    }
+
+    public void setIfHasMore(boolean hasMore) {
+        mHasMore = hasMore;
+        if (!mIsReloading) {
+            noDataChanged();
+        }
+    }
+
+    public boolean isLoadMore(int position) {
+        if (mHasMore) {
+            return position == mData.size();
+        } else {
+            return false;
+        }
     }
 
     public List<T> getAllData() {
@@ -249,7 +285,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public T getData(int position) {
-        // Log.v(TAG, "get Data for " + position + " item count:" + getItemCount());
+        // AppLog.v(TAG, "get Data for " + position + " item count:" + getItemCount());
         if (position >= getItemCount()) {
             return null;
         }
@@ -257,32 +293,50 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     @Override
-    public int getItemViewType(int position) {
-        // Log.v(TAG, "get view type for " + position);
-        return super.getItemViewType(position);
+    final public int getItemViewType(int position) {
+        // AppLog.v(TAG, "get view type for " + position);
+        if (mHasMore && position == mData.size()) {
+            return TYPE_LOAD_MORE;
+        }
+        return getViewType(position);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // Log.v(TAG, "create view holder for type " + viewType);
+        // AppLog.v(TAG, "create view holder for type " + viewType);
+        if (viewType == TYPE_LOAD_MORE) {
+            View v;
+            if (mLoadMoreId != 0) {
+                v = LayoutInflater.from(viewGroup.getContext()).inflate(mLoadMoreId, viewGroup, false);
+            } else {
+                v = new TextView(viewGroup.getContext());
+            }
+            return new LoadMoreViewHolder(v);
+        }
         return getItemViewHolder(viewGroup, viewType);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        // Log.v(TAG, "bind view holder for " + position);
+        // AppLog.v(TAG, "bind view holder for " + position);
+        if (viewHolder instanceof LoadMoreViewHolder) {
+            // AppLog.v(TAG, "bind view holder for load more");
+            mHandler.obtainMessage(HANDLE_LOAD_MORE).sendToTarget();
+            return;
+        }
         setData(viewHolder, position, getData(position));
     }
 
     @Override
     public long getItemId(int position) {
-        // Log.v(TAG, "get view id for " + position);
+        // AppLog.v(TAG, "get view id for " + position);
         return position;
     }
 
     @Override
-    public int getItemCount() {
-        return mData == null ? 0 : mData.size();
+    final public int getItemCount() {
+        // AppLog.v(TAG, "get count, hasMore " + mHasMore + " size:" + (mData == null ? 0 : mData.size()));
+        return (mData == null || mData.size() == 0) ? 0 : (mHasMore ? mData.size() + 1 : mData.size());
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -291,13 +345,21 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         }
     }
 
+    private static class LoadMoreViewHolder extends ViewHolder {
+
+        public LoadMoreViewHolder(View itemView) {
+            super(itemView);
+        }
+
+    }
+
     /**
      * 判断是否为空，子类可以重载加入自己的逻辑
      * AbsListView在显示时会用来判断以显示empty view
      */
     @Override
     public boolean isEmpty() {
-        return getItemCount() == 0;
+        return mData == null || mData.size() == 0;
     }
 
     /**
@@ -306,6 +368,27 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     @Override
     public boolean isReloading() {
         return mIsReloading;
+    }
+
+    /**
+     * 设置加载更多
+     */
+    @Override
+    public void setLoadMoreView(int resourceId) {
+        mLoadMoreId = resourceId;
+        if (resourceId <= 0) {
+            mHasMore = false;
+        }
+    }
+
+    /**
+     * 子类可以重载这个方法，来实现多类型item
+     * 
+     * @param position index
+     * @return 类型
+     */
+    public int getViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     /**
@@ -324,4 +407,10 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      */
     protected abstract ViewHolder getItemViewHolder(ViewGroup viewGroup, int type);
 
+    /**
+     * 加载跟多回调
+     */
+    public interface IOnLoadMore {
+        void onLoadMore();
+    }
 }

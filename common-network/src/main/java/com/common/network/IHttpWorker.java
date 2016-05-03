@@ -22,7 +22,7 @@ public interface IHttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    <Result extends HttpResponseResult> void doGet(Object context, String url, Map<String, String> header,
+    <Result extends HttpResponseResult> INetCall doGet(Object context, String url, Map<String, String> header,
         IHttpParams params, final Class<Result> classOfT, IHttpResponse<Result> handler, Object param);
 
     /**
@@ -38,7 +38,7 @@ public interface IHttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    <Result extends HttpResponseResult> void doPost(Object context, String url, IHttpParams params, String contentType,
+    <Result extends HttpResponseResult> INetCall doPost(Object context, String url, IHttpParams params, String contentType,
         Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler, Object param);
 
     /**
@@ -52,7 +52,7 @@ public interface IHttpWorker {
      * @param handler 回调
      * @param param 自定义参数
      */
-    void download(Object context, String url, Map<String, String> header, File file, IHttpParams params,
+    INetCall download(Object context, String url, Map<String, String> header, File file, IHttpParams params,
         IHttpResponse<File> handler, Object param);
 
     /**
@@ -68,7 +68,7 @@ public interface IHttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    <Result extends HttpResponseResult> void upload(Object context, String url, Map<String, String> headers,
+    <Result extends HttpResponseResult> INetCall upload(Object context, String url, Map<String, String> headers,
         Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
         IHttpResponse<Result> handler, Object param);
 

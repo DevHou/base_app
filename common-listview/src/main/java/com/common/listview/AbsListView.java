@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,11 +15,11 @@ import android.view.ViewStub;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.common.listview.R;
 import com.common.listview.ptr.PtrFrameLayout;
 import com.common.listview.ptr.PtrHandler;
 import com.common.listview.ptr.PtrUIHandler;
 import com.common.listview.ptr.indicator.PtrIndicator;
+import com.common.utils.AppLog;
 
 /**
  * 包含的功能：下拉刷新，自动加载更多，右侧快速索引
@@ -47,16 +45,13 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     protected ViewStub mProgress;// 初始加载中
     protected ViewStub mEmpty;// 无数据时页面
     protected ViewStub mError;// 错误时页面
-    protected ViewStub mLoadMore;// 加载更多
     protected View mProgressView;
     protected View mHeaderView;
     protected View mEmptyView;
     protected View mErrorView;
     protected Sidebar mSideBar;
-    protected View mLoadMoreView;
 
     protected boolean mClipToPadding;
-    protected boolean mHeightWrapContent;
     protected int mPadding;
     protected int mPaddingTop;
     protected int mPaddingBottom;
@@ -69,12 +64,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     protected int mMoreProgressId;
 
     protected boolean bEnableRefresh;
-    protected boolean bEnableLoadMore;
-
-    // view自己用的listener，会调用外部设置的listener
-    protected RecyclerView.OnScrollListener mInternalOnScrollListener;
-    // 外部设置的listener
-    protected RecyclerView.OnScrollListener mExternalOnScrollListener;
 
     protected PtrFrameLayout mRefreshLayout;
     protected IOnPullToRefresh mOutRefreshListener;
@@ -85,8 +74,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
     protected int mSuperRecyclerViewMainLayout;
     private int mProgressId;
-
-    private IOnLoadMore mIOnLoadMore;
 
     public AbsListView(Context context) {
         super(context);
@@ -112,7 +99,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 a.getResourceId(R.styleable.common_list_attrs_common_list_main_layout_id,
                     R.layout.common_list_layout_main);
             mClipToPadding = a.getBoolean(R.styleable.common_list_attrs_common_list_clip_to_padding, false);
-            mHeightWrapContent = a.getBoolean(R.styleable.common_list_attrs_common_list_height_wrap_content, false);
             mPadding = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding, -1.0f);
             mPaddingTop = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_top, 0.0f);
             mPaddingBottom = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_bottom, 0.0f);
@@ -134,7 +120,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     R.layout.common_list_layout_loading);
 
             bEnableRefresh = a.getBoolean(R.styleable.common_list_attrs_common_list_enable_refresh, true);
-            bEnableLoadMore = a.getBoolean(R.styleable.common_list_attrs_common_list_enable_load_more, true);
 
         } finally {
             a.recycle();
@@ -155,11 +140,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             mHeader.setLayoutResource(mHeaderId);
             mHeaderView = mHeader.inflate();
         }
-
-        mLoadMore = (ViewStub) v.findViewById(R.id.common_list_abs_list_view_load_more);
-        mLoadMore.setLayoutResource(mMoreProgressId);
-        mLoadMoreView = mLoadMore.inflate();
-        mLoadMoreView.setVisibility(View.GONE);
 
         mProgress = (ViewStub) v.findViewById(R.id.common_list_abs_list_view_progress);
         mProgress.setLayoutResource(mProgressId);
@@ -189,16 +169,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mHeightWrapContent) {
-            int expandSpec = MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE >> 2, MeasureSpec.AT_MOST);
-            super.onMeasure(widthMeasureSpec, expandSpec);
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
-    }
-
-    @Override
     public boolean canScrollVertically(int direction) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return mRecycler.canScrollVertically(direction);
@@ -221,7 +191,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
      */
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.d(TAG, "AppBarLayout offset:" + verticalOffset);
+        AppLog.d(TAG, "AppBarLayout offset:" + verticalOffset);
         mAppBarOffset = verticalOffset;
     }
 
@@ -241,100 +211,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             throw new IllegalArgumentException("must has a RecyclerView with id list!");
 
         mRecycler.setClipToPadding(mClipToPadding);
-        mInternalOnScrollListener = new RecyclerView.OnScrollListener() {
-
-            /**
-             * layoutManager的类型（枚举）
-             */
-            protected LAYOUT_MANAGER_TYPE layoutManagerType;
-
-            /**
-             * 最后一个的位置
-             */
-            private int[] lastPositions;
-
-            /**
-             * 最后一个可见的item的位置
-             */
-            private int lastVisibleItemPosition;
-
-            /**
-             * 当前滑动的状态
-             */
-            private int currentScrollState = 0;
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (mExternalOnScrollListener != null)
-                    mExternalOnScrollListener.onScrolled(recyclerView, dx, dy);
-
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                // int lastVisibleItemPosition = -1;
-                if (layoutManagerType == null) {
-                    if (layoutManager instanceof LinearLayoutManager) {
-                        layoutManagerType = LAYOUT_MANAGER_TYPE.LINEAR;
-                    } else if (layoutManager instanceof GridLayoutManager) {
-                        layoutManagerType = LAYOUT_MANAGER_TYPE.GRID;
-                    } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-                        layoutManagerType = LAYOUT_MANAGER_TYPE.STAGGERED_GRID;
-                    } else {
-                        throw new RuntimeException(
-                            "Unsupported LayoutManager used. Valid ones are LinearLayoutManager, GridLayoutManager and StaggeredGridLayoutManager");
-                    }
-                }
-
-                switch (layoutManagerType) {
-                    case LINEAR:
-                        lastVisibleItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
-                        break;
-                    case GRID:
-                        lastVisibleItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
-                        break;
-                    case STAGGERED_GRID:
-                        StaggeredGridLayoutManager staggeredGridLayoutManager =
-                            (StaggeredGridLayoutManager) layoutManager;
-                        if (lastPositions == null) {
-                            lastPositions = new int[staggeredGridLayoutManager.getSpanCount()];
-                        }
-                        staggeredGridLayoutManager.findLastVisibleItemPositions(lastPositions);
-                        lastVisibleItemPosition = findMax(lastPositions);
-                        break;
-                }
-
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (mExternalOnScrollListener != null)
-                    mExternalOnScrollListener.onScrollStateChanged(recyclerView, newState);
-
-                currentScrollState = newState;
-                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-                int visibleItemCount = layoutManager.getChildCount();
-                int totalItemCount = layoutManager.getItemCount();
-                if (bEnableLoadMore
-                    && (visibleItemCount > 0 && currentScrollState == RecyclerView.SCROLL_STATE_IDLE && (lastVisibleItemPosition) >= totalItemCount - 1)) {
-                    if (mIOnLoadMore != null) {
-                        // Log.v(TAG, "is loading more");
-                        showLoadMore(true);
-                        mIOnLoadMore.onLoadMore();
-                    }
-                }
-            }
-
-            private int findMax(int[] lastPositions) {
-                int max = lastPositions[0];
-                for (int value : lastPositions) {
-                    if (value > max) {
-                        max = value;
-                    }
-                }
-                return max;
-            }
-        };
-        mRecycler.setOnScrollListener(mInternalOnScrollListener);
 
         if (mPadding != -1.0f) {
             mRecycler.setPadding(mPadding, mPadding, mPadding, mPadding);
@@ -395,7 +271,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     }
                 }
                 update();
-                showLoadMore(false);
             }
 
             @Override
@@ -414,7 +289,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             public void onChanged() {
                 super.onChanged();
                 update();
-                showLoadMore(false);
             }
 
             private void update() {
@@ -443,6 +317,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                         mRecycler.setVisibility(View.VISIBLE);
                         mError.setVisibility(View.GONE);
                     }
+                    ((IAbsListDataAdapter) adapter).setLoadMoreView(mMoreProgressId);
                 } else {
                     if (getChildCount() == 0) {
                         mEmpty.setVisibility(View.VISIBLE);
@@ -544,7 +419,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                Log.d(TAG, "onRefreshBegin");
+                AppLog.d(TAG, "onRefreshBegin");
                 mOutRefreshListener.onRefreshBegin();
             }
         });
@@ -555,32 +430,32 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             mRefreshLayout.addPtrUIHandler(new PtrUIHandler() {
                 @Override
                 public void onUIReset(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIReset");
+                    AppLog.d(TAG, "onUIReset");
                     handler.onUIReset();
                 }
 
                 @Override
                 public void onUIRefreshPrepare(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIRefreshPrepare");
+                    AppLog.d(TAG, "onUIRefreshPrepare");
                     handler.onUIRefreshPrepare();
                 }
 
                 @Override
                 public void onUIRefreshBegin(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIRefreshBegin");
+                    AppLog.d(TAG, "onUIRefreshBegin");
                     handler.onUIRefreshBegin();
                 }
 
                 @Override
                 public void onUIRefreshComplete(PtrFrameLayout frame) {
-                    Log.d(TAG, "onUIRefreshComplete");
+                    AppLog.d(TAG, "onUIRefreshComplete");
                     handler.onUIRefreshComplete();
                 }
 
                 @Override
                 public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status,
                     PtrIndicator ptrIndicator) {
-                    Log.d(TAG, "onUIPositionChange");
+                    AppLog.d(TAG, "onUIPositionChange");
                     PtrStatus ptrStatus;
                     switch (status) {
                         case PtrFrameLayout.PTR_STATUS_INIT:
@@ -603,13 +478,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             });
         }
         mRefreshLayout.setHeaderView(view);
-    }
-
-    /**
-     * 设置滚动监听器
-     */
-    public void setOnScrollListener(RecyclerView.OnScrollListener listener) {
-        mExternalOnScrollListener = listener;
     }
 
     /**
@@ -698,46 +566,12 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         mError.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * 加载更多完成后主动调用这个方法，如果有数据加载即调用了add相关方法则不用主动调用这个方法
-     */
-    public void stopLoadMore() {
-        showLoadMore(false);
-    }
-
     public void stopRefresh() {
         mRefreshLayout.refreshComplete();
     }
 
     public void setEnableRefresh(boolean enable) {
         this.bEnableRefresh = enable;
-    }
-
-    public void setEnableLoadMore(boolean enable) {
-        this.bEnableLoadMore = enable;
-        mLoadMore.setEnabled(enable);
-        mLoadMore.setVisibility(enable ? VISIBLE : GONE);
-    }
-
-    /**
-     * 显示或隐藏加载更多view
-     *
-     * @param show 是否显示
-     */
-    private void showLoadMore(boolean show) {
-        // Log.v(TAG, "show load more " + show);
-        if (show) {
-            mLoadMoreView.setVisibility(View.VISIBLE);
-        } else {
-            mLoadMoreView.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    /**
-     * 设置加载更多回调，当需要分页时使用，不设置的话列表最后不会显示加载更多
-     */
-    public void setOnLoadMoreListener(IOnLoadMore l) {
-        mIOnLoadMore = l;
     }
 
     /**
@@ -813,13 +647,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     return COMPLETE;
             }
         }
-    }
-
-    /**
-     * 加载跟多回调
-     */
-    public interface IOnLoadMore {
-        void onLoadMore();
     }
 
 }

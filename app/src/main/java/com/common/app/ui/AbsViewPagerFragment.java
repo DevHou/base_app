@@ -1,63 +1,56 @@
 package com.common.app.ui;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.common.app.R;
 import com.common.app.uikit.UnScrollViewPager;
-import com.common.app.uikit.indicator.IIconPagerAdapter;
-import com.common.app.uikit.indicator.IPageIndicator;
-
+import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 15/12/10.
- * 
+ *
  * 带tab的viewpager
+ * 
+ * 有一个问题是，tabLayout高度还不能自适应，需要写死dip
+ *
+ * TabLayout id = common_viewpager_tl
+ * ViewPager id = common_viewpager_vp
  */
-public abstract class AbsViewPagerFragment extends BaseFragment implements ViewPager.OnPageChangeListener {
+public abstract class AbsViewPagerFragment extends BaseFragment {
 
     private static final String TAG = AbsViewPagerFragment.class.getSimpleName();
 
     protected UnScrollViewPager mViewPager = null;
-    protected IPageIndicator mIndicator = null;
+    protected TabLayout mTabLayout = null;
+    protected PagerAdapter mAdapter = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        @LayoutRes
         int layoutId = getContentLayoutId() <= 0 ? R.layout.fragment_viewpager_with_title : getContentLayoutId();
-        View view = inflater.inflate(layoutId, container, false);
-
-        mIndicator = (IPageIndicator) view.findViewById(R.id.common_viewpager_indicator);
-        if (getIndicatorWith() > 0) {
-            view.findViewById(R.id.common_viewpager_indicator).getLayoutParams().width = getIndicatorWith();
-        }
-        mViewPager = (UnScrollViewPager) view.findViewById(R.id.common_viewpager_vp);
-        mViewPager.setCanScroll(canScroll());
-        mViewPager.setAdapter(new SampleFragmentPagerAdapter(getAdapterFragmentManager()));
-        mIndicator.setViewPager(mViewPager);
-        mIndicator.setOnPageChangeListener(this);
-
-        return view;
+        return inflater.inflate(layoutId, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    /**
-     * 如果是indicator类型的title可以自己设定宽度
-     *
-     * @return 宽度，默认是0，表示match_parent
-     */
-    protected int getIndicatorWith() {
-        return 0;
+        mTabLayout = (TabLayout) getView().findViewById(R.id.common_viewpager_tl);
+        mViewPager = (UnScrollViewPager) getView().findViewById(R.id.common_viewpager_vp);
+        mViewPager.setCanScroll(canScroll());
+        mAdapter = new SampleFragmentPagerAdapter(getAdapterFragmentManager());
+        mViewPager.setAdapter(mAdapter);
+        mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        updateTab();
     }
 
     /**
@@ -72,19 +65,71 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
     }
 
     /**
-     * 刷新标题
+     * 通知数据发生变化，主要用于tab数量需要从服务器获取的情况
      */
-    public void notifyUpdateTitle() {
-        if (mIndicator != null) {
-            mIndicator.notifyDataSetChanged();
+    protected void notifyDataSetChanged() {
+        mAdapter.notifyDataSetChanged();
+        updateTab();
+        // mTabLayout.requestLayout();
+    }
+
+    /**
+     * 更新TabLayout
+     */
+    private void updateTab() {
+        mTabLayout.setupWithViewPager(mViewPager);
+        // 使用自定义view，这个要在setupWithViewPager后，否则会被覆盖成纯文本的
+        for (int i = 0; i < getCount(); i++) {
+            TabLayout.Tab tab = mTabLayout.getTabAt(i);
+            View view = getFragmentTabView(i);
+            tab.setCustomView(view);
+        }
+        // 设置监听，setupWithViewPager里面做了默认设置，所以要在它之后再设置一遍
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+                onPageTabSelected(tab.getCustomView());
+                AppLog.d(TAG, "onTabSelected:" + tab.toString());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                AppLog.d(TAG, "onTabUnselected:" + tab.toString());
+                onPageTabUnSelected(tab.getCustomView());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                AppLog.d(TAG, "onTabReselected:" + tab.toString());
+            }
+        });
+        // 设置默认页，因为第一页没有回调
+        try {
+            int curr = mViewPager.getCurrentItem();
+            TabLayout.Tab tab = mTabLayout.getTabAt(curr);
+            onPageTabSelected(tab.getCustomView());
+        } catch (Exception e) {
+            AppLog.d(TAG, "set default first tab e:" + e.getLocalizedMessage());
         }
     }
 
     /**
-     * 获取定制的title样式ID，默认返回0，表示除了tab没有其他元素
+     * tab 被选中
+     *
+     * @param view 自定义的view
      */
-    protected int getCustomTitleId() {
-        return 0;
+    protected void onPageTabSelected(View view) {
+
+    }
+
+    /**
+     * tab 被取消选中
+     *
+     * @param view 自定义view
+     */
+    protected void onPageTabUnSelected(View view) {
+
     }
 
     /**
@@ -106,35 +151,23 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
     protected abstract Fragment getFragment(int position);
 
     /**
-     * @return 当前页的标题
+     * @return 当前页的标题，如果实现自定义tabview则不用重载这个方法
      */
-    protected abstract CharSequence getFragmentTitle(int position);
+    protected CharSequence getFragmentTitle(int position) {
+        return "";
+    }
 
     /**
      * 自定义的title view
      */
     protected View getFragmentTabView(int position) {
-        return LayoutInflater.from(this.getActivity()).inflate(R.layout.item_viewpager_tab, null);
+        View v = LayoutInflater.from(this.getActivity()).inflate(R.layout.item_viewpager_tab, null);
+        TextView tv = (TextView) v.findViewById(R.id.item_viewpager_tab_tv);
+        tv.setText(getFragmentTitle(position));
+        return v;
     }
 
-    @Override
-    public void onPageScrolled(int arg0, float arg1, int arg2) {
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int arg0) {
-    }
-
-    @Override
-    public void onPageSelected(int arg0) {
-        Log.d(TAG, "onPageSelected i:" + arg0);
-    }
-
-    public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter implements IIconPagerAdapter {
-
-        public SampleFragmentPagerAdapter() {
-            super(getActivity().getSupportFragmentManager());
-        }
+    public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
         public SampleFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -155,9 +188,12 @@ public abstract class AbsViewPagerFragment extends BaseFragment implements ViewP
             return AbsViewPagerFragment.this.getFragmentTitle(position);
         }
 
-        @Override
-        public View getTabView(int index) {
-            return AbsViewPagerFragment.this.getFragmentTabView(index);
+        /**
+         * 这样 notifyDataSetChanged 时会重新刷新全部页面
+         * 坏处是会全部重建所有view
+         */
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
     }
 

@@ -2,6 +2,7 @@ package com.common.app.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -28,10 +29,23 @@ public abstract class AbsListActivity extends BaseActivity implements AbsListVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initData();// 给子类一个机会在初始化list相关类之前初始化数据
-        mAdapter = getAdapter(this);
 
         mRecyclerListView = (AbsListView) findViewById(getListViewId());
-        mRecyclerListView.setLayoutManager(getLayoutManager());
+        mAdapter = getAdapter(this);
+        final RecyclerView.LayoutManager manager = getLayoutManager();
+        if (manager instanceof GridLayoutManager) {
+            ((GridLayoutManager) manager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (mAdapter.isLoadMore(position)) {
+                        return ((GridLayoutManager) manager).getSpanCount();
+                    } else {
+                        return 1;
+                    }
+                }
+            });
+        }
+        mRecyclerListView.setLayoutManager(manager);
 
         if (isRefreshEnabled()) {
             mRecyclerListView.setRefreshListener(this);
@@ -48,6 +62,7 @@ public abstract class AbsListActivity extends BaseActivity implements AbsListVie
             mRecyclerListView.setIndex(indexer);
         }
         mRecyclerListView.setAdapter(mAdapter);
+        mAdapter.setIsLoading();
         loadFirstPage();
 
         mListHeaderView = mRecyclerListView.getHeaderView();

@@ -10,7 +10,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.common.app.R;
+import com.common.utils.AppLog;
 
 
 /**
@@ -92,7 +92,7 @@ public class LoadingDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateDialog for tag:" + currentTag);
+        AppLog.d(TAG, "onCreateDialog for tag:" + currentTag);
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.setCanceledOnTouchOutside(false);
         if (currentTag == null) {
@@ -112,7 +112,7 @@ public class LoadingDialog extends DialogFragment {
         try {
             mManager.beginTransaction().remove(this).commitAllowingStateLoss();
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when remove fragment, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when remove fragment, e:" + e.getLocalizedMessage());
         }
         super.onCancel(dialog);
     }
@@ -135,27 +135,27 @@ public class LoadingDialog extends DialogFragment {
             mTextView.setText(loadingText);
         }
         if (currentTag != null) {
-            Log.d(TAG, "is showing, will not show one more");
+            AppLog.d(TAG, "is showing, will not show one more");
             return;
         }
         currentTag = tag;
         Fragment fragment = manager.findFragmentByTag(tag);
         if (fragment != null || isAdded() || isVisible()) {
-            Log.d(TAG, "find fragment in manager, will not show again");
+            AppLog.d(TAG, "find fragment in manager, will not show again");
             return;
         }
         // super.show(manager, tag);
-        Log.d(TAG, "will show dialog tag:" + currentTag);
+        AppLog.d(TAG, "will show dialog tag:" + currentTag);
         try {
             FragmentTransaction ft = manager.beginTransaction();
             ft.add(this, tag);
             ft.commitAllowingStateLoss();
             // ft.commit();
         } catch (IllegalStateException e) {
-            Log.e(TAG, "get exception e:" + e.getMessage());
+            AppLog.e(TAG, "get exception e:" + e.getMessage());
             currentTag = null;
         } catch (Exception e) {
-            Log.e(TAG, "get exception e:" + e.getMessage());
+            AppLog.e(TAG, "get exception e:" + e.getMessage());
             currentTag = null;
         }
     }
@@ -172,14 +172,14 @@ public class LoadingDialog extends DialogFragment {
 
     @Override
     public void dismiss() {
-        Log.d(TAG, "dismiss for tag:" + currentTag);
+        AppLog.d(TAG, "dismiss for tag:" + currentTag);
         currentTag = null;
         try {
             super.dismissAllowingStateLoss();
             // super.dismiss();
             mManager.beginTransaction().remove(this).commitAllowingStateLoss();
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when dismiss, e:" + e.getMessage());
+            AppLog.e(TAG, "catch exception when dismiss, e:" + e.getMessage());
         }
     }
 

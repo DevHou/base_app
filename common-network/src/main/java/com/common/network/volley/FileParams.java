@@ -1,8 +1,8 @@
 package com.common.network.volley;
 
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.common.utils.AppLog;
 import com.common.utils.IOUtils;
 
 import org.apache.http.Header;
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by houlijiang on 14/11/20.
- * 
+ *
  * volley上传文件时使用的params，从async-http扒下来的代码
  */
 public class FileParams {
@@ -348,7 +348,7 @@ public class FileParams {
                     headerStream.write(CR_LF);
                 } catch (IOException e) {
                     // Can't happen on ByteArrayOutputStream
-                    Log.e(TAG, "createHeader ByteArrayOutputStream exception", e);
+                    AppLog.e(TAG, "createHeader ByteArrayOutputStream exception", e);
                 }
                 return headerStream.toByteArray();
             }
