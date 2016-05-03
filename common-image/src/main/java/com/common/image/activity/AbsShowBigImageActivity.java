@@ -2,16 +2,16 @@ package com.common.image.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 
+import com.common.image.BigImageView;
 import com.common.image.IImageLoadListener;
 import com.common.image.ImageLoadError;
 import com.common.image.ImageLoader;
 import com.common.image.ImageOptions;
-import com.common.image.photodraweeview.PhotoDraweeView;
+import com.common.utils.AppLog;
 
 import java.io.File;
 
@@ -20,11 +20,11 @@ import java.io.File;
  * 
  * 查看大图
  */
-public abstract class AbsShowBigImageActivity extends FragmentActivity {
+public abstract class AbsShowBigImageActivity extends AppCompatActivity {
 
     private static final String TAG = AbsShowBigImageActivity.class.getSimpleName();
 
-    private PhotoDraweeView mImageView;
+    protected BigImageView mImageView;
 
     /**
      * 获取layout id
@@ -40,7 +40,7 @@ public abstract class AbsShowBigImageActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResource());
-        mImageView = (PhotoDraweeView) findViewById(getImageViewId());
+        mImageView = (BigImageView) findViewById(getImageViewId());
     }
 
     protected void showImage(String url, ImageOptions options) {
@@ -66,7 +66,7 @@ public abstract class AbsShowBigImageActivity extends FragmentActivity {
             @Override
             public void onSuccess(String s, View view, int width, int height) {
                 if (width > 0 && height > 0) {
-                    Log.v(TAG, "update image width:" + width + " height:" + height);
+                    AppLog.v(TAG, "update image width:" + width + " height:" + height);
                     mImageView.update(width, height);
                 }
             }

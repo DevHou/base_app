@@ -1,5 +1,7 @@
 package com.common.utils;
 
+import android.text.TextUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
@@ -7,9 +9,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Pattern;
-
-import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Created by houlijiang on 15/7/14.
@@ -90,7 +89,7 @@ public class CpuUtil {
             bufferedReader.close();
             String[] array = line.split(":\\s+", 2);
             if (array.length > 1) {
-                Log.i(TAG, array[1]);
+                AppLog.i(TAG, array[1]);
                 CPU_NAME = array[1];
             }
         } catch (IOException e) {
@@ -157,7 +156,7 @@ public class CpuUtil {
             }
             in.close();
             process.destroy();
-            Log.i(TAG, "CMD: " + sb.toString());
+            AppLog.i(TAG, "CMD: " + sb.toString());
             return sb.toString();
         } catch (IOException ex) {
             ex.printStackTrace();

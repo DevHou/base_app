@@ -25,11 +25,16 @@
         android:gravity="center"
         android:text="play" />
 
-    <TextView
-        android:id="@+id/test_mp3rec_text"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:maxLines="30"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/test_mp3rec_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </ScrollView>
 
 </LinearLayout>

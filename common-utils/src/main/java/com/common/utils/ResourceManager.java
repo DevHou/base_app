@@ -1,7 +1,5 @@
 package com.common.utils;
 
-import android.util.Log;
-
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Collections;
@@ -144,7 +142,7 @@ public class ResourceManager {
                 try {
                     closeable.cancel();
                 } catch (Exception e) {
-                    Log.e(TAG, "cancel exception, e:" + e.getLocalizedMessage());
+                    AppLog.e(TAG, "cancel exception, e:" + e.getLocalizedMessage());
                 }
             }
             list.clear();
@@ -172,7 +170,7 @@ public class ResourceManager {
                 try {
                     ref = (RequestsReference) mReferenceQueue.remove();
                 } catch (Exception e) {
-                    Log.e(TAG, "request check thread catch e:" + e.getLocalizedMessage());
+                    AppLog.e(TAG, "request check thread catch e:" + e.getLocalizedMessage());
                     continue;
                 }
                 if (ref != null) {

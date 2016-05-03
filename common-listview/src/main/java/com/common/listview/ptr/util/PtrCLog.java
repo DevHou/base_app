@@ -1,9 +1,10 @@
 package com.common.listview.ptr.util;
 
-import android.util.Log;
+
+import com.common.utils.AppLog;
 
 /**
- * An encapsulation of {@link Log}, enable log level and print log with parameters.
+ * An encapsulation of Log, enable log level and print log with parameters.
  *
  * @author http://www.liaohuqiu.net/
  */
@@ -37,7 +38,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_VERBOSE) {
             return;
         }
-        Log.v(tag, msg);
+        AppLog.v(tag, msg);
     }
 
     /**
@@ -51,7 +52,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_VERBOSE) {
             return;
         }
-        Log.v(tag, msg, throwable);
+        AppLog.v(tag, msg, throwable);
     }
 
     /**
@@ -61,14 +62,14 @@ public class PtrCLog {
      * @param msg
      * @param args
      */
-    public static void v(String tag, String msg, Object... args) {
+    public static void v(String tag, String msg, Object...args) {
         if (sLevel > LEVEL_VERBOSE) {
             return;
         }
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.v(tag, msg);
+        AppLog.v(tag, msg);
     }
 
     /**
@@ -81,7 +82,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_DEBUG) {
             return;
         }
-        Log.d(tag, msg);
+        AppLog.d(tag, msg);
     }
 
     /**
@@ -91,14 +92,14 @@ public class PtrCLog {
      * @param msg
      * @param args
      */
-    public static void d(String tag, String msg, Object... args) {
+    public static void d(String tag, String msg, Object...args) {
         if (sLevel > LEVEL_DEBUG) {
             return;
         }
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.d(tag, msg);
+        AppLog.d(tag, msg);
     }
 
     /**
@@ -112,7 +113,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_DEBUG) {
             return;
         }
-        Log.d(tag, msg, throwable);
+        AppLog.d(tag, msg, throwable);
     }
 
     /**
@@ -125,7 +126,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_INFO) {
             return;
         }
-        Log.i(tag, msg);
+        AppLog.i(tag, msg);
     }
 
     /**
@@ -135,14 +136,14 @@ public class PtrCLog {
      * @param msg
      * @param args
      */
-    public static void i(String tag, String msg, Object... args) {
+    public static void i(String tag, String msg, Object...args) {
         if (sLevel > LEVEL_INFO) {
             return;
         }
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.i(tag, msg);
+        AppLog.i(tag, msg);
     }
 
     /**
@@ -155,7 +156,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_INFO) {
             return;
         }
-        Log.i(tag, msg, throwable);
+        AppLog.i(tag, msg, throwable);
     }
 
     /**
@@ -168,7 +169,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_WARNING) {
             return;
         }
-        Log.w(tag, msg);
+        AppLog.w(tag, msg);
     }
 
     /**
@@ -178,14 +179,14 @@ public class PtrCLog {
      * @param msg
      * @param args
      */
-    public static void w(String tag, String msg, Object... args) {
+    public static void w(String tag, String msg, Object...args) {
         if (sLevel > LEVEL_WARNING) {
             return;
         }
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.w(tag, msg);
+        AppLog.w(tag, msg);
     }
 
     /**
@@ -199,7 +200,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_WARNING) {
             return;
         }
-        Log.w(tag, msg, throwable);
+        AppLog.w(tag, msg, throwable);
     }
 
     /**
@@ -212,7 +213,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_ERROR) {
             return;
         }
-        Log.e(tag, msg);
+        AppLog.e(tag, msg);
     }
 
     /**
@@ -222,14 +223,14 @@ public class PtrCLog {
      * @param msg
      * @param args
      */
-    public static void e(String tag, String msg, Object... args) {
+    public static void e(String tag, String msg, Object...args) {
         if (sLevel > LEVEL_ERROR) {
             return;
         }
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.e(tag, msg);
+        AppLog.e(tag, msg);
     }
 
     /**
@@ -243,7 +244,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_ERROR) {
             return;
         }
-        Log.e(tag, msg, throwable);
+        AppLog.e(tag, msg, throwable);
     }
 
     /**
@@ -256,7 +257,7 @@ public class PtrCLog {
         if (sLevel > LEVEL_FATAL) {
             return;
         }
-        Log.wtf(tag, msg);
+        AppLog.wtf(tag, msg);
     }
 
     /**
@@ -266,14 +267,14 @@ public class PtrCLog {
      * @param msg
      * @param args
      */
-    public static void f(String tag, String msg, Object... args) {
+    public static void f(String tag, String msg, Object...args) {
         if (sLevel > LEVEL_FATAL) {
             return;
         }
         if (args.length > 0) {
             msg = String.format(msg, args);
         }
-        Log.wtf(tag, msg);
+        AppLog.wtf(tag, msg);
     }
 
     /**
@@ -287,6 +288,6 @@ public class PtrCLog {
         if (sLevel > LEVEL_FATAL) {
             return;
         }
-        Log.wtf(tag, msg, throwable);
+        AppLog.wtf(tag, msg, throwable);
     }
 }

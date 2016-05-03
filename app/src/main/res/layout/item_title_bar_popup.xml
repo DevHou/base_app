@@ -9,7 +9,7 @@
         android:id="@+id/common_item_title_bar_popup_line"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/app_black" />
+        android:background="@color/app_text_black" />
 
     <TextView
         android:id="@+id/common_item_title_bar_popup_tv"

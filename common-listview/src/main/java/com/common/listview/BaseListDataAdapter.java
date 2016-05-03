@@ -4,6 +4,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.common.utils.AppLog;
+
 /**
  * Created by houlijiang on 15/11/23.
  * 
@@ -12,11 +14,17 @@ import android.view.ViewGroup;
  */
 public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
 
+    private static final String TAG = BaseListDataAdapter.class.getSimpleName();
+
     protected static final int DEFAULT_CELL_TYPE = 0;
     private Class<? extends BaseListCell<T>> mDefaultCellClass;
 
     public BaseListDataAdapter() {
         super();
+    }
+
+    public BaseListDataAdapter(IOnLoadMore listener) {
+        super(listener);
     }
 
     /**
@@ -36,7 +44,7 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getViewType(int position) {
         return DEFAULT_CELL_TYPE;
     }
 
@@ -52,9 +60,9 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
                 return mDefaultCellClass.newInstance();
             }
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            AppLog.e(TAG, "crate cell e:" + e.getLocalizedMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            AppLog.e(TAG, "crate cell e:" + e.getLocalizedMessage());
         }
         return null;
     }
@@ -73,7 +81,7 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
             listCell.initialChildViews(view);
             holder = new BaseViewHolder(view, listCell);
         } catch (Exception e) {
-            e.printStackTrace();
+            AppLog.e(TAG, "get item view holder e:" + e.getLocalizedMessage());
         }
         return holder;
     }

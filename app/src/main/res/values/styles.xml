@@ -4,10 +4,12 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionModeBackground">@color/app_blue</item>
+        <item name="android:actionModeBackground">@color/app_title_bar_bg</item>
         <item name="android:editTextStyle">@style/edit_text_base</item>
-        <item name="colorPrimary">@color/app_blue</item>
-        <item name="colorPrimaryDark">@color/app_blue</item>
+        <item name="colorPrimary">@color/app_primary</item>
+        <item name="colorPrimaryDark">@color/app_primary_dark</item>
+        <!-- 使用CAB时不会把原有的actionBar顶到下面 -->
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="AppBaseDialog" parent="Theme.AppCompat.Light.Dialog">
@@ -24,15 +26,19 @@
 
     <!-- activity动画 右进右出 -->
     <style name="AnimationActivity" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/anim_in_right_to_left</item>
-        <item name="android:activityOpenExitAnimation">@anim/anim_out_right_to_left</item>
-        <item name="android:activityCloseEnterAnimation">@anim/anim_in_left_to_right</item>
-        <item name="android:activityCloseExitAnimation">@anim/anim_out_left_to_right</item>
+        <!--启动了A，又启动B时，B进入效果-->
+        <item name="android:activityOpenEnterAnimation">@anim/anim_in_from_right</item>
+        <!--启动了A，又启动B时，A退出效果-->
+        <item name="android:activityOpenExitAnimation">@anim/anim_out_from_left</item>
+        <!--启动了A，又启动B时，退出B时，A的进入效果-->
+        <item name="android:activityCloseEnterAnimation">@anim/anim_in_from_left</item>
+        <!--启动了A，又启动B时，退出B时，B的退出效果-->
+        <item name="android:activityCloseExitAnimation">@anim/anim_out_from_right</item>
     </style>
 
     <!-- activity样式，页面动画是右进右出 -->
     <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:windowBackground">@color/app_view_background</item>
+        <item name="android:windowBackground">@color/app_window_bg</item>
         <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
     </style>
 
@@ -55,10 +61,10 @@
 
     <!-- activity动画 底部进底部出 -->
     <style name="AnimationBottomUpDown" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/anim_in_bottom_to_up</item>
+        <item name="android:activityOpenEnterAnimation">@anim/anim_in_from_bottom</item>
         <item name="android:activityOpenExitAnimation">@anim/anim_fade_out</item>
         <item name="android:activityCloseEnterAnimation">@anim/anim_fade_in</item>
-        <item name="android:activityCloseExitAnimation">@anim/anim_out_up_to_bottom</item>
+        <item name="android:activityCloseExitAnimation">@anim/anim_out_from_bottom</item>
     </style>
 
     <!-- 从底部进入退出样式 -->
@@ -66,29 +72,32 @@
         <item name="android:windowAnimationStyle">@style/AnimationBottomUpDown</item>
     </style>
 
-
-    <style name="BaseToolbarStyle" parent="Theme.AppCompat">
+    <style name="BaseToolbarStyle" parent="Widget.AppCompat.Toolbar">
         <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_width">match_parent</item>
     </style>
 
     <!-- 标题栏样式 -->
     <style name="ToolbarStyle" parent="BaseToolbarStyle">
         <!-- 标题的颜色 -->
-        <item name="android:textColorPrimary">@color/app_white</item>
+        <item name="android:textColorPrimary">@color/app_primary_text</item>
         <!--<item name="android:textColorPrimaryInverse">@color/white</item>-->
         <!-- 右侧三个点和左侧三条杠的颜色 -->
-        <item name="android:textColorSecondary">@color/app_white</item>
+        <item name="android:textColorSecondary">@color/app_primary_text</item>
         <!-- action菜单文字的颜色，只是显示在bar上的而不是popup菜单里的 -->
-        <item name="android:actionMenuTextColor">@color/app_white</item>
+        <item name="android:actionMenuTextColor">@color/app_primary_text</item>
         <!-- action菜单文字的样式，只是显示在bar上的而不是popup菜单里的 -->
         <item name="android:actionMenuTextAppearance">@style/Toolbar.MenuText</item>
         <!-- 背景色，如果不单独设置popup的背景色，则也是这个颜色 -->
-        <item name="android:background">@color/app_blue</item>
+        <item name="android:background">@color/app_title_bar_bg</item>
         <!-- 返回按钮icon，貌似不管用，需要在代码里设置 -->
-        <!--<item name="android:homeAsUpIndicator">@drawable/ic_title_back</item>-->
+        <item name="android:homeAsUpIndicator">@drawable/ic_title_back</item>
         <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
         <item name="contentInsetStart">0dip</item>
         <item name="contentInsetLeft">0dip</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <!--21以后用android:popupTheme-->
+        <item name="popupTheme">@style/Toolbar.PopupStyle</item>
     </style>
 
     <!-- 标题栏更多操作弹出窗样式 -->
@@ -97,8 +106,8 @@
         <item name="overlapAnchor">false</item>
         <item name="android:popupAnimationStyle">@null</item>
         <item name="android:windowBackground">@color/app_transparent</item>
-        <item name="android:textColorPrimary">@color/app_black</item>
-        <item name="android:background">@color/app_view_background</item>
+        <item name="android:textColorPrimary">@color/app_text_black</item>
+        <item name="android:background">@color/app_window_bg</item>
     </style>
 
     <!-- 标题栏MENU样式 -->

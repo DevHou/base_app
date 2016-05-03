@@ -1,3 +1,3 @@
 <resources>
-    <string name="app_name">common-image</string>
+    <string name="image_browser_image_list_empty">image list is empty</string>
 </resources>

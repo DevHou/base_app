@@ -14,21 +14,20 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.common.image.BigImageView;
 import com.common.image.IImageLoadListener;
 import com.common.image.ImageLoadError;
 import com.common.image.ImageLoader;
 import com.common.image.ImageOptions;
 import com.common.image.R;
-import com.common.image.photodraweeview.OnPhotoTapListener;
-import com.common.image.photodraweeview.PhotoDraweeView;
 import com.common.image.uikit.MultiTouchViewPager;
 import com.common.image.uikit.SlideDotView;
+import com.common.utils.AppLog;
 import com.common.utils.DisplayUtils;
 
 /**
@@ -39,16 +38,22 @@ import com.common.utils.DisplayUtils;
 public class ImageBrowserActivity extends FragmentActivity {
 
     private static final String TAG = ImageBrowserActivity.class.getSimpleName();
-    private static final String INTENT_IN_INT_DEFAULT_INDEX = "default_index";
-    private static final String INTENT_IN_STR_ARRAY_IMAGES = "images_array";
-    private static final String INTENT_IN_SERIAL_IMAGE_OPTION = "image_option";
+    protected static final String INTENT_IN_INT_DEFAULT_INDEX = "default_index";
+    protected static final String INTENT_IN_STR_ARRAY_IMAGES = "images_array";
+    protected static final String INTENT_IN_SERIAL_IMAGE_OPTION = "image_option";
 
     private String[] mImages;
     private ImageOptions mImageOption;
     private SlideDotView mDotView;
     private MultiTouchViewPager mViewPager;
 
-    public static void launch(Context context, String[] image, int initialIndex, ImageOptions options) {
+    public static void launch(Activity context, String[] image, int initialIndex, ImageOptions options) {
+        Intent intent = createIntent(context, image, initialIndex, options);
+        context.startActivity(intent);
+        animateInOut(context);
+    }
+
+    protected static Intent createIntent(Activity context, String[] image, int initialIndex, ImageOptions options) {
         Intent intent = new Intent(context, ImageBrowserActivity.class);
         intent.putExtra(INTENT_IN_INT_DEFAULT_INDEX, initialIndex);
         if (image != null) {
@@ -57,17 +62,20 @@ public class ImageBrowserActivity extends FragmentActivity {
         if (options != null) {
             intent.putExtra(INTENT_IN_SERIAL_IMAGE_OPTION, options);
         }
-        context.startActivity(intent);
-        ((Activity) context).overridePendingTransition(R.anim.common_image_brower_fade_in, R.anim.common_image_brower_fade_out);
+        return intent;
+    }
+
+    protected static void animateInOut(Activity context) {
+        context.overridePendingTransition(R.anim.common_image_brower_fade_in, R.anim.common_image_brower_fade_out);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.common_fragment_large_image);
+        setContent();
 
         if (!getIntent().hasExtra(INTENT_IN_STR_ARRAY_IMAGES)) {
-            Toast.makeText(this, "图片地址为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.image_browser_image_list_empty), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -78,25 +86,28 @@ public class ImageBrowserActivity extends FragmentActivity {
         }
 
         //
-        mViewPager = (MultiTouchViewPager) findViewById(R.id.common_fragment_large_image_view_pager);
-        mDotView = (SlideDotView) findViewById(R.id.common_fragment_large_image_indicator);
+        mViewPager = getViewPager();
+        mDotView = getDotView();
 
         PhotoImagePagerAdapter adapter = new PhotoImagePagerAdapter();
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(defaultIndex);
+        onImagePageSelected(0, mImages.length);
 
-        if (mImages.length > 1) {
-            mDotView.init(mImages.length);
-            mDotView.setSelected(defaultIndex);
-        } else {
-            mDotView.setVisibility(View.GONE);
+        if (mDotView != null) {
+            if (mImages.length > 1) {
+                mDotView.init(mImages.length);
+                mDotView.setSelected(defaultIndex);
+            } else {
+                mDotView.setVisibility(View.GONE);
+            }
         }
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int index) {
-                mDotView.setSelected(index);
+                onImagePageSelected(index, mImages.length);
             }
 
             @Override
@@ -112,18 +123,59 @@ public class ImageBrowserActivity extends FragmentActivity {
     @Override
     public void finish() {
         super.finish();
-        this.overridePendingTransition(R.anim.common_image_brower_fade_in, R.anim.common_image_brower_fade_out);
+        animateInOut(this);
     }
 
+    // ==================子类可以重载方法来定制UI=====================start
+    /**
+     * 设置ContentView
+     */
+    protected void setContent() {
+        setContentView(R.layout.common_fragment_large_image);
+    }
+
+    /**
+     * 获取viewPager
+     */
+    protected MultiTouchViewPager getViewPager() {
+        return (MultiTouchViewPager) findViewById(R.id.common_fragment_large_image_view_pager);
+    }
+
+    /**
+     * 获取SlideDotView
+     */
+    protected SlideDotView getDotView() {
+        return (SlideDotView) findViewById(R.id.common_fragment_large_image_indicator);
+    }
+
+    /**
+     * 页面选择
+     */
+    protected void onImagePageSelected(int index, int total) {
+        if (mDotView != null) {
+            mDotView.setSelected(index);
+        }
+    }
+
+    /**
+     * 生成单页view
+     */
+    protected View createPageView(Context context) {
+        return LayoutInflater.from(context).inflate(R.layout.common_fragment_large_image_item, null);
+    }
+
+    /**
+     * 获取单页中的PhotoView
+     * 
+     * @param view 单页View
+     */
+    protected BigImageView getPhotoView(View view) {
+        return (BigImageView) view.findViewById(R.id.common_fragment_large_image_item_photoview);
+    }
+
+    // ==================子类可以重载方法来定制UI=====================end
+
     private class PhotoImagePagerAdapter extends PagerAdapter {
-
-        private OnPhotoTapListener mOnPhotoTapListener = new OnPhotoTapListener() {
-
-            @Override
-            public void onPhotoTap(View view, float x, float y) {
-                finish();
-            }
-        };
 
         @Override
         public int getCount() {
@@ -133,11 +185,9 @@ public class ImageBrowserActivity extends FragmentActivity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
 
-            View convertView =
-                LayoutInflater.from(container.getContext()).inflate(R.layout.common_fragment_large_image_item, null);
-            final PhotoDraweeView imageView =
-                (PhotoDraweeView) convertView.findViewById(R.id.common_fragment_large_image_item_photoview);
-            imageView.setOnPhotoTapListener(mOnPhotoTapListener);
+            View convertView = createPageView(container.getContext());
+            final BigImageView imageView = getPhotoView(convertView);
+            //imageView.setOnPhotoTapListener(mOnPhotoTapListener);
 
             String url = getItem(position);
 
@@ -156,7 +206,7 @@ public class ImageBrowserActivity extends FragmentActivity {
                 @Override
                 public void onSuccess(String s, View view, int width, int height) {
                     if (width > 0 && height > 0) {
-                        Log.v(TAG, "update image width:" + width + " height:" + height);
+                        AppLog.v(TAG, "update image width:" + width + " height:" + height);
                         imageView.update(width, height);
                     }
                 }

@@ -4,18 +4,43 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:actionModeBackground">@color/app_blue</item>
+        <item name="android:actionModeBackground">@color/app_title_bar_bg</item>
         <item name="android:editTextStyle">@style/edit_text_base</item>
         <!-- 19以后用，设置了这个就会导致下面设置的颜色不显示 -->
         <!--<item name="android:windowTranslucentStatus">true</item>-->
         <!-- 21以后用 -->
-        <item name="android:colorPrimary">@color/app_blue</item>
-        <item name="android:colorPrimaryDark">@color/app_blue</item>
+        <item name="android:colorPrimary">@color/app_primary</item>
+        <item name="android:colorPrimaryDark">@color/app_primary_dark</item>
         <!-- 各种系统控件的颜色 -->
-        <item name="colorAccent">@color/app_blue</item>
+        <item name="colorAccent">@color/app_primary</item>
         <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
         <item name="android:contentInsetStart">0dip</item>
         <item name="android:contentInsetLeft">0dip</item>
+        <!-- 使用CAB时不会把原有的actionBar顶到下面 -->
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+    <!-- 标题栏样式 -->
+    <style name="ToolbarStyle" parent="BaseToolbarStyle">
+        <!-- 标题的颜色 -->
+        <item name="android:textColorPrimary">@color/app_primary_text</item>
+        <!--<item name="android:textColorPrimaryInverse">@color/white</item>-->
+        <!-- 右侧三个点和左侧三条杠的颜色 -->
+        <item name="android:textColorSecondary">@color/app_primary_text</item>
+        <!-- action菜单文字的颜色，只是显示在bar上的而不是popup菜单里的 -->
+        <item name="android:actionMenuTextColor">@color/app_primary_text</item>
+        <!-- action菜单文字的样式，只是显示在bar上的而不是popup菜单里的 -->
+        <item name="android:actionMenuTextAppearance">@style/Toolbar.MenuText</item>
+        <!-- 背景色，如果不单独设置popup的背景色，则也是这个颜色 -->
+        <item name="android:background">@color/app_title_bar_bg</item>
+        <!-- 返回按钮icon，貌似不管用，需要在代码里设置 -->
+        <item name="android:homeAsUpIndicator">@drawable/ic_title_back</item>
+        <!-- 左边距，不设置的话默认是16dip，貌似不好使要在layout里定义 -->
+        <item name="contentInsetStart">0dip</item>
+        <item name="contentInsetLeft">0dip</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <!--21以后用android:popupTheme-->
+        <item name="android:popupTheme">@style/Toolbar.PopupStyle</item>
     </style>
 
     <!-- 标题栏更多操作弹出窗样式 -->
@@ -24,8 +49,8 @@
         <item name="android:overlapAnchor">false</item>
         <item name="android:popupAnimationStyle">@null</item>
         <item name="android:windowBackground">@color/app_transparent</item>
-        <item name="android:textColorPrimary">@color/app_black</item>
-        <item name="android:background">@color/app_view_background</item>
+        <item name="android:textColorPrimary">@color/app_text_black</item>
+        <item name="android:background">@color/app_window_bg</item>
     </style>
 
 </resources>

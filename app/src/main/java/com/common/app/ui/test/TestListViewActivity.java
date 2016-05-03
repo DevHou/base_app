@@ -2,15 +2,21 @@ package com.common.app.ui.test;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.common.app.R;
+import com.common.app.api.ApiConstants;
+import com.common.app.api.TestDataModel;
+import com.common.app.base.error.ErrorModel;
+import com.common.app.base.manager.DataServiceManager;
+import com.common.app.base.service.DataServiceResultModel;
+import com.common.app.base.service.IDataServiceCallback;
+import com.common.app.service.AuthDataService;
 import com.common.app.ui.BaseListActivity;
+import com.common.app.uikit.Tips;
 import com.common.listview.AbsListDataAdapter;
-import com.common.listview.AbsListView;
 import com.common.listview.BaseListCell;
 import com.common.listview.BaseListDataAdapter;
 
@@ -20,6 +26,13 @@ import com.common.listview.BaseListDataAdapter;
  * 测试列表控件
  */
 public class TestListViewActivity extends BaseListActivity {
+
+    private static final String TAG = TestListViewActivity.class.getSimpleName();
+
+    private AuthDataService mDataService = (AuthDataService) DataServiceManager.getService(AuthDataService.SERVICE_KEY);
+
+    private int mPageNum;
+    private boolean mHasMore;
 
     @Override
     protected boolean bindContentView() {
@@ -35,64 +48,55 @@ public class TestListViewActivity extends BaseListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRecyclerListView.setOnLoadMoreListener(new AbsListView.IOnLoadMore() {
+    }
+
+    @Override
+    protected AbsListDataAdapter getAdapter(Context context) {
+        return new MyAdapter(new AbsListDataAdapter.IOnLoadMore() {
             @Override
             public void onLoadMore() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Data[] data = new Data[30];
-                        for (int i = 0; i < data.length; i++) {
-                            data[i] = new Data();
-                            data[i].name = "这是测试文本，index：" + i;
-                        }
-                        mAdapter.addAll(data);
-                    }
-                }, 2000);
+                loadList(false);
             }
         });
     }
 
     @Override
-    protected AbsListDataAdapter getAdapter(Context context) {
-        return new MyAdapter();
-    }
-
-    @Override
     protected void loadFirstPage() {
-        loadList();
+        initFirstPage();
+        loadList(true);
     }
 
     @Override
     public void onListRefresh() {
-        loadList();
+        initFirstPage();
+        loadList(false);
     }
 
-    private void loadList(){
-        final Data[] data = new Data[30];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = new Data();
-            data[i].name = "这是测试文本，index：" + i;
-        }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerListView.stopRefresh();
-                mAdapter.addAll(data);
-            }
-        }, 2000);
+    private void initFirstPage() {
+        mPageNum = ApiConstants.API_LIST_FIRST_PAGE;
+        mHasMore = true;
+    }
 
+    private void loadList(boolean readCache) {
 
-       /* mDataService.getTeacherList(this, mCategoryId, mPageNum, new IDataServiceCallback<TeacherListModel>() {
+        mDataService.getTestList(this, readCache, mPageNum, new IDataServiceCallback<TestDataModel>() {
             @Override
-            public void onSuccess(DataServiceResultModel result, TeacherListModel obj, Object param) {
+            public void onSuccess(DataServiceResultModel result, TestDataModel obj, Object param) {
                 int pageNum = (int) param;
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
                     mAdapter.clearData();
+                    mRecyclerListView.stopRefresh();
+                    // 先置成不可加载更多防止因为读取缓存导致循环读取
+                    mAdapter.setIsLoading();
+                    mAdapter.setIfHasMore(false);
+                }
+                mHasMore = obj.pageInfo.hasMore;
+                if (!result.isCache) {
+                    // 不是缓存的才设置是否能加载更多并且增加页码数
+                    mAdapter.setIfHasMore(mHasMore);
+                    mPageNum++;
                 }
                 mAdapter.addAll(obj.list);
-                mHasMore = obj.pageInfo.hasMore;
-                mPageNum++;
             }
 
             @Override
@@ -101,29 +105,33 @@ public class TestListViewActivity extends BaseListActivity {
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
                     showErrorView(result);
                 } else {
-                    Tips.showMessage(TeacherListActivity.this, result.message);
+                    Tips.showMessage(TestListViewActivity.this, result.message);
                 }
             }
-        }, mPageNum);*/
+        }, mPageNum);
 
     }
 
-    public class MyAdapter extends BaseListDataAdapter<Data> {
+    public class MyAdapter extends BaseListDataAdapter<TestDataModel.DataItem> {
+
+        public MyAdapter(IOnLoadMore listener) {
+            super(listener);
+        }
 
         @Override
-        protected BaseListCell<Data> createCell(int type) {
+        protected BaseListCell<TestDataModel.DataItem> createCell(int type) {
             return new ItemCell();
         }
     }
 
-    public class ItemCell implements BaseListCell<Data>, View.OnClickListener {
+    public class ItemCell implements BaseListCell<TestDataModel.DataItem>, View.OnClickListener {
 
         private TextView tv;
         private View btn1;
         private View btn2;
 
         @Override
-        public void setData(Data model, int position) {
+        public void setData(TestDataModel.DataItem model, int position) {
             tv.setText(model.name);
             btn1.setTag(model.name);
             btn2.setTag(model.name);
@@ -150,7 +158,4 @@ public class TestListViewActivity extends BaseListActivity {
         }
     }
 
-    public class Data {
-        public String name;
-    }
 }

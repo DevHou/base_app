@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.common.app.R;
+import com.common.utils.AppLog;
 
 
 /**
@@ -61,7 +61,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.v(TAG, "onCreate");
+        AppLog.v(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppDialog);
         setCancelable(true);
@@ -69,7 +69,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.v(TAG, "onCreateView");
+        AppLog.v(TAG, "onCreateView");
         // 去掉四周的黑边
         // getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0));
         getDialog().getWindow().setBackgroundDrawableResource(R.drawable.shape_transparent_corner);
@@ -94,7 +94,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Log.v(TAG, "onCreateDialog");
+        AppLog.v(TAG, "onCreateDialog");
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         if (mBuilder.mCancelable) {
             dialog.setCanceledOnTouchOutside(true);
@@ -137,7 +137,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             try {
                 ((ViewGroup) mBuilder.mCustomView.getParent()).removeView(mBuilder.mCustomView);
             } catch (Exception e) {
-                Log.e(TAG, "remove view for custom view, exception e:" + e.getLocalizedMessage());
+                AppLog.e(TAG, "remove view for custom view, exception e:" + e.getLocalizedMessage());
             }
             root.addView(mBuilder.mCustomView);
         }
@@ -173,7 +173,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             if (mBuilder.mButtons.length > 1 && i != mBuilder.mButtons.length - 1) {
                 View line = new View(mBuilder.mContext);
                 line.setLayoutParams(new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT));
-                line.setBackgroundColor(getResources().getColor(R.color.app_black));
+                line.setBackgroundColor(getResources().getColor(R.color.app_divider));
                 layoutBtns.addView(line);
             }
         }
@@ -229,7 +229,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
 
     @Override
     public void onCancel(DialogInterface dialog) {
-        Log.v(TAG, "onCancel");
+        AppLog.v(TAG, "onCancel");
         currentTag = null;
         if (mBuilder.mDismissListener != null) {
             mBuilder.mDismissListener.onDismiss(false);
@@ -237,14 +237,14 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
         try {
             mManager.beginTransaction().remove(this).commitAllowingStateLoss();
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when remove fragment, e:" + e.getMessage());
+            AppLog.e(TAG, "catch exception when remove fragment, e:" + e.getMessage());
         }
         super.onCancel(dialog);
     }
 
     @Override
     public void dismiss() {
-        Log.v(TAG, "dismiss");
+        AppLog.v(TAG, "dismiss");
         dismiss(false);
     }
 
@@ -258,20 +258,20 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             // super.dismiss();
             mManager.beginTransaction().remove(this).commitAllowingStateLoss();
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when dismiss, e:" + e.getMessage());
+            AppLog.e(TAG, "catch exception when dismiss, e:" + e.getMessage());
         }
     }
 
     public void show(FragmentManager manager, String tag) {
         mManager = manager;
         if (currentTag != null) {
-            Log.d(TAG, "is showing, will not show one more");
+            AppLog.d(TAG, "is showing, will not show one more");
             return;
         }
         currentTag = tag;
         Fragment fragment = manager.findFragmentByTag(tag);
         if (fragment != null || isAdded() || isVisible()) {
-            Log.d(TAG, "find fragment in manager, will not show again, tag:" + tag);
+            AppLog.d(TAG, "find fragment in manager, will not show again, tag:" + tag);
             return;
         }
         try {
@@ -280,10 +280,10 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             ft.commitAllowingStateLoss();
             // ft.commit();
         } catch (IllegalStateException e) {
-            Log.e(TAG, "get exception e:" + e.getMessage());
+            AppLog.e(TAG, "get exception e:" + e.getMessage());
             currentTag = null;
         } catch (Exception e) {
-            Log.e(TAG, "get exception e:" + e.getMessage());
+            AppLog.e(TAG, "get exception e:" + e.getMessage());
             currentTag = null;
         }
     }

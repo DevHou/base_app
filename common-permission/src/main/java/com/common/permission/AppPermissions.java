@@ -1,11 +1,5 @@
 package com.common.permission;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +9,13 @@ import rx.Observable;
 import rx.functions.Action0;
 import rx.functions.FuncN;
 import rx.subjects.PublishSubject;
+
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 15/10/8.
@@ -115,7 +116,7 @@ public class AppPermissions {
     private boolean hasPermission_(String...permissions) {
         for (String permission : permissions) {
             if (mCtx.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                Log.v(TAG, "permission " + permission + " not granted!");
+                AppLog.v(TAG, "permission " + permission + " not granted!");
                 return false;
             }
         }

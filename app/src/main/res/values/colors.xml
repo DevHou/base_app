@@ -1,24 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="app_view_background">#f0f0f0</color>
-    <color name="app_white">#ffffff</color>
-    <color name="app_white_pressed">#dddddd</color>
-    <color name="app_blue">#00ccff</color>
-    <color name="app_blue_pressed">#00abd6</color>
+    <color name="material_white">#ffffff</color>
+    <color name="material_black_100">#f5f5f5</color>
+    <color name="material_black_300">#e0e0e0</color>
+    <color name="material_black_500">#9e9e9e</color>
+    <color name="material_black_900">#212121</color>
+    <color name="material_blue_a200">#40ceff</color>
+    <color name="material_blue_a400">#00b0ff</color>
+    <color name="material_blue_400">#29b6f6</color>
+    <color name="material_blue_500">#03a9f4</color>
+    <color name="material_blue_600">#3949AB</color>
+    <color name="material_blue_800">#0a77bd</color>
+    <color name="material_Indigo_800">#283593</color>
+    <color name="material_blue_A400">#3D5AFE</color>
+    <color name="material_blue_A200">#536DFE</color>
+
     <color name="app_transparent">@android:color/transparent</color>
-    <color name="app_black">#333333</color>
 
     <!-- 按钮颜色 -->
-    <color name="app_btn_white">@color/app_white</color>
-    <color name="app_btn_white_disable">@color/app_white_pressed</color>
-    <color name="app_btn_white_pressed">@color/app_white_pressed</color>
-    <color name="app_btn_blue">@color/app_blue</color>
-    <color name="app_btn_blue_disable">@color/app_blue_pressed</color>
-    <color name="app_btn_blue_pressed">@color/app_blue_pressed</color>
+    <color name="app_btn_white">@color/material_white</color>
+    <color name="app_btn_white_disable">@color/material_black_100</color>
+    <color name="app_btn_white_pressed">@color/material_black_100</color>
+    <color name="app_btn_blue">@color/material_blue_400</color>
+    <color name="app_btn_blue_disable">@color/material_blue_a400</color>
+    <color name="app_btn_blue_pressed">@color/material_blue_a400</color>
+    <color name="app_btn_black">@color/material_black_900</color>
     <!-- 文字颜色 -->
-    <color name="app_text_white">@color/app_white</color>
-    <color name="app_text_white_pressed">@color/app_white_pressed</color>
-    <color name="app_text_white_disable">@color/app_white_pressed</color>
+    <color name="app_text_white">@color/material_white</color>
+    <color name="app_text_white_pressed">@color/material_black_100</color>
+    <color name="app_text_white_disable">@color/material_black_100</color>
+    <color name="app_text_black">@color/material_black_900</color>
+    <color name="app_text_black_pressed">@color/material_black_500</color>
+    <color name="app_text_black_disable">@color/material_black_500</color>
+    <color name="app_text_hint">@color/material_black_100</color>
 
-    <color name="text_hint">@color/app_white_pressed</color>
+    <!--主题色等应用定制颜色-->
+    <color name="app_primary">@color/material_blue_400</color>
+    <color name="app_primary_dark">@color/material_blue_500</color>
+    <color name="app_primary_text">@color/material_white</color>
+    <color name="app_menu_text">@color/material_white</color>
+
+    <color name="app_title_bar_bg">@color/material_blue_400</color>
+    <color name="app_window_bg">@color/material_white</color>
+    <color name="app_divider">@color/material_black_500</color>
+
+    <color name="top_tab_text">#e7e7e7</color>
+    <color name="top_tab_text_selected">#ffffff</color>
+    <color name="top_tab_indicator">#ffffff</color>
+
 </resources>

@@ -18,6 +18,8 @@ import java.io.File;
  */
 public class TestImageLoaderActivity extends BaseActivity {
 
+    private static final String TAG = TestImageLoaderActivity.class.getSimpleName();
+
     @Override
     protected boolean bindContentView() {
         setContentView(R.layout.activity_test_image_loader);
@@ -29,8 +31,8 @@ public class TestImageLoaderActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         ImageOptions options =
-            new ImageOptions.Builder().showEmptyImage(R.drawable.ic_list_empty)
-                .showFailImage(R.drawable.ic_list_fail).build();
+            new ImageOptions.Builder().showEmptyImage(R.drawable.ic_list_empty).showFailImage(R.drawable.ic_list_fail)
+                .showLoadingImage(R.drawable.ic_list_empty).build();
 
         // CommonImageView drawableCiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_drawable_circle);
         // ImageLoader.displayImage(R.drawable.test_abc, drawableCiv, options);
@@ -39,7 +41,8 @@ public class TestImageLoaderActivity extends BaseActivity {
         ImageOptions.ImageSize size = new ImageOptions.ImageSize(200, 200);
         options.setImageSize(size);
 
-        String url = "http://g.hiphotos.baidu.com/image/pic/item/ca1349540923dd54703de864d309b3de9c82486b.jpg";
+        options.setIsGif(true);
+        String url = "http://img4.imgtn.bdimg.com/it/u=2267640641,1376734823&fm=21&gp=0.jpg";
         ImageLoader.displayImage(url, netIv, options);
         CommonImageView netCiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net_circle);
         ImageLoader.displayImage(url, netCiv, null);

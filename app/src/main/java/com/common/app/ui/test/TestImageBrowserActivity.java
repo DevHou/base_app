@@ -32,7 +32,7 @@ public class TestImageBrowserActivity extends BaseActivity {
                 ImageOptions option = new ImageOptions();
                 option.setImageSize(new ImageOptions.ImageSize(500, 500));
                 option.setImageResForEmptyUri(R.drawable.ic_list_empty);
-                option.setImageResForEmptyUri(R.drawable.ic_list_fail);
+                option.setImageResOnFail(R.drawable.ic_list_fail);
                 ImageBrowserActivity.launch(TestImageBrowserActivity.this, urls, 0, option);
             }
         });

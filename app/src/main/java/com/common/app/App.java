@@ -7,12 +7,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.common.app.base.manager.DeployManager;
 import com.common.app.base.manager.Manager;
+import com.common.app.base.utils.EventUtils;
 import com.common.app.event.ExitAppEvent;
-import com.common.event.EventUtils;
+import com.common.utils.AppLog;
 
 import java.util.Iterator;
 import java.util.List;
@@ -28,11 +28,14 @@ public class App extends Application {
     // 程序版本
     private final String PREF_VERSION_TYPE = "version_type";
 
+    private static Application mInstance;
+
     private SharedPreferences mSharedPreferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mInstance=this;
         mSharedPreferences = getSharedPreferences("app", Context.MODE_PRIVATE);
         // 初始化TX基础模块
         Manager.initForProcess(this, getVersionType());
@@ -41,9 +44,9 @@ public class App extends Application {
         String processAppName = getAppName(pid);
         // 如果启动多个进程，非主进程这里会返回空
         if (TextUtils.isEmpty(processAppName)) {
-            Log.d(TAG, "processAppName is null, in service process");
+            AppLog.d(TAG, "processAppName is null, in service process");
         } else {
-            Log.d(TAG, "processAppName:" + processAppName + " in main process");
+            AppLog.d(TAG, "processAppName:" + processAppName + " in main process");
             // 初始化deploy manager等各种manager
             Manager.initForMain(this);
 
@@ -55,6 +58,10 @@ public class App extends Application {
     public void onTerminate() {
         AppMain.getInstance(this).appStop();
         super.onTerminate();
+    }
+
+    public static Application getInstance(){
+        return mInstance;
     }
 
     private String getAppName(int pID) {
@@ -73,7 +80,7 @@ public class App extends Application {
                     return processName;
                 }
             } catch (Exception e) {
-                Log.e(TAG, "e:" + e.getLocalizedMessage());
+                AppLog.e(TAG, "e:" + e.getLocalizedMessage());
             }
         }
         return null;

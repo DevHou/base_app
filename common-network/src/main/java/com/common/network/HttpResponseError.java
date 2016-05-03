@@ -14,9 +14,9 @@ public class HttpResponseError {
      */
     public static final int ERROR_PARSE = 501;
     public static final int ERROR_TIMEOUT = 600;
+    public static final int ERROR_CONNECT = 650;
     public static final int ERROR_SERVER_ERROR = 700;
     public static final int ERROR_AUTH = 800;
-    public static final int ERROR_AUTH_FILTER = 850;
     public static final int ERROR_CUSTOM_PROCESS = 900;
     public static final int ERROR_UNKNOWN = 950;
     public static final int ERROR_URL_INVALID = 1000;
@@ -46,40 +46,7 @@ public class HttpResponseError {
 
     public String getReason() {
         if (TextUtils.isEmpty(reason)) {
-            switch (code) {
-                case ERROR_PARSE: {
-                    reason = "数据解析错误";
-                    break;
-                }
-                case ERROR_TIMEOUT: {
-                    reason = "连接超时";
-                    break;
-                }
-                case ERROR_SERVER_ERROR: {
-                    reason = "服务器错误";
-                    break;
-                }
-                case ERROR_AUTH: {
-                    reason = "认证失败";
-                    break;
-                }
-                case ERROR_AUTH_FILTER: {
-                    reason = "授权失败";
-                    break;
-                }
-                case ERROR_CUSTOM_PROCESS: {
-                    reason = "数据处理错误";
-                    break;
-                }
-                case ERROR_UNKNOWN: {
-                    reason = "未知错误";
-                    break;
-                }
-                case ERROR_URL_INVALID: {
-                    reason = "网址无效";
-                    break;
-                }
-            }
+            return "";
         }
         return reason;
     }

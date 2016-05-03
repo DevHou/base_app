@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.main_btn_test_listview).setOnClickListener(this);
         findViewById(R.id.main_btn_test_mp3rec).setOnClickListener(this);
         findViewById(R.id.main_btn_test_ptr).setOnClickListener(this);
+        findViewById(R.id.main_btn_test_context_menu).setOnClickListener(this);
+
     }
 
     @Override
@@ -146,6 +148,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.main_btn_test_ptr: {
                 Intent i = new Intent(this, TestPtrActivity.class);
+                startActivity(i);
+                break;
+            }
+            case R.id.main_btn_test_context_menu:{
+                Intent i = new Intent(this, TestContextMenuActivity.class);
                 startActivity(i);
                 break;
             }

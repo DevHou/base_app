@@ -17,7 +17,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -63,11 +62,11 @@ public class ImageUtils {
             }
             return bt;
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "file not found exception when open content");
+            AppLog.e(TAG, "file not found exception when open content");
         } catch (IOException e) {
-            Log.e(TAG, "io exception when open content");
+            AppLog.e(TAG, "io exception when open content");
         } catch (Exception e) {
-            Log.e(TAG, "exception when open content");
+            AppLog.e(TAG, "exception when open content");
         }
         return null;
     }
@@ -99,7 +98,7 @@ public class ImageUtils {
                 cursor.close();
             }
         } catch (Exception e) {
-            Log.e(TAG, "catch exception when query uri, e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "catch exception when query uri, e:" + e.getLocalizedMessage());
         }
         return imagePath;
 
@@ -218,9 +217,9 @@ public class ImageUtils {
             fos.close();
             return true;
         } catch (FileNotFoundException e) {
-            Log.e(TAG, "e:", e);
+            AppLog.e(TAG, "e:" + e.getLocalizedMessage());
         } catch (IOException e) {
-            Log.e(TAG, "e:", e);
+            AppLog.e(TAG, "e:" + e.getLocalizedMessage());
         }
         return false;
     }
@@ -356,7 +355,7 @@ public class ImageUtils {
                     break;
             }
         } catch (IOException e) {
-            Log.e(TAG, "catch exception when get exif for path:" + path);
+            AppLog.e(TAG, "catch exception when get exif for path:" + path);
         }
         if (ifRotate) {
             return new PicSize(options.outHeight, options.outWidth);

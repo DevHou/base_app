@@ -13,8 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.common.app.R;
-import com.common.app.base.utils.AppLog;
 import com.common.listview.AbsListView;
+import com.common.utils.AppLog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
