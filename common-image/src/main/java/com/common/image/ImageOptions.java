@@ -140,6 +140,27 @@ public class ImageOptions implements Serializable {
         mIsGif = isGif;
     }
 
+    @Override
+    public ImageOptions clone() {
+        ImageOptions options = new ImageOptions();
+        options.emptyScaleType = this.emptyScaleType;
+        options.failScaleType = this.failScaleType;
+        options.loadingScaleType = this.loadingScaleType;
+        options.imageScaleType = this.imageScaleType;
+        options.imageForEmptyUri = this.imageForEmptyUri;
+        options.imageResForEmptyUri = this.imageResForEmptyUri;
+        options.imageOnFail = this.imageOnFail;
+        options.imageResOnFail = this.imageResOnFail;
+        options.imageOnLoading = this.imageOnLoading;
+        options.imageResOnLoading = this.imageResOnLoading;
+        options.imageProgress = this.imageProgress;
+        options.imageOnFail = this.imageOnFail;
+        options.imageSize = this.imageSize;
+        options.processor = this.processor;
+        options.mIsGif = this.mIsGif;
+        return options;
+    }
+
     public static class Builder {
 
         ImageOptions options;
