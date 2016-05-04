@@ -6,24 +6,24 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-
-import com.common.listview.R;
 
 /**
  * 右侧快速检索view
  */
 public class Sidebar extends View {
     private Paint paint;
-    private TextView header;
-    private float height;
+    private TextView header;// 中间大字
+    private float height;// 每个字符占用高度
     private Context context;
-    private MySectionIndexer mIndexer;
+    private MySectionIndexer indexer;
     private Handler mHandler;
-    private String[] sections;
+    private String[] sections;// 右侧文字
+    private int selected = -1;// 右侧选中的文字index
 
     public Sidebar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,13 +38,14 @@ public class Sidebar extends View {
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.DKGRAY);
         paint.setTextAlign(Align.CENTER);
-        paint.setTextSize(context.getResources().getDisplayMetrics().density * 10);
+        paint.setTextSize(context.getResources().getDimensionPixelSize(R.dimen.common_list_sidebar_text_size));
+        setBackgroundResource(R.drawable.common_list_shape_sidebar_normal_background);
         mHandler = new Handler();
     }
 
     public void setIndexer(MySectionIndexer index) {
-        mIndexer = index;
-        sections = mIndexer.getSections();
+        indexer = index;
+        sections = indexer.getSections();
     }
 
     public void setHeader(TextView tv) {
@@ -52,8 +53,8 @@ public class Sidebar extends View {
     }
 
     public void reloadSections() {
-        if (mIndexer != null) {
-            sections = mIndexer.getSections();
+        if (indexer != null) {
+            sections = indexer.getSections();
             invalidate();
         }
     }
@@ -67,26 +68,40 @@ public class Sidebar extends View {
         float center = getWidth() / 2;
         height = getHeight() / sections.length;
         for (int i = sections.length - 1; i > -1; i--) {
+            if (i == selected) {
+                paint.setColor(ContextCompat.getColor(context, R.color.common_list_sidebar_text_selected));
+            } else {
+                paint.setColor(ContextCompat.getColor(context, R.color.common_list_sidebar_text_normal));
+            }
             canvas.drawText(sections[i], center, height * (i + 1) - height / 2, paint);
         }
     }
 
+    /**
+     * 计算手指滑到哪个位置
+     * 
+     * @param y 纵坐标
+     * @return 位置index
+     */
     private int sectionForPoint(float y) {
         if (sections == null || sections.length == 0) {
             return 0;
         }
-        int index = (int) (y / height);
-        if (index < 0) {
-            index = 0;
+        selected = (int) (y / height);
+        if (selected < 0) {
+            selected = 0;
         }
-        if (index > sections.length - 1) {
-            index = sections.length - 1;
+        if (selected > sections.length - 1) {
+            selected = sections.length - 1;
         }
-        return index;
+        return selected;
     }
 
+    /**
+     * 设置选择的字母显示
+     */
     private void setHeaderTextAndScroll(MotionEvent event) {
-        if (mIndexer == null) {
+        if (indexer == null) {
             return;
         }
         final float y = event.getY();
@@ -97,8 +112,8 @@ public class Sidebar extends View {
         if (header != null) {
             header.setText(headerString);
         }
-        int position = mIndexer.getPositionForSection(sectionForPoint(y));
-        mIndexer.setSelection(position);
+        int position = indexer.getPositionForSection(sectionForPoint(y));
+        indexer.setSelection(position);
         // }
         // });
 
@@ -115,7 +130,7 @@ public class Sidebar extends View {
                 if (header != null) {
                     header.setVisibility(View.VISIBLE);
                 }
-                setBackgroundResource(R.drawable.common_list_shape_sidebar_background);
+                setBackgroundResource(R.drawable.common_list_shape_sidebar_pressed_background);
                 return true;
             }
             case MotionEvent.ACTION_MOVE: {
@@ -126,13 +141,13 @@ public class Sidebar extends View {
                 if (header != null) {
                     header.setVisibility(View.INVISIBLE);
                 }
-                setBackgroundColor(Color.TRANSPARENT);
+                setBackgroundResource(R.drawable.common_list_shape_sidebar_normal_background);
                 return true;
             case MotionEvent.ACTION_CANCEL:
                 if (header != null) {
                     header.setVisibility(View.INVISIBLE);
                 }
-                setBackgroundColor(Color.TRANSPARENT);
+                setBackgroundResource(R.drawable.common_list_shape_sidebar_normal_background);
                 return true;
         }
         return super.onTouchEvent(event);
