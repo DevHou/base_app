@@ -42,9 +42,19 @@ public class GlideImageLoader implements IImageLoader {
     }
 
     @Override
+    public long getCacheSize() {
+        return 0;
+    }
+
+    @Override
+    public boolean clearCache() {
+        return true;
+    }
+
+    @Override
     public void displayImage(Uri uri, CommonImageView iv, ImageOptions options, IImageLoadListener listener) {
-        //com.common.image.glide.CommonImageView imageView = iv;
-         com.common.image.glide.CommonImageView imageView = null;
+        // com.common.image.glide.CommonImageView imageView = iv;
+        com.common.image.glide.CommonImageView imageView = null;
         RequestManager manager = Glide.with(imageView.getContext());
         if (uri == null) {
             // 显示空的图片的

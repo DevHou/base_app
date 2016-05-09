@@ -28,7 +28,8 @@ public class ImageLoader {
     private static IUrlProcessor mProcessor;
 
     private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
-    //private static GlideImageLoader mImageLoader = new GlideImageLoader();
+
+    // private static GlideImageLoader mImageLoader = new GlideImageLoader();
 
     /**
      * 初始化
@@ -51,6 +52,22 @@ public class ImageLoader {
         if (filter != null) {
             mProcessor = filter;
         }
+    }
+
+    /**
+     * 获取缓存大小
+     * 
+     * @return 字节数
+     */
+    public static long getCacheSize() {
+        return mImageLoader.getCacheSize();
+    }
+
+    /**
+     * 清除缓存
+     */
+    public static void clearCache() {
+        mImageLoader.clearCache();
     }
 
     /**
