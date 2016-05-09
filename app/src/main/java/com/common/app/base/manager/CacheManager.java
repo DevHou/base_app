@@ -48,6 +48,22 @@ public class CacheManager {
     }
 
     /**
+     * 获取缓存大小
+     *
+     * @return 字节数
+     */
+    public long getCacheSize() {
+        return DiskCache.getCacheSize();
+    }
+
+    /**
+     * 清空缓存
+     */
+    public void clearCache() {
+        DiskCache.clear();
+    }
+
+    /**
      * 查找数据
      *
      * @param key 用户使用的key

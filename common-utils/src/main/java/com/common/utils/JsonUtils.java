@@ -350,7 +350,7 @@ public class JsonUtils {
         try {
             return gson.fromJson(jsonString, clazz);
         } catch (JsonSyntaxException e) {
-            AppLog.e(TAG, "parse get model e:" + e.getLocalizedMessage());
+            AppLog.e(TAG, "parse get model e:" + e.getLocalizedMessage() + " json:" + jsonString);
         }
 
         return null;

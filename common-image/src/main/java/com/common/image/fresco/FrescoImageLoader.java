@@ -29,16 +29,45 @@ import java.io.File;
 public class FrescoImageLoader implements IImageLoader {
 
     private static final String TAG = FrescoImageLoader.class.getSimpleName();
+    private File cacheDir;
 
     @Override
     public void init(Context context, File cacheDir) {
+        this.cacheDir = cacheDir;
         Fresco.initialize(context, ConfigConstants.getImagePipelineConfig(context, cacheDir));// 图片缓存初始化配置
+    }
+
+    @Override
+    public long getCacheSize() {
+        if (!cacheDir.exists()) {
+            return 0;
+        } else {
+            return getFileSize(cacheDir);
+        }
+    }
+
+    private long getFileSize(File file) {
+        long size = 0;
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                size += getFileSize(f);
+            }
+        } else {
+            size = file.length();
+        }
+        return size;
+    }
+
+    @Override
+    public boolean clearCache() {
+        Fresco.getImagePipeline().clearCaches();
+        return true;
     }
 
     @Override
     public void displayImage(Uri uri, CommonImageView iv, final ImageOptions options, IImageLoadListener listener) {
         com.common.image.fresco.CommonImageView imageView = iv;
-        //com.common.image.fresco.CommonImageView imageView = null;
+        // com.common.image.fresco.CommonImageView imageView = null;
         if (uri == null) {
             // 显示空的图片的
             if (options != null) {

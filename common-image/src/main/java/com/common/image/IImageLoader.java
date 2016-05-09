@@ -14,6 +14,10 @@ public interface IImageLoader {
 
     void init(Context context, File cacheDir);
 
+    long getCacheSize();
+
+    boolean clearCache();
+
     void displayImage(Uri uri, final CommonImageView imageView, final ImageOptions options,
         final IImageLoadListener listener);
 }
