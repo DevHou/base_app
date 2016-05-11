@@ -122,16 +122,24 @@ public class BaseDataService {
         DispatchUtils.getInstance().postInMain(new Runnable() {
             @Override
             public void run() {
-                try {
-                    if (listener != null) {
-                        if (errorModel != null) {
-                            listener.onError(errorModel, param);
-                        } else {
-                            listener.onSuccess(result, model, param);
+                if (errorModel != null) {
+                    try {
+                        listener.onError(errorModel, param);
+                    } catch (Exception e) {
+                        AppLog.e(TAG, "service on data error back, e:" + e.getLocalizedMessage());
+                    }
+                } else {
+                    try {
+                        listener.onSuccess(result, model, param);
+                    } catch (Exception e) {
+                        AppLog.e(TAG, "service on data success back, e:" + e.getLocalizedMessage());
+                        try {
+                            ErrorModel em = ErrorModel.errorWithCode(ErrorConst.ERROR_CODE_RUNTIME_CALLBACK);
+                            listener.onError(em, param);
+                        } catch (Exception e2) {
+                            AppLog.e(TAG, "after success error, error callback e:" + e2.getLocalizedMessage());
                         }
                     }
-                } catch (Exception e) {
-                    AppLog.e(TAG, "service on data back error, e:" + e.getLocalizedMessage());
                 }
             }
         });

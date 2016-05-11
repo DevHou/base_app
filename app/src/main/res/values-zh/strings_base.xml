@@ -18,4 +18,5 @@
     <string name="error_code_runtime_illegal_access">运行时错误</string>
     <string name="error_code_runtime_invocation">运行时错误</string>
     <string name="error_code_runtime_no_method">运行时错误</string>
+    <string name="error_code_runtime_callback">数据处理错误</string>
 </resources>
