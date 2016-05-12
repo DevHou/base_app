@@ -201,4 +201,11 @@ public class CommonImageView extends SimpleDraweeView {
         }
     }
 
+    /**
+     * 设置宽高比
+     */
+    public void setRatio(float ratio) {
+        setAspectRatio(ratio);
+    }
+
 }

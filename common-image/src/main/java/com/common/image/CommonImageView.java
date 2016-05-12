@@ -39,4 +39,11 @@ public class CommonImageView extends com.common.image.fresco.CommonImageView {
      */
     public void update(int imageInfoWidth, int imageInfoHeight) {
     }
+
+    /**
+     * 设置宽高比
+     */
+    public void setRatio(float ratio) {
+        super.setRatio(ratio);
+    }
 }
