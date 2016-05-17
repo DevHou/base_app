@@ -69,6 +69,8 @@ public class BaseDataService {
                                 // 增加字段是否还有更多，判断方法是当前页返回数据数目是否等于请求的每页数据数
                                 int total = result.pageInfo.currentPage * result.pageInfo.pageSize;
                                 ((ListDataModel) model).pageInfo.hasMore = (total < result.pageInfo.totalCount);
+                            } else {
+                                ((ListDataModel) model).pageInfo.hasMore = false;
                             }
                         }
                         serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS);

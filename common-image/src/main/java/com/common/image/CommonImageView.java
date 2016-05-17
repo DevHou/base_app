@@ -25,10 +25,9 @@ public class CommonImageView extends com.common.image.fresco.CommonImageView {
     /**
      * 设置点击回调，子类应该重写
      * 
-     * @param listener 回调
+     * @param listener
      */
     public void setImageOnClickListener(IOnImageClickListener listener) {
-
     }
 
     /**
