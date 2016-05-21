@@ -70,7 +70,7 @@ public class BaseDataService {
                                 int total = result.pageInfo.currentPage * result.pageInfo.pageSize;
                                 ((ListDataModel) model).pageInfo.hasMore = (total < result.pageInfo.totalCount);
                             } else {
-                                ((ListDataModel) model).pageInfo.hasMore = false;
+                                ((ListDataModel) model).pageInfo.hasMore = ((ListDataModel) model).getListCount() > 0;;
                             }
                         }
                         serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS);

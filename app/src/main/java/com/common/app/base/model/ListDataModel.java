@@ -13,6 +13,8 @@ public abstract class ListDataModel extends DataModel {
 
     public PageInfo pageInfo;// 分页信息
 
+    public abstract int getListCount();
+
     public static class PageInfo {
         public int currentPage;// 当前页码号
         public int currentPageCount;// 当前页数量
