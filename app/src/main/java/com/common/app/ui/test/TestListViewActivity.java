@@ -105,6 +105,7 @@ public class TestListViewActivity extends BaseListActivity {
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
                     showErrorView(result);
                 } else {
+                    mAdapter.setIfHasMore(false);
                     Tips.showMessage(TestListViewActivity.this, result.message);
                 }
             }
