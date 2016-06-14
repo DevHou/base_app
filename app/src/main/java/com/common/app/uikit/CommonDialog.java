@@ -42,7 +42,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
     public static CommonDialog getInstance(Builder builder) {
         if (dialog == null) {
             dialog = new CommonDialog();
-            dialog.setCancelable(false);
+            dialog.setCancelable(builder.mCancelable);
         }
         dialog.setBuilder(builder);
         return dialog;
@@ -50,7 +50,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
 
     public static CommonDialog getNewInstance(Builder builder) {
         CommonDialog d = new CommonDialog();
-        d.setCancelable(false);
+        d.setCancelable(builder.mCancelable);
         d.setBuilder(builder);
         return d;
     }
@@ -64,7 +64,6 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
         AppLog.v(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppDialog);
-        setCancelable(true);
     }
 
     @Override
@@ -346,7 +345,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
         private String[] mEditTextMsg;// 多输入框，每个输入框里面的默认文本
         private DialogMode[] mEditMode;// 多输入框，每个输入框的输入模式
         private IOnValid[] mOnValid;// 输入框检测接口，如果不设置就是可以随意输入
-        private boolean mCancelable = false;
+        private boolean mCancelable = true;
         private int mCancelIndex = -1;// 取消按钮index
         private String mHint = null;// 输入框中的提示
         private String mNotice = null;// 输入框下面的提示

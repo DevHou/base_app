@@ -199,27 +199,50 @@ public class ImageUtils {
 
     /**
      * 将图片存入文件
-     * 
+     *
      * @param bitmap 图片
      * @param outPath 存储路径
      * @return 是否成功
      */
     public static boolean BitmapToFile(Bitmap bitmap, String outPath) {
+        return BitmapToFile(bitmap, outPath, Integer.MAX_VALUE);
+    }
+
+    /**
+     * 将图片存入文件
+     * 
+     * @param bitmap 图片
+     * @param outPath 存储路径
+     * @return 是否成功
+     */
+    public static boolean BitmapToFile(Bitmap bitmap, String outPath, int maxSize) {
         if (bitmap == null) {
             return false;
         }
-        File newFile = new File(outPath);
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(newFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-            return true;
-        } catch (FileNotFoundException e) {
-            AppLog.e(TAG, "e:" + e.getLocalizedMessage());
-        } catch (IOException e) {
-            AppLog.e(TAG, "e:" + e.getLocalizedMessage());
+        int quality = 100;
+        while (true) {
+            File newFile = new File(outPath);
+            FileOutputStream fos;
+            try {
+                fos = new FileOutputStream(newFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
+                fos.flush();
+                fos.close();
+                if (newFile.length() > maxSize) {
+                    quality -= 10;
+                    if (quality <= 0) {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+            } catch (FileNotFoundException e) {
+                AppLog.e(TAG, "e:" + e.getLocalizedMessage());
+                break;
+            } catch (IOException e) {
+                AppLog.e(TAG, "e:" + e.getLocalizedMessage());
+                break;
+            }
         }
         return false;
     }
