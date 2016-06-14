@@ -49,8 +49,12 @@ public class FrescoImageLoader implements IImageLoader {
     private long getFileSize(File file) {
         long size = 0;
         if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                size += getFileSize(f);
+            if (file.listFiles() != null) {
+                for (File f : file.listFiles()) {
+                    size += getFileSize(f);
+                }
+            } else {
+                return 0;
             }
         } else {
             size = file.length();

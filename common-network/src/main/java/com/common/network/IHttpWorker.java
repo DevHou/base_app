@@ -26,6 +26,22 @@ public interface IHttpWorker {
         IHttpParams params, final Class<Result> classOfT, IHttpResponse<Result> handler, Object param);
 
     /**
+     * get 请求
+     *
+     * @param context 绑定的对象 取消时用的
+     * @param url url
+     * @param header header
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param timeout 超时时间
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    <Result extends HttpResponseResult> INetCall doGet(Object context, String url, Map<String, String> header,
+        IHttpParams params, final Class<Result> classOfT, IHttpResponse<Result> handler, int timeout, Object param);
+
+    /**
      * post请求
      * 
      * @param context 绑定的对象
@@ -38,8 +54,27 @@ public interface IHttpWorker {
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    <Result extends HttpResponseResult> INetCall doPost(Object context, String url, IHttpParams params, String contentType,
-        Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler, Object param);
+    <Result extends HttpResponseResult> INetCall doPost(Object context, String url, IHttpParams params,
+        String contentType, Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler,
+        Object param);
+
+    /**
+     * post请求
+     *
+     * @param context 绑定的对象
+     * @param url url
+     * @param params 参数
+     * @param contentType post数据类型
+     * @param classOfT 返回值类型
+     * @param headers 自定义http头
+     * @param handler 回调
+     * @param timeout 超时时间
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    <Result extends HttpResponseResult> INetCall doPost(Object context, String url, IHttpParams params,
+        String contentType, Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler,
+        int timeout, Object param);
 
     /**
      * 下载文件

@@ -84,6 +84,23 @@ public class HttpWorker {
     }
 
     /**
+     * get 请求
+     *
+     * @param tag tag
+     * @param url url
+     * @param header header
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    public static <Result extends HttpResponseResult> INetCall get(Object tag, String url, Map<String, String> header,
+        IHttpParams params, final Class<Result> classOfT, IHttpResponse<Result> handler, int timeout, Object param) {
+        return mHttpWorker.doGet(tag, url, header, params, classOfT, handler, timeout, param);
+    }
+
+    /**
      * post请求
      *
      * @param tag tag
@@ -100,6 +117,25 @@ public class HttpWorker {
         String contentType, Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler,
         Object param) {
         return mHttpWorker.doPost(tag, url, params, contentType, headers, classOfT, handler, param);
+    }
+
+    /**
+     * post请求
+     *
+     * @param tag tag
+     * @param url url
+     * @param params 参数
+     * @param contentType post数据类型
+     * @param classOfT 返回值类型
+     * @param headers 自定义http头
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    public static <Result extends HttpResponseResult> INetCall post(Object tag, String url, IHttpParams params,
+        String contentType, Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler,
+        int timeout, Object param) {
+        return mHttpWorker.doPost(tag, url, params, contentType, headers, classOfT, handler, timeout, param);
     }
 
     /**

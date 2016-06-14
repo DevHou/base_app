@@ -62,6 +62,7 @@ public class VolleyHttpWorker implements IHttpWorker {
 
     // 连接超时默认时间
     private static final int SOCKET_TIME_OUT = 3000;
+    private static final int MAX_RETRY_TIMES = 3;
 
     private int mTimeout;
     private OkHttpClient mHttpClient;
@@ -79,21 +80,22 @@ public class VolleyHttpWorker implements IHttpWorker {
     }
 
     /**
-     * get请求
-     * 
-     * @param origin 绑定的对象
-     * @param url 请求地址
-     * @param header 请求头
-     * @param params 参数列表
-     * @param classOfT 返回类型
+     * get 请求
+     *
+     * @param origin 绑定的对象 取消时用的
+     * @param url url
+     * @param header header
+     * @param params 参数
+     * @param classOfT 返回值类型
      * @param handler 回调
+     * @param timeout 超时时间
      * @param param 自定义参数
+     * @param <Result> 结果
      */
     @Override
     public <Result extends HttpResponseResult> INetCall doGet(final Object origin, String url,
-        Map<String, String> header, IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler,
-        final Object param) {
-
+        Map<String, String> header, IHttpParams params, final Class<Result> classOfT,
+        final IHttpResponse<Result> handler, int timeout, final Object param) {
         if (params != null && params.getParams() != null && params.getParams().size() > 0) {
             boolean first = true;
             try {
@@ -166,10 +168,27 @@ public class VolleyHttpWorker implements IHttpWorker {
                         }
                     }
                 });
-        req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        req.setRetryPolicy(new DefaultRetryPolicy(timeout, MAX_RETRY_TIMES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
         return new RequestCall(req);
+    }
+
+    /**
+     * get请求
+     * 
+     * @param origin 绑定的对象
+     * @param url 请求地址
+     * @param header 请求头
+     * @param params 参数列表
+     * @param classOfT 返回类型
+     * @param handler 回调
+     * @param param 自定义参数
+     */
+    @Override
+    public <Result extends HttpResponseResult> INetCall doGet(final Object origin, String url,
+        Map<String, String> header, IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler,
+        final Object param) {
+        return doGet(origin, url, header, params, classOfT, handler, mTimeout, param);
     }
 
     /**
@@ -182,13 +201,13 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param classOfT 返回值类型
      * @param headers 自定义http头
      * @param handler 回调
+     * @param timeout 超时时间
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    @Override
     public <Result extends HttpResponseResult> INetCall doPost(final Object origin, String url, IHttpParams params,
-        String contentType, Map<String, String> headers, Class<Result> classOfT, final IHttpResponse<Result> handler,
-        final Object param) {
+        String contentType, Map<String, String> headers, final Class<Result> classOfT,
+        final IHttpResponse<Result> handler, int timeout, final Object param) {
 
         GsonRequest<Result> req =
             new GsonRequest<>(Request.Method.POST, origin, url, headers, classOfT, (HttpParams) params,
@@ -240,10 +259,29 @@ public class VolleyHttpWorker implements IHttpWorker {
 
                     }
                 });
-        req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        req.setRetryPolicy(new DefaultRetryPolicy(timeout, MAX_RETRY_TIMES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
         return new RequestCall(req);
+    }
+
+    /**
+     * post请求
+     *
+     * @param origin 绑定的对象
+     * @param url url
+     * @param params 参数
+     * @param contentType post数据类型
+     * @param classOfT 返回值类型
+     * @param headers 自定义http头
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    @Override
+    public <Result extends HttpResponseResult> INetCall doPost(final Object origin, String url, IHttpParams params,
+        String contentType, Map<String, String> headers, Class<Result> classOfT, final IHttpResponse<Result> handler,
+        final Object param) {
+        return doPost(origin, url, params, contentType, headers, classOfT, handler, mTimeout, param);
     }
 
     /**

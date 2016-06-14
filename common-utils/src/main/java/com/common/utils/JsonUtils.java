@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by houlijiang on 2014/9/20.
@@ -44,7 +46,8 @@ public class JsonUtils {
         public CalendarAdapter(String format) {
             this.format = format;
             if (!TextUtils.isEmpty(format)) {
-                formatter = new SimpleDateFormat(format);
+                formatter = new SimpleDateFormat(format, Locale.getDefault());
+                formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
             }
         }
 
