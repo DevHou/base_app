@@ -170,4 +170,16 @@ public class TimeUtils {
         return f.format(d);
     }
 
+    /**
+     * HH:mm
+     */
+    public static String formatTime1(Date d) {
+        if (d == null) {
+            d = new Date(0);
+        }
+        // 大写H是24小时制
+        DateFormat f = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return f.format(d);
+    }
+
 }

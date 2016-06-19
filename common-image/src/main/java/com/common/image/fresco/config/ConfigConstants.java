@@ -79,7 +79,7 @@ public class ConfigConstants {
         };
 
         // 小图片的磁盘配置
-        DiskCacheConfig diskSmallCacheConfig = DiskCacheConfig.newBuilder().setBaseDirectoryPath(cacheFile)// 缓存图片基路径
+        DiskCacheConfig diskSmallCacheConfig = DiskCacheConfig.newBuilder(context).setBaseDirectoryPath(cacheFile)// 缓存图片基路径
             .setBaseDirectoryName(IMAGE_PIPELINE_SMALL_CACHE_DIR)// 文件夹名
             // .setCacheErrorLogger(cacheErrorLogger)//日志记录器用于日志错误的缓存。
             // .setCacheEventListener(cacheEventListener)//缓存事件侦听器。
@@ -91,7 +91,7 @@ public class ConfigConstants {
             .build();
 
         // 默认图片的磁盘配置
-        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder().setBaseDirectoryPath(cacheFile)// 缓存图片基路径
+        DiskCacheConfig diskCacheConfig = DiskCacheConfig.newBuilder(context).setBaseDirectoryPath(cacheFile)// 缓存图片基路径
             .setBaseDirectoryName(IMAGE_PIPELINE_CACHE_DIR)// 文件夹名
             // .setCacheErrorLogger(cacheErrorLogger)//日志记录器用于日志错误的缓存。
             // .setCacheEventListener(cacheEventListener)//缓存事件侦听器。
