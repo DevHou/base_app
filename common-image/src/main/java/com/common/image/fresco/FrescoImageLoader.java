@@ -3,6 +3,7 @@ package com.common.image.fresco;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 
 import com.common.image.CommonImageView;
 import com.common.image.IImageLoadListener;
@@ -48,16 +49,20 @@ public class FrescoImageLoader implements IImageLoader {
 
     private long getFileSize(File file) {
         long size = 0;
-        if (file.isDirectory()) {
-            if (file.listFiles() != null) {
-                for (File f : file.listFiles()) {
-                    size += getFileSize(f);
+        try {
+            if (file.isDirectory()) {
+                if (file.listFiles() != null) {
+                    for (File f : file.listFiles()) {
+                        size += getFileSize(f);
+                    }
+                } else {
+                    return 0;
                 }
             } else {
-                return 0;
+                size = file.length();
             }
-        } else {
-            size = file.length();
+        } catch (Exception e) {
+            Log.e(TAG, "get file size e:" + e.getLocalizedMessage());
         }
         return size;
     }
@@ -97,21 +102,22 @@ public class FrescoImageLoader implements IImageLoader {
                 new GenericDraweeHierarchyBuilder(imageView.getContext().getResources());
             if (options.getImageOnLoading() != null) {
                 builder.setPlaceholderImage(options.getImageOnLoading(),
-                    Utils.convertScaleType(options.getLoadingScaleType()));
+                    FrescoUtils.convertScaleType(options.getLoadingScaleType()));
             } else if (options.getImageResOnLoading() != 0) {
                 builder.setPlaceholderImage(
                     Utils.getDrawableFromResource(imageView.getContext(), options.getImageResOnLoading()),
-                    Utils.convertScaleType(options.getLoadingScaleType()));
+                    FrescoUtils.convertScaleType(options.getLoadingScaleType()));
             }
             if (options.getImageOnFail() != null) {
-                builder.setFailureImage(options.getImageOnFail(), Utils.convertScaleType(options.getFailScaleType()));
+                builder.setFailureImage(options.getImageOnFail(),
+                    FrescoUtils.convertScaleType(options.getFailScaleType()));
             } else if (options.getImageResOnFail() != 0) {
                 builder.setFailureImage(
                     Utils.getDrawableFromResource(imageView.getContext(), options.getImageResOnFail()),
-                    Utils.convertScaleType(options.getFailScaleType()));
+                    FrescoUtils.convertScaleType(options.getFailScaleType()));
             }
             // 设置scaleType
-            builder.setActualImageScaleType(Utils.convertScaleType(options.getImageScaleType()));
+            builder.setActualImageScaleType(FrescoUtils.convertScaleType(options.getImageScaleType()));
             // 圆角参数重新设置回去
             if (imageView.hasHierarchy()) {
                 builder.setRoundingParams(imageView.getHierarchy().getRoundingParams());

@@ -62,7 +62,7 @@ public class VolleyHttpWorker implements IHttpWorker {
 
     // 连接超时默认时间
     private static final int SOCKET_TIME_OUT = 3000;
-    private static final int MAX_RETRY_TIMES = 3;
+    private static final int MAX_RETRY_TIMES = DefaultRetryPolicy.DEFAULT_MAX_RETRIES;
 
     private int mTimeout;
     private OkHttpClient mHttpClient;
