@@ -298,8 +298,34 @@ public class VolleyHttpWorker implements IHttpWorker {
     @Override
     public INetCall download(Object tag, String url, Map<String, String> header, final File file, IHttpParams params,
         final IHttpResponse<File> handler, final Object param) {
+        return download(tag, url, header, file, params, handler, SOCKET_TIME_OUT, param);
+    }
 
-        OkHttpClient copy = mHttpClient.newBuilder().addNetworkInterceptor(new Interceptor() {
+    /**
+     * 下载文件
+     *
+     * @param tag 绑定的对象
+     * @param url url
+     * @param header header
+     * @param file 下载的文件存储位置
+     * @param params 参数
+     * @param handler 回调
+     * @param param 自定义参数
+     */
+    @Override
+    public INetCall download(Object tag, String url, Map<String, String> header, final File file, IHttpParams params,
+        final IHttpResponse<File> handler, int timeout, final Object param) {
+
+        OkHttpClient client;
+        if (timeout != SOCKET_TIME_OUT) {
+            client =
+                mHttpClient.newBuilder().connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS).build();
+        } else {
+            client = mHttpClient;
+        }
+
+        OkHttpClient copy = client.newBuilder().addNetworkInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 okhttp3.Response originalResponse = chain.proceed(chain.request());
@@ -416,6 +442,35 @@ public class VolleyHttpWorker implements IHttpWorker {
     public <Result extends HttpResponseResult> INetCall upload(Object tag, String url, Map<String, String> headers,
         Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
         final IHttpResponse<Result> handler, final Object param) {
+        return upload(tag, url, headers, files, params, classOfT, handler, SOCKET_TIME_OUT, param);
+    }
+
+    /**
+     * 上传
+     *
+     * @param tag 绑定的对象
+     * @param url url
+     * @param headers 自定义http头
+     * @param files 上传的文件
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    @Override
+    public <Result extends HttpResponseResult> INetCall upload(Object tag, String url, Map<String, String> headers,
+        Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
+        final IHttpResponse<Result> handler, int timeout, final Object param) {
+
+        OkHttpClient client;
+        if (timeout != SOCKET_TIME_OUT) {
+            client =
+                mHttpClient.newBuilder().connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS).build();
+        } else {
+            client = mHttpClient;
+        }
 
         okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
         requestBuilder.url(url);
@@ -446,7 +501,7 @@ public class VolleyHttpWorker implements IHttpWorker {
 
         ProgressRequestBody req = new ProgressRequestBody<>(requestBody.build(), handler, param);
         requestBuilder.post(req);
-        Call call = mHttpClient.newCall(requestBuilder.build());
+        Call call = client.newCall(requestBuilder.build());
         call.enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {

@@ -158,6 +158,25 @@ public class HttpWorker {
     }
 
     /**
+     * 下载文件
+     *
+     * @param tag tag
+     * @param url url
+     * @param file 下载的文件存储位置
+     * @param params 参数
+     * @param handler 回调
+     * @param param 自定义参数
+     */
+    public static INetCall download(Object tag, String url, Map<String, String> header, File file, IHttpParams params,
+        IHttpResponse<File> handler, int timeout, Object param) {
+        Object t = null;
+        if (tag != null) {
+            t = tag.hashCode();
+        }
+        return mHttpWorker.download(t, url, header, file, params, handler, timeout, param);
+    }
+
+    /**
      * 上传
      *
      * @param tag tag
@@ -178,6 +197,29 @@ public class HttpWorker {
             t = tag.hashCode();
         }
         return mHttpWorker.upload(t, url, headers, files, params, classOfT, handler, param);
+    }
+
+    /**
+     * 上传
+     *
+     * @param tag tag
+     * @param url url
+     * @param headers 自定义http头
+     * @param files 上传的文件
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    public static <Result extends HttpResponseResult> INetCall upload(Object tag, String url,
+        Map<String, String> headers, Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
+        IHttpResponse<Result> handler, int timeout, Object param) {
+        Object t = null;
+        if (tag != null) {
+            t = tag.hashCode();
+        }
+        return mHttpWorker.upload(t, url, headers, files, params, classOfT, handler, timeout, param);
     }
 
     /**
