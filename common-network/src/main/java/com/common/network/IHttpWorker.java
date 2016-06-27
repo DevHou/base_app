@@ -91,6 +91,20 @@ public interface IHttpWorker {
         IHttpResponse<File> handler, Object param);
 
     /**
+     * 下载文件
+     *
+     * @param context 绑定的对象
+     * @param url url
+     * @param header header
+     * @param file 下载的文件存储位置
+     * @param params 参数
+     * @param handler 回调
+     * @param param 自定义参数
+     */
+    INetCall download(Object context, String url, Map<String, String> header, File file, IHttpParams params,
+        IHttpResponse<File> handler, int timeout, Object param);
+
+    /**
      * 上传
      * 
      * @param context 绑定的对象
@@ -106,6 +120,23 @@ public interface IHttpWorker {
     <Result extends HttpResponseResult> INetCall upload(Object context, String url, Map<String, String> headers,
         Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
         IHttpResponse<Result> handler, Object param);
+
+    /**
+     * 上传
+     *
+     * @param context 绑定的对象
+     * @param url url
+     * @param headers 自定义http头
+     * @param files 上传的文件
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    <Result extends HttpResponseResult> INetCall upload(Object context, String url, Map<String, String> headers,
+        Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
+        IHttpResponse<Result> handler, int timeout, Object param);
 
     /**
      * 取消context相关的所有请求
