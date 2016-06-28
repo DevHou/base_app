@@ -3,7 +3,7 @@
 
     <!-- On android 4.4+ this permission is no longer required for cache purpose -->
     <!-- 好像是既支持内部SDCard又支持TF卡的有问题 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
     <application
         android:allowBackup="true"

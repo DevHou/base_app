@@ -3,6 +3,7 @@ package com.common.app.base.manager;
 import android.Manifest;
 import android.content.Context;
 import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
@@ -45,7 +46,9 @@ public class DeployManager {
             deviceId = tm.getDeviceId();
             imei = deviceId;
         } else {
-            deviceId = "";
+            // 设备初始化时系统生成的，每次恢复出厂设置时会变，而且手机上多个用户间也不一样
+            deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            AppLog.d(TAG, "read from secure device id:" + deviceId);
         }
 
         if (TextUtils.isEmpty(deviceId)) {
