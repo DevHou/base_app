@@ -6,7 +6,9 @@
 
     <!-- 网络变化监听模块用 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!--用Secure.Device_Id则不用这个权限-->
+    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
 
     <application
         android:name=".App"
