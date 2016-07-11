@@ -30,6 +30,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     private static final String TAG = AbsListDataAdapter.class.getSimpleName();
 
     protected static final int TYPE_LOAD_MORE = Integer.MAX_VALUE;
+    protected static final int TYPE_DISMISS_LOAD_MORE = Integer.MAX_VALUE - 1;
 
     public static final int HANDLE_ADD_TO_FRONT = 1;
     public static final int HANDLE_ADD_ALL = 2;
@@ -47,6 +48,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     protected List<T> mData;
     protected boolean mIsReloading = false;
     protected boolean mHasMore = true;
+    protected boolean mDismissMore = false;
     protected int mLoadMoreId = 0;// 加载更多view ID
     private IOnLoadMore mIOnLoadMore;
     // 如果数据变换太频繁会抛Cannot call this method while RecyclerView is computing a layout or scrolling异常
@@ -272,6 +274,13 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         }
     }
 
+    public void dismissLoadMore() {
+        mDismissMore = true;
+        if (!mIsReloading) {
+            noDataChanged();
+        }
+    }
+
     public boolean isLoadMore(int position) {
         if (mHasMore) {
             return position == mData.size();
@@ -296,7 +305,12 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     final public int getItemViewType(int position) {
         // AppLog.v(TAG, "get view type for " + position);
         if (mHasMore && position == mData.size()) {
-            return TYPE_LOAD_MORE;
+            if (mDismissMore) {
+                mDismissMore = false;
+                return TYPE_DISMISS_LOAD_MORE;
+            } else {
+                return TYPE_LOAD_MORE;
+            }
         }
         return getViewType(position);
     }
@@ -312,6 +326,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                 v = new TextView(viewGroup.getContext());
             }
             return new LoadMoreViewHolder(v);
+        } else if (viewType == TYPE_DISMISS_LOAD_MORE) {
+            View v = new View(viewGroup.getContext());
+            return new DismissLoadMoreViewHolder(v);
         }
         return getItemViewHolder(viewGroup, viewType);
     }
@@ -322,6 +339,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         if (viewHolder instanceof LoadMoreViewHolder) {
             // AppLog.v(TAG, "bind view holder for load more");
             mHandler.obtainMessage(HANDLE_LOAD_MORE).sendToTarget();
+            return;
+        } else if (viewHolder instanceof DismissLoadMoreViewHolder) {
             return;
         }
         setData(viewHolder, position, getData(position));
@@ -348,6 +367,14 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     private static class LoadMoreViewHolder extends ViewHolder {
 
         public LoadMoreViewHolder(View itemView) {
+            super(itemView);
+        }
+
+    }
+
+    private static class DismissLoadMoreViewHolder extends ViewHolder {
+
+        public DismissLoadMoreViewHolder(View itemView) {
             super(itemView);
         }
 

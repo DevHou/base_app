@@ -41,6 +41,9 @@ public class HttpWorker {
      * @return 结果对象
      */
     public static <T extends HttpResponseResult> T handlerResult(String result, Class<T> clazz) {
+        if (clazz == null) {
+            return null;
+        }
         if (HttpStringResponse.class.isAssignableFrom(clazz)) {
             HttpStringResponse resp = new HttpStringResponse();
             resp.data = result;
