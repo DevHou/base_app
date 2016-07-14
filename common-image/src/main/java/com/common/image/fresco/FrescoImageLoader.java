@@ -75,8 +75,8 @@ public class FrescoImageLoader implements IImageLoader {
 
     @Override
     public void displayImage(Uri uri, CommonImageView iv, final ImageOptions options, IImageLoadListener listener) {
-        com.common.image.fresco.CommonImageView imageView = iv;
-        // com.common.image.fresco.CommonImageView imageView = null;
+        // com.common.image.fresco.CommonImageView imageView = iv;
+        com.common.image.fresco.CommonImageView imageView = null;
         if (uri == null) {
             // 显示空的图片的
             if (options != null) {
@@ -115,6 +115,10 @@ public class FrescoImageLoader implements IImageLoader {
                 builder.setFailureImage(
                     Utils.getDrawableFromResource(imageView.getContext(), options.getImageResOnFail()),
                     FrescoUtils.convertScaleType(options.getFailScaleType()));
+            }
+            ImageOptions.ImageSize size = options.getImageSize();
+            if (size != null && size.width > 0 && size.height > 0) {
+                imageView.setRatio(size.width * 1.0f / size.height);
             }
             // 设置scaleType
             builder.setActualImageScaleType(FrescoUtils.convertScaleType(options.getImageScaleType()));

@@ -53,8 +53,8 @@ public class GlideImageLoader implements IImageLoader {
 
     @Override
     public void displayImage(Uri uri, CommonImageView iv, ImageOptions options, IImageLoadListener listener) {
-        // com.common.image.glide.CommonImageView imageView = iv;
-        com.common.image.glide.CommonImageView imageView = null;
+        com.common.image.glide.CommonImageView imageView = iv;
+        // com.common.image.glide.CommonImageView imageView = null;
         RequestManager manager = Glide.with(imageView.getContext());
         if (uri == null) {
             // 显示空的图片的
@@ -113,6 +113,9 @@ public class GlideImageLoader implements IImageLoader {
                     }
                 }
             }
+            if (options.getImageSize() != null) {
+                request.override(options.getImageSize().width, options.getImageSize().height);
+            }
             if (options.getIfGif()) {
                 request.asGif();
             }
@@ -121,7 +124,9 @@ public class GlideImageLoader implements IImageLoader {
         if (bit != null) {
             request.bitmapTransform(bit);
         }
-        request.diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        // 这里的dontAnimate主要是因为当placeholder和image的scaleType不同时
+        // image先显示的是placeholder的scaleType，当再次滑动回来时又用的正常的scaleType显示
+        request.dontAnimate().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
 
     }
 }
