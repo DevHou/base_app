@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.common.image.fresco.FrescoImageLoader;
+import com.common.image.glide.GlideImageLoader;
 
 import java.io.File;
 
@@ -27,9 +27,9 @@ public class ImageLoader {
     // url后处理回调
     private static IUrlProcessor mProcessor;
 
-    private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
+    //private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
 
-    // private static GlideImageLoader mImageLoader = new GlideImageLoader();
+    private static GlideImageLoader mImageLoader = new GlideImageLoader();
 
     /**
      * 初始化

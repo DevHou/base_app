@@ -7,6 +7,10 @@
 
         <activity android:name=".activity.ImageBrowserActivity" />
 
+        <meta-data
+            android:name="com.common.image.glide.MyGlideModule"
+            android:value="GlideModule" />
+
     </application>
 
 </manifest>
