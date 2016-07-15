@@ -2,10 +2,14 @@ package com.common.image.glide;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.AttributeSet;
 
+import com.bumptech.glide.load.Transformation;
+import com.common.image.ImageLoader;
 import com.common.image.R;
+import com.common.image.glide.transformations.CropCircleBorderTransformation;
 import com.common.utils.AppLog;
 
 /**
@@ -55,13 +59,13 @@ public class CircleImageView extends com.common.image.CommonImageView {
      *
      * @param resId 资源ID
      */
-//    @Override
-//    protected void loadImage(int resId) {
-//        ImageLoader.displayImage(resId, this, null);
-//    }
-//
-//    @Override
-//    public Transformation<Bitmap> createTransformation() {
-//        return new CropCircleBorderTransformation(getContext(), mBorderWidth, mBorderColor);
-//    }
+    @Override
+    protected void loadImage(int resId) {
+        ImageLoader.displayImage(resId, this, null);
+    }
+
+    @Override
+    public Transformation<Bitmap> createTransformation() {
+        return new CropCircleBorderTransformation(getContext(), mBorderWidth, mBorderColor);
+    }
 }
