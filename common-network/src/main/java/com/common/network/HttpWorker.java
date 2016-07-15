@@ -7,6 +7,7 @@ import com.common.network.volley.VolleyHttpWorker;
 import com.common.utils.JsonUtils;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -29,6 +30,11 @@ public class HttpWorker {
 
     public static boolean init(Context context, File cache, int timeoutMs) {
         mHttpWorker = new VolleyHttpWorker(context, cache, timeoutMs);
+        return true;
+    }
+
+    public static boolean init(Context context, File cache, InputStream[] cers, int timeoutMs) {
+        mHttpWorker = new VolleyHttpWorker(context, cache, cers, timeoutMs);
         return true;
     }
 

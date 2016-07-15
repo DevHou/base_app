@@ -26,10 +26,21 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -67,16 +78,76 @@ public class VolleyHttpWorker implements IHttpWorker {
     private int mTimeout;
     private OkHttpClient mHttpClient;
 
+    private X509TrustManager trustManager;
+    private SSLSocketFactory sslSocketFactory;
+
     public VolleyHttpWorker(Context context, File cache) {
         this(context, cache, SOCKET_TIME_OUT);
     }
 
     public VolleyHttpWorker(Context context, File cache, int timeout) {
+        this(context, cache, null, timeout);
+    }
+
+    public VolleyHttpWorker(Context context, File cache, InputStream[] certificate, int timeout) {
         mTimeout = timeout;
-        mHttpClient =
+
+        if (certificate != null) {
+            initForHttps(certificate);
+        }
+
+        OkHttpClient.Builder builder =
             new OkHttpClient.Builder().connectTimeout(timeout, TimeUnit.MILLISECONDS)
-                .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS).build();
+                .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS);
+        if (trustManager != null && sslSocketFactory != null) {
+            builder.sslSocketFactory(sslSocketFactory, trustManager);
+        }
+        mHttpClient = builder.build();
         SingleVolleyClient.getInstance().init(context, cache, mHttpClient, null);
+    }
+
+    /**
+     * 初始化https
+     *
+     * @param certificates cer输入文件
+     */
+    private boolean initForHttps(InputStream[] certificates) {
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null);
+            int index = 0;
+            for (InputStream certificate : certificates) {
+                String certificateAlias = Integer.toString(index++);
+                keyStore.setCertificateEntry(certificateAlias, certificateFactory.generateCertificate(certificate));
+                try {
+                    if (certificate != null)
+                        certificate.close();
+                } catch (IOException e) {
+                    AppLog.e(TAG, "close certificate e:" + e.getLocalizedMessage());
+                }
+            }
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+
+            TrustManagerFactory trustManagerFactory =
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+
+            trustManagerFactory.init(keyStore);
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                AppLog.e(TAG, "Unexpected default trust managers:" + Arrays.toString(trustManagers));
+                return false;
+            } else {
+                trustManager = (X509TrustManager) trustManagers[0];
+            }
+            sslContext.init(null, new TrustManager[] { trustManager }, new SecureRandom());
+            sslSocketFactory = sslContext.getSocketFactory();
+        } catch (Exception e) {
+            AppLog.e(TAG, "exception when init ssl, e:" + e.getLocalizedMessage());
+            return false;
+        }
+        return true;
     }
 
     /**
