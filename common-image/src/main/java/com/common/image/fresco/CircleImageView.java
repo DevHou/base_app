@@ -1,8 +1,15 @@
 package com.common.image.fresco;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.util.AttributeSet;
+
+import com.common.image.R;
+import com.common.utils.AppLog;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.generic.RoundingParams;
 
 /**
  * 圆形图片
@@ -25,28 +32,28 @@ public class CircleImageView extends com.common.image.CommonImageView {
         super(context, attrs, defStyle);
     }
 
-//    @Override
-//    protected GenericDraweeHierarchy getInnerHierarchy(Context context, AttributeSet attrs) {
-//        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView);
-//        try {
-//            int width = a.getDimensionPixelSize(R.styleable.CircleImageView_civBorderWidth, DEFAULT_BORDER_WIDTH);
-//            int color = a.getColor(R.styleable.CircleImageView_civBorderColor, DEFAULT_BORDER_COLOR);
-//            RoundingParams roundingParams = RoundingParams.asCircle();
-//            roundingParams.setBorder(color, width);
-//            GenericDraweeHierarchy h = getHierarchy();
-//            if (h == null) {
-//                GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
-//                h = builder.setRoundingParams(roundingParams).build();
-//            } else {
-//                h.setRoundingParams(roundingParams);
-//            }
-//            return h;
-//        } catch (Exception e) {
-//            AppLog.e(TAG, "circle image get attr error, e:" + e.getLocalizedMessage());
-//        } finally {
-//            a.recycle();
-//        }
-//        return getHierarchy();
-//    }
+    @Override
+    protected GenericDraweeHierarchy getInnerHierarchy(Context context, AttributeSet attrs) {
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CircleImageView);
+        try {
+            int width = a.getDimensionPixelSize(R.styleable.CircleImageView_civBorderWidth, DEFAULT_BORDER_WIDTH);
+            int color = a.getColor(R.styleable.CircleImageView_civBorderColor, DEFAULT_BORDER_COLOR);
+            RoundingParams roundingParams = RoundingParams.asCircle();
+            roundingParams.setBorder(color, width);
+            GenericDraweeHierarchy h = getHierarchy();
+            if (h == null) {
+                GenericDraweeHierarchyBuilder builder = new GenericDraweeHierarchyBuilder(getResources());
+                h = builder.setRoundingParams(roundingParams).build();
+            } else {
+                h.setRoundingParams(roundingParams);
+            }
+            return h;
+        } catch (Exception e) {
+            AppLog.e(TAG, "circle image get attr error, e:" + e.getLocalizedMessage());
+        } finally {
+            a.recycle();
+        }
+        return getHierarchy();
+    }
 
 }

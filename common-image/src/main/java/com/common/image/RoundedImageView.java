@@ -8,7 +8,7 @@ import android.util.AttributeSet;
  * 
  * 只是通过继承不同库的具体实现切换
  */
-public class RoundedImageView extends com.common.image.glide.RoundedImageView {
+public class RoundedImageView extends com.common.image.fresco.RoundedImageView {
 
     public RoundedImageView(Context context) {
         super(context);
