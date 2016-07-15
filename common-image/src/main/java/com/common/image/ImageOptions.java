@@ -246,5 +246,21 @@ public class ImageOptions implements Serializable {
             this.width = width;
             this.height = height;
         }
+
+        public ImageSize(int width, int height, int maxWidth, int maxHeight) {
+            float ratio;
+            if (width >= maxWidth && height >= maxHeight) {
+                this.width = width;
+                this.height = height;
+            } else {
+                if (maxWidth * 1.0f / width < maxHeight * 1.0f / height) {
+                    ratio = maxWidth * 1.0f / width;
+                } else {
+                    ratio = maxHeight * 1.0f / height;
+                }
+                this.width = (int) (width * ratio);
+                this.height = (int) (height * ratio);
+            }
+        }
     }
 }

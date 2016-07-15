@@ -13,7 +13,7 @@ import java.io.File;
  * 
  * 图片加载工具类
  *
- * 切换时需要改的地方
+ * 切换时需要改的地方:
  * 此类的mImageLoader实例
  * 圆角图 圆图 BigImageView的父类
  * 具体实现里的圆角图 原图里的重载方法
@@ -27,7 +27,7 @@ public class ImageLoader {
     // url后处理回调
     private static IUrlProcessor mProcessor;
 
-    //private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
+    // private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
 
     private static GlideImageLoader mImageLoader = new GlideImageLoader();
 
