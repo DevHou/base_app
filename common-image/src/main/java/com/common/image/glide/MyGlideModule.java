@@ -17,6 +17,7 @@ public class MyGlideModule implements GlideModule {
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
         ViewTarget.setTagId(R.id.glide_image_tag_id);
+        // builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
     }
 
     @Override
