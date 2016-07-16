@@ -11,6 +11,9 @@ import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.common.image.CommonImageView;
 import com.common.image.IImageLoadListener;
 import com.common.image.IImageLoader;
@@ -20,6 +23,7 @@ import com.common.utils.AppLog;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 
@@ -35,6 +39,7 @@ import okhttp3.OkHttpClient;
 public class GlideImageLoader implements IImageLoader {
 
     private static final String TAG = GlideImageLoader.class.getSimpleName();
+    private LoggingListener<String, GlideDrawable> debugListener = new LoggingListener<>();
 
     @Override
     public void init(Context context, File cacheDir) {
@@ -113,8 +118,13 @@ public class GlideImageLoader implements IImageLoader {
                     }
                 }
             }
-            if (options.getImageSize() != null) {
-                request.override(options.getImageSize().width, options.getImageSize().height);
+            ImageOptions.ImageSize size = options.getImageSize();
+            if (size != null && size.width > 0 && size.height > 0) {
+                if (iv.getLayoutParams() != null) {
+                    iv.getLayoutParams().width = size.width;
+                    iv.getLayoutParams().height = size.height;
+                }
+                request.override(size.width, size.height);
             }
             if (options.getIfGif()) {
                 request.asGif();
@@ -126,7 +136,25 @@ public class GlideImageLoader implements IImageLoader {
         }
         // 这里的dontAnimate主要是因为当placeholder和image的scaleType不同时
         // image先显示的是placeholder的scaleType，当再次滑动回来时又用的正常的scaleType显示
-        request.dontAnimate().diskCacheStrategy(DiskCacheStrategy.ALL).into(imageView);
+        // DiskCacheStrategy。ALL->DiskCacheStrategy.SOURCE 因为jpg的图片当从缓存中取时背景的白色变成了蓝色
+        request.dontAnimate().diskCacheStrategy(DiskCacheStrategy.SOURCE).listener(debugListener).into(imageView);
 
+    }
+
+    public class LoggingListener<T, R> implements RequestListener<T, R> {
+        @Override
+        public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
+            AppLog.d(TAG, String.format(Locale.ROOT, "onException(%s, %s, %s, %s)", e, model, target, isFirstResource),
+                e);
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache,
+            boolean isFirstResource) {
+            AppLog.d(TAG, String.format(Locale.ROOT, "onResourceReady(%s, %s, %s, %s, %s)", resource, model, target,
+                isFromMemoryCache, isFirstResource));
+            return false;
+        }
     }
 }
