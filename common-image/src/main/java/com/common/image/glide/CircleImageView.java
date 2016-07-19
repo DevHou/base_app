@@ -61,7 +61,7 @@ public class CircleImageView extends com.common.image.CommonImageView {
      */
     @Override
     protected void loadImage(int resId) {
-        ImageLoader.displayImage(resId, this, null);
+        ImageLoader.displayImage(getContext(), resId, this, null);
     }
 
     @Override

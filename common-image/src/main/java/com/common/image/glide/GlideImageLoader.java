@@ -1,11 +1,15 @@
 package com.common.image.glide;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.Transformation;
@@ -33,34 +37,94 @@ import okhttp3.OkHttpClient;
  * 图片加载的glide实现
  *
  * 目前这个库的问题：
- * ImageView 不能用setTag，因为glide内部用了，否则会抛异常
  * PlaceHolder 被拉伸了，这个暂时可以通过在XML中设置 scaleType=center来解决
  */
 public class GlideImageLoader implements IImageLoader {
 
     private static final String TAG = GlideImageLoader.class.getSimpleName();
+    private File cacheDir;
     private LoggingListener<String, GlideDrawable> debugListener = new LoggingListener<>();
 
     @Override
     public void init(Context context, File cacheDir) {
+        this.cacheDir = cacheDir;
+        // glide在第一次get实例时使用GlideModule初始化，所以这里可以先设置GlideModule，再初始化glide实例
+        MyGlideModule.setFileCacheDir(cacheDir.getAbsolutePath());
         Glide.get(context).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(new OkHttpClient()));
+        Glide.get(context).setMemoryCategory(MemoryCategory.HIGH);
     }
 
     @Override
     public long getCacheSize() {
-        return 0;
+        if (!cacheDir.exists()) {
+            return 0;
+        } else {
+            return getFileSize(cacheDir);
+        }
+    }
+
+    private long getFileSize(File file) {
+        long size = 0;
+        try {
+            if (file.isDirectory()) {
+                if (file.listFiles() != null) {
+                    for (File f : file.listFiles()) {
+                        size += getFileSize(f);
+                    }
+                } else {
+                    return 0;
+                }
+            } else {
+                size = file.length();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "get file size e:" + e.getLocalizedMessage());
+        }
+        return size;
     }
 
     @Override
     public boolean clearCache() {
-        return true;
+        try {
+            Glide.get(null).clearDiskCache();
+            return true;
+        } catch (Exception e) {
+            AppLog.e(TAG, "clear disk cache e:" + e.getLocalizedMessage());
+            return false;
+        }
     }
 
     @Override
-    public void displayImage(Uri uri, CommonImageView iv, ImageOptions options, IImageLoadListener listener) {
+    public void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
+        final IImageLoadListener listener) {
+        displayImage((Object) context, uri, imageView, options, listener);
+    }
+
+    @Override
+    public void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
+        final IImageLoadListener listener) {
+        displayImage((Object) fragment, uri, imageView, options, listener);
+    }
+
+    @Override
+    public void displayImage(Activity activity, Uri uri, final CommonImageView imageView, final ImageOptions options,
+        final IImageLoadListener listener) {
+        displayImage((Object) activity, uri, imageView, options, listener);
+    }
+
+    public void displayImage(Object c, Uri uri, CommonImageView iv, ImageOptions options, IImageLoadListener listener) {
         com.common.image.glide.CommonImageView imageView = iv;
         // com.common.image.glide.CommonImageView imageView = null;
-        RequestManager manager = Glide.with(imageView.getContext());
+        RequestManager manager;
+        if (c instanceof Fragment) {
+            manager = Glide.with((Fragment) c);
+        } else if (c instanceof Activity) {
+            manager = Glide.with((Activity) c);
+        } else if (c instanceof Context) {
+            manager = Glide.with((Context) c);
+        } else {
+            manager = Glide.with(imageView.getContext());
+        }
         if (uri == null) {
             // 显示空的图片的
             if (options != null) {

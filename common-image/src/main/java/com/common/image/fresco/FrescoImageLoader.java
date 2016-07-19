@@ -1,8 +1,10 @@
 package com.common.image.fresco;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.common.image.CommonImageView;
@@ -74,6 +76,23 @@ public class FrescoImageLoader implements IImageLoader {
     }
 
     @Override
+    public void displayImage(Context context, Uri uri, CommonImageView imageView, ImageOptions options,
+        IImageLoadListener listener) {
+        displayImage(uri, imageView, options, listener);
+    }
+
+    @Override
+    public void displayImage(Fragment fragment, Uri uri, CommonImageView imageView, ImageOptions options,
+        IImageLoadListener listener) {
+        displayImage(uri, imageView, options, listener);
+    }
+
+    @Override
+    public void displayImage(Activity activity, Uri uri, CommonImageView imageView, ImageOptions options,
+        IImageLoadListener listener) {
+        displayImage(uri, imageView, options, listener);
+    }
+
     public void displayImage(Uri uri, CommonImageView iv, final ImageOptions options, IImageLoadListener listener) {
         // com.common.image.fresco.CommonImageView imageView = iv;
         com.common.image.fresco.CommonImageView imageView = null;
