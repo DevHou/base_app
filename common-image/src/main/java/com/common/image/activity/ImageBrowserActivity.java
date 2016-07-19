@@ -187,7 +187,7 @@ public class ImageBrowserActivity extends FragmentActivity {
 
             View convertView = createPageView(container.getContext());
             final BigImageView imageView = getPhotoView(convertView);
-            //imageView.setOnPhotoTapListener(mOnPhotoTapListener);
+            // imageView.setOnPhotoTapListener(mOnPhotoTapListener);
 
             String url = getItem(position);
 
@@ -197,7 +197,7 @@ public class ImageBrowserActivity extends FragmentActivity {
             }
             options.setImageProgress(new CustomProgressBar());
 
-            ImageLoader.displayImage(url, imageView, options, new IImageLoadListener() {
+            ImageLoader.displayImage(ImageBrowserActivity.this, url, imageView, options, new IImageLoadListener() {
                 @Override
                 public void onFailed(String s, View view, ImageLoadError imageLoadError) {
 

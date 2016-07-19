@@ -1,7 +1,9 @@
 package com.common.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 
 import java.io.File;
 
@@ -18,6 +20,13 @@ public interface IImageLoader {
 
     boolean clearCache();
 
-    void displayImage(Uri uri, final CommonImageView imageView, final ImageOptions options,
+    void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
         final IImageLoadListener listener);
+
+    void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
+        final IImageLoadListener listener);
+
+    void displayImage(Activity activity, Uri uri, final CommonImageView imageView, final ImageOptions options,
+        final IImageLoadListener listener);
+
 }

@@ -86,6 +86,11 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
         return holder;
     }
 
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+    }
+
     protected class BaseViewHolder extends AbsListDataAdapter.ViewHolder {
 
         protected BaseListCell<T> listCell;

@@ -22,7 +22,8 @@
   **[] $VALUES;
   public *;
 }
--keep class com.bumptech.glide.integration.okhttp.OkHttpGlideModule
+# for DexGuard only
+-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 #fresco
 -keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
