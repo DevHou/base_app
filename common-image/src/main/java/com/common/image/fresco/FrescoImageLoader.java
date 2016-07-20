@@ -41,6 +41,10 @@ public class FrescoImageLoader implements IImageLoader {
     }
 
     @Override
+    public void onLowMemory() {
+    }
+
+    @Override
     public long getCacheSize() {
         if (!cacheDir.exists()) {
             return 0;
