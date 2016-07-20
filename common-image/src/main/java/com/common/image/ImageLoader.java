@@ -57,7 +57,15 @@ public class ImageLoader {
     }
 
     /**
+     * 清理不需要的内存
+     */
+    public static void onLowMemory() {
+        mImageLoader.onLowMemory();
+    }
+
+    /**
      * 获取缓存大小
+     * 在后台线程
      * 
      * @return 字节数
      */

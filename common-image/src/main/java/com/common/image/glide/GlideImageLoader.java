@@ -1,6 +1,7 @@
 package com.common.image.glide;
 
 import android.app.Activity;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -42,16 +43,24 @@ import okhttp3.OkHttpClient;
 public class GlideImageLoader implements IImageLoader {
 
     private static final String TAG = GlideImageLoader.class.getSimpleName();
+
+    private Context context;
     private File cacheDir;
     private LoggingListener<String, GlideDrawable> debugListener = new LoggingListener<>();
 
     @Override
     public void init(Context context, File cacheDir) {
+        this.context = context;
         this.cacheDir = cacheDir;
         // glide在第一次get实例时使用GlideModule初始化，所以这里可以先设置GlideModule，再初始化glide实例
         MyGlideModule.setFileCacheDir(cacheDir.getAbsolutePath());
         Glide.get(context).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(new OkHttpClient()));
         Glide.get(context).setMemoryCategory(MemoryCategory.HIGH);
+    }
+
+    @Override
+    public void onLowMemory() {
+        Glide.with(context).onTrimMemory(ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW);
     }
 
     @Override

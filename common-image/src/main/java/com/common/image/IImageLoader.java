@@ -16,8 +16,23 @@ public interface IImageLoader {
 
     void init(Context context, File cacheDir);
 
+    /**
+     * 一定要在主线程
+     */
+    void onLowMemory();
+
+    /**
+     * 一定要在后台线程
+     * 
+     * @return 字节数
+     */
     long getCacheSize();
 
+    /**
+     * 一定要在后台线程
+     *
+     * @return 是否成功
+     */
     boolean clearCache();
 
     void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
