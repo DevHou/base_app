@@ -14,8 +14,8 @@ import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.resource.bitmap.BitmapEncoder;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -210,7 +210,9 @@ public class GlideImageLoader implements IImageLoader {
         // 这里的dontAnimate主要是因为当placeholder和image的scaleType不同时
         // image先显示的是placeholder的scaleType，当再次滑动回来时又用的正常的scaleType显示
         // DiskCacheStrategy。ALL->DiskCacheStrategy.SOURCE 因为jpg的图片当从缓存中取时背景的白色变成了蓝色
-        request.dontAnimate().diskCacheStrategy(DiskCacheStrategy.SOURCE).listener(debugListener).into(imageView);
+
+        request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.JPEG, 100));
+        request.dontAnimate().listener(debugListener).into(imageView);
 
     }
 
