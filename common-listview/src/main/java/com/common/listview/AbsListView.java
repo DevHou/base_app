@@ -251,6 +251,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         mProgress.setVisibility(View.VISIBLE);
         mEmpty.setVisibility(View.GONE);
         mRecycler.setVisibility(View.VISIBLE);
+        if (adapter instanceof IAbsListDataAdapter) {
+            ((IAbsListDataAdapter) adapter).setLoadMoreView(mMoreProgressId);
+        }
         // mRefreshLayout.refreshComplete();
         // 有数据变化时会重置刷新显示状态
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -317,7 +320,6 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                         mRefreshLayout.setVisibility(View.VISIBLE);
                         mError.setVisibility(View.GONE);
                     }
-                    ((IAbsListDataAdapter) adapter).setLoadMoreView(mMoreProgressId);
                 } else {
                     if (getChildCount() == 0) {
                         mEmpty.setVisibility(View.VISIBLE);
