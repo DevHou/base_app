@@ -27,6 +27,7 @@ public class ImageOptions implements Serializable {
     private ImageProcessor processor = null;
     private ImageSize imageSize = null;
     private boolean mIsGif = false;
+    private boolean mIsDebug = false;
 
     public int getImageResOnLoading() {
         return imageResOnLoading;
@@ -132,12 +133,20 @@ public class ImageOptions implements Serializable {
         this.imageProgress = imageProgress;
     }
 
-    public boolean getIfGif() {
+    public boolean isGif() {
         return mIsGif;
     }
 
     public void setIsGif(boolean isGif) {
         mIsGif = isGif;
+    }
+
+    public boolean isDebug() {
+        return mIsDebug;
+    }
+
+    public void setIsDebug(boolean mIsDebug) {
+        this.mIsDebug = mIsDebug;
     }
 
     @Override
@@ -158,6 +167,7 @@ public class ImageOptions implements Serializable {
         options.imageSize = this.imageSize;
         options.processor = this.processor;
         options.mIsGif = this.mIsGif;
+        options.mIsDebug = this.mIsDebug;
         return options;
     }
 
@@ -226,6 +236,11 @@ public class ImageOptions implements Serializable {
 
         public Builder setIfGif(boolean isGif) {
             options.setIsGif(isGif);
+            return this;
+        }
+
+        public Builder setIfDebug(boolean isDebug) {
+            options.setIsDebug(isDebug);
             return this;
         }
 

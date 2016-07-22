@@ -14,8 +14,8 @@ import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
 import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.resource.bitmap.BitmapEncoder;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -34,9 +34,9 @@ import okhttp3.OkHttpClient;
 
 /**
  * Created by houlijiang on 16/4/12.
- * 
+ * <p/>
  * 图片加载的glide实现
- *
+ * <p/>
  * 目前这个库的问题：
  * PlaceHolder 被拉伸了，这个暂时可以通过在XML中设置 scaleType=center来解决
  */
@@ -105,19 +105,19 @@ public class GlideImageLoader implements IImageLoader {
 
     @Override
     public void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
+                             final IImageLoadListener listener) {
         displayImage((Object) context, uri, imageView, options, listener);
     }
 
     @Override
     public void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
+                             final IImageLoadListener listener) {
         displayImage((Object) fragment, uri, imageView, options, listener);
     }
 
     @Override
     public void displayImage(Activity activity, Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
+                             final IImageLoadListener listener) {
         displayImage((Object) activity, uri, imageView, options, listener);
     }
 
@@ -199,8 +199,11 @@ public class GlideImageLoader implements IImageLoader {
                 }
                 request.override(size.width, size.height);
             }
-            if (options.getIfGif()) {
+            if (options.isGif()) {
                 request.asGif();
+            }
+            if (options.isDebug()) {
+                request.listener(debugListener);//debug输出
             }
         }
         Transformation<Bitmap> bit = imageView.createTransformation();
@@ -211,8 +214,10 @@ public class GlideImageLoader implements IImageLoader {
         // image先显示的是placeholder的scaleType，当再次滑动回来时又用的正常的scaleType显示
         // DiskCacheStrategy。ALL->DiskCacheStrategy.SOURCE 因为jpg的图片当从缓存中取时背景的白色变成了蓝色
 
-        request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.JPEG, 100));
-        request.dontAnimate().listener(debugListener).into(imageView);
+        // request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.JPEG, 100));
+        //request.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        request.diskCacheStrategy(DiskCacheStrategy.ALL);
+        request.dontAnimate().into(imageView);
 
     }
 
@@ -220,15 +225,15 @@ public class GlideImageLoader implements IImageLoader {
         @Override
         public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
             AppLog.d(TAG, String.format(Locale.ROOT, "onException(%s, %s, %s, %s)", e, model, target, isFirstResource),
-                e);
+                    e);
             return false;
         }
 
         @Override
         public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache,
-            boolean isFirstResource) {
+                                       boolean isFirstResource) {
             AppLog.d(TAG, String.format(Locale.ROOT, "onResourceReady(%s, %s, %s, %s, %s)", resource, model, target,
-                isFromMemoryCache, isFirstResource));
+                    isFromMemoryCache, isFirstResource));
             return false;
         }
     }
