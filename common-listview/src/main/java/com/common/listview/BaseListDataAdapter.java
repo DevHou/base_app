@@ -67,6 +67,18 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
         return null;
     }
 
+    /**
+     * view 被回收
+     * 
+     * @param cell cell
+     */
+    protected void onViewRecycled(BaseListCell cell) {
+    }
+
+    protected boolean isCellRecyclable() {
+        return true;
+    }
+
     @Override
     protected BaseViewHolder getItemViewHolder(ViewGroup viewGroup, int type) {
         BaseViewHolder holder = null;
@@ -80,6 +92,9 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
             }
             listCell.initialChildViews(view);
             holder = new BaseViewHolder(view, listCell);
+            if (!isCellRecyclable()) {
+                holder.setIsRecyclable(false);
+            }
         } catch (Exception e) {
             AppLog.e(TAG, "get item view holder e:" + e.getLocalizedMessage());
         }
@@ -89,6 +104,7 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
+        onViewRecycled(((BaseViewHolder) holder).getCell());
     }
 
     protected class BaseViewHolder extends AbsListDataAdapter.ViewHolder {
@@ -98,6 +114,10 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
         protected BaseViewHolder(View itemView, BaseListCell<T> listCell) {
             super(itemView);
             this.listCell = listCell;
+        }
+
+        public BaseListCell getCell() {
+            return listCell;
         }
     }
 }

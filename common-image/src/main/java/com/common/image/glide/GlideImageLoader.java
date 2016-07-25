@@ -206,6 +206,7 @@ public class GlideImageLoader implements IImageLoader {
                 request.listener(debugListener);//debug输出
             }
         }
+        //圆形 圆角等特殊处理
         Transformation<Bitmap> bit = imageView.createTransformation();
         if (bit != null) {
             request.bitmapTransform(bit);
