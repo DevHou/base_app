@@ -10,6 +10,7 @@ public class ApiResultModel {
     private static final String TAG = ApiResultModel.class.getSimpleName();
 
     public long code;
+    public long time;
     public String message;
     public String result;
     public PageInfo pageInfo;

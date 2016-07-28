@@ -235,6 +235,10 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         });
     }
 
+    public void smoothScrollToPosition(int position) {
+        mRecycler.smoothScrollToPosition(position);
+    }
+
     /**
      * 设置layout manager
      */
@@ -590,6 +594,12 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         mProgress.setVisibility(View.VISIBLE);
     }
 
+    // 主动下拉刷新，和手动下拉一个效果
+    public void startRefresh() {
+        mRefreshLayout.autoRefresh();
+    }
+
+    // 隐藏刷新，即通知完成刷新
     public void stopRefresh() {
         mRefreshLayout.refreshComplete();
     }

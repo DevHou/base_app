@@ -74,8 +74,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         if (data != null && data.length > 0) {
                             int startIndex = 0;
                             mData.addAll(startIndex, Arrays.asList(data));
-                            notifyItemRangeInserted(startIndex, data.length);
                             mIsReloading = false;
+                            notifyItemRangeInserted(startIndex, data.length);
                         } else {
                             mIsReloading = false;
                         }
@@ -89,12 +89,12 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         int oldPosition = mData.size();
                         if (data != null && data.length > 0) {
                             Collections.addAll(mData, data);
+                            mIsReloading = false;
                             if (oldPosition > 0) {
                                 notifyItemRangeInserted(oldPosition, data.length);
                             } else {
                                 notifyDataSetChanged();
                             }
-                            mIsReloading = false;
                         } else {
                             mIsReloading = false;
                         }
@@ -102,15 +102,15 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                     }
                     case HANDLE_ADD_ONE: {
                         mData.add((T) msg.obj);
-                        notifyItemInserted(mData.size() - 1);
                         mIsReloading = false;
+                        notifyItemInserted(mData.size() - 1);
                         break;
                     }
                     case HANDLE_INSERT: {
                         int position = msg.arg1;
                         mData.add(position, (T) msg.obj);
-                        notifyItemInserted(position);
                         mIsReloading = false;
+                        notifyItemInserted(position);
                         break;
                     }
                     case HANDLE_REPLACE: {
@@ -120,15 +120,15 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                             return;
                         }
                         mData.set(position, (T) msg.obj);
-                        notifyItemChanged(position);
                         mIsReloading = false;
+                        notifyItemChanged(position);
                         break;
                     }
                     case HANDLE_REMOVE: {
                         int position = msg.arg1;
                         mData.remove(position);
-                        notifyItemRemoved(position);
                         mIsReloading = false;
+                        notifyItemRemoved(position);
                         break;
                     }
                     case HANDLE_CLEAR_DATA: {
@@ -144,14 +144,14 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                             return;
                         }
                         mData.clear();
-                        notifyDataSetChanged();
                         mIsReloading = false;
+                        notifyDataSetChanged();
                         break;
                     }
                     case HANDLE_NO_DATA_CHANGED: {
+                        mIsReloading = false;
                         // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
                         notifyDataSetChanged();
-                        mIsReloading = false;
                         break;
                     }
                     case HANDLE_EXCHANGE: {
@@ -165,9 +165,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         T obj = mData.get(i);
                         mData.set(i, mData.get(j));
                         mData.set(j, obj);
+                        mIsReloading = false;
                         notifyItemChanged(i);
                         notifyItemChanged(j);
-                        mIsReloading = false;
                         break;
                     }
                     case HANDLE_REFRESH_FOOTER: {

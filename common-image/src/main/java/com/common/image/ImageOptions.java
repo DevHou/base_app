@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class ImageOptions implements Serializable {
 
+    private String imageSample;// 图片缩略图
     private int imageResOnLoading = 0;
     private int imageResForEmptyUri = 0;
     private int imageResOnFail = 0;
@@ -26,8 +27,16 @@ public class ImageOptions implements Serializable {
     private ScaleType failScaleType = ScaleType.FIT_CENTER;
     private ImageProcessor processor = null;
     private ImageSize imageSize = null;
-    private boolean mIsGif = false;
-    private boolean mIsDebug = false;
+    private boolean isGif = false;
+    private boolean isDebug = false;
+
+    public String getImageSample() {
+        return imageSample;
+    }
+
+    public void setImageSample(String imageSample) {
+        this.imageSample = imageSample;
+    }
 
     public int getImageResOnLoading() {
         return imageResOnLoading;
@@ -134,19 +143,19 @@ public class ImageOptions implements Serializable {
     }
 
     public boolean isGif() {
-        return mIsGif;
+        return isGif;
     }
 
     public void setIsGif(boolean isGif) {
-        mIsGif = isGif;
+        this.isGif = isGif;
     }
 
     public boolean isDebug() {
-        return mIsDebug;
+        return isDebug;
     }
 
     public void setIsDebug(boolean mIsDebug) {
-        this.mIsDebug = mIsDebug;
+        this.isDebug = mIsDebug;
     }
 
     @Override
@@ -166,8 +175,8 @@ public class ImageOptions implements Serializable {
         options.imageOnFail = this.imageOnFail;
         options.imageSize = this.imageSize;
         options.processor = this.processor;
-        options.mIsGif = this.mIsGif;
-        options.mIsDebug = this.mIsDebug;
+        options.isGif = this.isGif;
+        options.isDebug = this.isDebug;
         return options;
     }
 
