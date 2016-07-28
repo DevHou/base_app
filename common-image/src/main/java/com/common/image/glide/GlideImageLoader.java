@@ -6,8 +6,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
@@ -105,19 +107,19 @@ public class GlideImageLoader implements IImageLoader {
 
     @Override
     public void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
-                             final IImageLoadListener listener) {
+        final IImageLoadListener listener) {
         displayImage((Object) context, uri, imageView, options, listener);
     }
 
     @Override
     public void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
-                             final IImageLoadListener listener) {
+        final IImageLoadListener listener) {
         displayImage((Object) fragment, uri, imageView, options, listener);
     }
 
     @Override
     public void displayImage(Activity activity, Uri uri, final CommonImageView imageView, final ImageOptions options,
-                             final IImageLoadListener listener) {
+        final IImageLoadListener listener) {
         displayImage((Object) activity, uri, imageView, options, listener);
     }
 
@@ -202,11 +204,20 @@ public class GlideImageLoader implements IImageLoader {
             if (options.isGif()) {
                 request.asGif();
             }
+            if (!TextUtils.isEmpty(options.getImageSample())) {
+                DrawableRequestBuilder<String> thumbnailRequest = Glide.with(context).load(options.getImageSample());
+                // 下面两个设置是避免加载的缩略图显示和实际想要的不一样，类似loading scale的问题
+                if (size != null && size.width > 0 && size.height > 0) {
+                    thumbnailRequest.override(size.width, size.height);
+                }
+                thumbnailRequest.dontAnimate();
+                request.thumbnail(thumbnailRequest);
+            }
             if (options.isDebug()) {
-                request.listener(debugListener);//debug输出
+                request.listener(debugListener);// debug输出
             }
         }
-        //圆形 圆角等特殊处理
+        // 圆形 圆角等特殊处理
         Transformation<Bitmap> bit = imageView.createTransformation();
         if (bit != null) {
             request.bitmapTransform(bit);
@@ -216,8 +227,8 @@ public class GlideImageLoader implements IImageLoader {
         // DiskCacheStrategy。ALL->DiskCacheStrategy.SOURCE 因为jpg的图片当从缓存中取时背景的白色变成了蓝色
 
         // request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.JPEG, 100));
-        //request.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
-        request.diskCacheStrategy(DiskCacheStrategy.ALL);
+        // request.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
         request.dontAnimate().into(imageView);
 
     }
@@ -226,15 +237,15 @@ public class GlideImageLoader implements IImageLoader {
         @Override
         public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
             AppLog.d(TAG, String.format(Locale.ROOT, "onException(%s, %s, %s, %s)", e, model, target, isFirstResource),
-                    e);
+                e);
             return false;
         }
 
         @Override
         public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache,
-                                       boolean isFirstResource) {
+            boolean isFirstResource) {
             AppLog.d(TAG, String.format(Locale.ROOT, "onResourceReady(%s, %s, %s, %s, %s)", resource, model, target,
-                    isFromMemoryCache, isFirstResource));
+                isFromMemoryCache, isFirstResource));
             return false;
         }
     }

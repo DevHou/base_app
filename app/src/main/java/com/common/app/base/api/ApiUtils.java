@@ -250,6 +250,7 @@ public class ApiUtils {
             }
 
             ApiResultModel apiResult = new ApiResultModel();
+            apiResult.time = o.networkTimeMs;
             try {
                 BaseApiModel model = new BaseApiModel();
                 JsonObject jsonObject = jsonParser.parse(o.data).getAsJsonObject();
@@ -325,6 +326,7 @@ public class ApiUtils {
                 return;
             }
             ApiResultModel apiResult = convertApiError(error);
+            apiResult.time = -1;
             mListener.onRequestCompleted(apiResult, param);
         }
 

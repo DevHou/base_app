@@ -86,6 +86,9 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
         AppLog.v(TAG, "url:" + getUrl() + "\nvolley return string:" + json);
         try {
             T result = HttpWorker.handlerResult(json, clazz);
+            if (result != null) {
+                result.networkTimeMs = response.networkTimeMs;
+            }
             return Response.success(result, HttpHeaderParser.parseCacheHeaders(response));
         } catch (JsonSyntaxException e) {
             AppLog.e(TAG, "json format error,e:" + e.getMessage());

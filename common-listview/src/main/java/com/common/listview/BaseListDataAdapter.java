@@ -91,7 +91,7 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
                 return null;
             }
             listCell.initialChildViews(view);
-            holder = new BaseViewHolder(view, listCell);
+            holder = new BaseViewHolder<>(view, listCell);
             if (!isCellRecyclable()) {
                 holder.setIsRecyclable(false);
             }
@@ -104,10 +104,12 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        onViewRecycled(((BaseViewHolder) holder).getCell());
+        if (holder instanceof BaseViewHolder) {
+            onViewRecycled(((BaseViewHolder) holder).getCell());
+        }
     }
 
-    protected class BaseViewHolder extends AbsListDataAdapter.ViewHolder {
+    protected static class BaseViewHolder<T> extends AbsListDataAdapter.ViewHolder {
 
         protected BaseListCell<T> listCell;
 
