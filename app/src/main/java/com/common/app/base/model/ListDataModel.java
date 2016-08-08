@@ -1,5 +1,7 @@
 package com.common.app.base.model;
 
+import android.support.annotation.Keep;
+
 /**
  * Created by houlijiang on 11/5/15.
  * 
@@ -9,12 +11,14 @@ package com.common.app.base.model;
  * 本类对应的是结果集中的 data 字段
  * 
  */
+@Keep
 public abstract class ListDataModel extends DataModel {
 
     public PageInfo pageInfo;// 分页信息
 
     public abstract int getListCount();
 
+    @Keep
     public static class PageInfo {
         public int currentPage;// 当前页码号
         public int currentPageCount;// 当前页数量

@@ -94,9 +94,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                     CommonImageView iv = (CommonImageView) v.findViewById(R.id.common_item_title_bar_icon_iv);
                     TextView tv = (TextView) v.findViewById(R.id.common_item_title_bar_icon_tv);
                     if (item.icon > 0) {
-                        ImageLoader.displayImage(item.icon, iv, null);
+                        ImageLoader.displayImage(this, item.icon, iv, null);
                     } else if (!TextUtils.isEmpty(item.iconUri)) {
-                        ImageLoader.displayImage(item.iconUri, iv, null);
+                        ImageLoader.displayImage(this, item.iconUri, iv, null);
                     } else if (!TextUtils.isEmpty(item.text)) {
                         tv.setText(item.text);
                     }
@@ -135,7 +135,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (showMoreIcon) {
                 final View v = LayoutInflater.from(this).inflate(R.layout.item_title_bar_icon, mVgRightIcons, false);
                 CommonImageView iv = (CommonImageView) v.findViewById(R.id.common_item_title_bar_icon_iv);
-                ImageLoader.displayImage(R.drawable.ic_title_more_action, iv, null);
+                ImageLoader.displayImage(this, R.drawable.ic_title_more_action, iv, null);
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
