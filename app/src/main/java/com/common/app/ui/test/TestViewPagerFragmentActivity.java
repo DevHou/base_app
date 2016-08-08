@@ -71,7 +71,7 @@ public class TestViewPagerFragmentActivity extends BaseActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_not_support, container, false);
+            return inflater.inflate(R.layout.fragment_test_not_support, container, false);
         }
     }
 }

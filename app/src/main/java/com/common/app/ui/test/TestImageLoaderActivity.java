@@ -35,7 +35,7 @@ public class TestImageLoaderActivity extends BaseActivity {
                 .showLoadingImage(R.drawable.ic_list_empty).build();
 
         // CommonImageView drawableCiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_drawable_circle);
-        // ImageLoader.displayImage(R.drawable.test_abc, drawableCiv, options);
+        // ImageLoader.displayImage(R.drawable.test_image_loader_pic, drawableCiv, options);
 
         CommonImageView netIv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net);
         ImageOptions.ImageSize size = new ImageOptions.ImageSize(200, 200);
