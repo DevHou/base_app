@@ -43,14 +43,14 @@ public class TestImageLoaderActivity extends BaseActivity {
 
         options.setIsGif(true);
         String url = "http://img4.imgtn.bdimg.com/it/u=2267640641,1376734823&fm=21&gp=0.jpg";
-        ImageLoader.displayImage(url, netIv, options);
+        ImageLoader.displayImage(this, url, netIv, options);
         CommonImageView netCiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net_circle);
-        ImageLoader.displayImage(url, netCiv, null);
+        ImageLoader.displayImage(this, url, netCiv, null);
         CommonImageView netRiv = (CommonImageView) findViewById(R.id.test_image_loader_iv_net_round);
-        ImageLoader.displayImage(url, netRiv, null);
+        ImageLoader.displayImage(this, url, netRiv, null);
 
         File imageFile = new File(FileUtils.getLargeSDCardPath() + File.separator + "GSX/20151221074051.jpg");
         CommonImageView fileIv = (CommonImageView) findViewById(R.id.test_image_loader_iv_file);
-        ImageLoader.displayImage(imageFile, fileIv, options);
+        ImageLoader.displayImage(this, imageFile, fileIv, options);
     }
 }

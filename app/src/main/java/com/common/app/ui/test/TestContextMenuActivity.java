@@ -206,7 +206,7 @@ public class TestContextMenuActivity extends BaseListActivity {
                     }
 
                     // Start the CAB using the ActionMode.Callback defined above
-                    mActionMode = startSupportActionMode(mActionModeCallback);
+                    //mActionMode = startActionMode(mActionModeCallback);
                     view.setSelected(true);
                     return true;
                 }
