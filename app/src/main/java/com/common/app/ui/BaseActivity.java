@@ -3,7 +3,6 @@ package com.common.app.ui;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -29,7 +28,7 @@ import org.greenrobot.eventbus.ThreadMode;
  * <p/>
  * 处理通用title bar
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends Activity {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
 

@@ -40,7 +40,7 @@ public abstract class AbsListFragment extends BaseFragment implements AbsListVie
             ((GridLayoutManager) manager).setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
-                    if (mAdapter.isLoadMore(position)) {
+                    if (mAdapter.isFooterView(position)) {
                         return ((GridLayoutManager) manager).getSpanCount();
                     } else {
                         return 1;

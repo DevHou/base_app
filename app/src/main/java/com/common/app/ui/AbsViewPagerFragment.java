@@ -1,11 +1,11 @@
 package com.common.app.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +61,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
     }
 
     protected FragmentManager getAdapterFragmentManager() {
-        return getActivity().getSupportFragmentManager();
+        return getActivity().getFragmentManager();
     }
 
     /**
@@ -167,7 +167,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
         return v;
     }
 
-    public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter {
+    public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
         public SampleFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
