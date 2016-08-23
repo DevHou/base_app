@@ -312,7 +312,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             }
             return new LoadMoreViewHolder(v);
         } else if (viewType == TYPE_EMPTY_FOOTER) {
-            View v = new TextView(viewGroup.getContext());
+            View v =
+                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_empty_footer,
+                    viewGroup, false);
             // AppLog.v(TAG, "create view holder for empty");
             return new EmptyViewHolder(v);
         }
