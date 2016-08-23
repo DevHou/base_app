@@ -1,9 +1,9 @@
 package com.common.image;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.common.image.glide.GlideImageLoader;
