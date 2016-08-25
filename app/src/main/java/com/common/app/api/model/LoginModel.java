@@ -1,4 +1,4 @@
-package com.common.app.model;
+package com.common.app.api.model;
 
 import android.support.annotation.Keep;
 
