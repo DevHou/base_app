@@ -30,8 +30,8 @@ public class ImageLoader {
     private static IUrlProcessor mProcessor;
 
     // private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
-
     private static GlideImageLoader mImageLoader = new GlideImageLoader();
+    //private static PicassoImageLoader mImageLoader = new PicassoImageLoader();
 
     /**
      * 初始化

@@ -25,6 +25,9 @@
 # for DexGuard only
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
+#picasso
+-dontwarn com.squareup.okhttp.**
+
 #fresco
 -keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
 # Do not strip any method/class that is annotated with @DoNotStrip
