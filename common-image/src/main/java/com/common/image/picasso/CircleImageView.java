@@ -1,16 +1,18 @@
-package com.common.image.glide;
+package com.common.image.picasso;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.AttributeSet;
 
-import com.bumptech.glide.load.Transformation;
 import com.common.image.ImageLoader;
 import com.common.image.R;
-import com.common.image.glide.transformations.CropCircleBorderTransformation;
 import com.common.utils.AppLog;
+import com.squareup.picasso.Transformation;
 
 /**
  * Created by houlijiang on 16/4/12.
@@ -64,8 +66,42 @@ public class CircleImageView extends com.common.image.CommonImageView {
         ImageLoader.displayImage(getContext(), resId, this, null);
     }
 
-    @Override
-    public Transformation<Bitmap> createTransformation() {
-        return new CropCircleBorderTransformation(getContext(), mBorderWidth, mBorderColor);
+    //@Override
+    public Transformation getTransform() {
+        return new Transformation() {
+            @Override
+            public Bitmap transform(Bitmap source) {
+                int size = Math.min(source.getWidth(), source.getHeight());
+
+                int x = (source.getWidth() - size) / 2;
+                int y = (source.getHeight() - size) / 2;
+
+                Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
+                if (squaredBitmap != source) {
+                    source.recycle();
+                }
+
+                Bitmap bitmap = Bitmap.createBitmap(size, size, source.getConfig());
+
+                Canvas canvas = new Canvas(bitmap);
+                Paint paint = new Paint();
+                BitmapShader shader =
+                    new BitmapShader(squaredBitmap, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP);
+                paint.setShader(shader);
+                paint.setAntiAlias(true);
+
+                float r = size / 2f;
+                canvas.drawCircle(r, r, r, paint);
+
+                squaredBitmap.recycle();
+                return bitmap;
+            }
+
+            @Override
+            public String key() {
+                return "circle";
+            }
+        };
     }
+
 }

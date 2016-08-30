@@ -1,16 +1,20 @@
-package com.common.image.glide;
+package com.common.image.picasso;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 
-import com.bumptech.glide.load.Transformation;
 import com.common.image.ImageLoader;
 import com.common.image.R;
-import com.common.image.glide.transformations.RoundedCornersBorderTransformation;
 import com.common.utils.AppLog;
+import com.squareup.picasso.Transformation;
 
 /**
  * Created by houlijiang on 16/4/12.
@@ -73,8 +77,33 @@ public class RoundedImageView extends com.common.image.CommonImageView {
         ImageLoader.displayImage(getContext(), resId, this, null);
     }
 
-    @Override
-    public Transformation<Bitmap> createTransformation() {
-        return new RoundedCornersBorderTransformation(getContext(), mCornerRadius, 0, mBorderWidth, mBorderColor);
+    //@Override
+    public Transformation getTransform() {
+        return new Transformation() {
+            @Override
+            public Bitmap transform(Bitmap source) {
+                final Paint paint = new Paint();
+                paint.setAntiAlias(true);
+                paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+
+                Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(output);
+                canvas.drawRoundRect(
+                    new RectF(mBorderWidth, mBorderWidth, source.getWidth() - mBorderWidth, source.getHeight()
+                        - mBorderWidth), mCornerRadius, mCornerRadius, paint);
+
+                if (source != output) {
+                    source.recycle();
+                }
+
+                return output;
+            }
+
+            @Override
+            public String key() {
+                return "round-" + mBorderWidth + "-" + mBorderColor + "-" + mCornerRadius;
+            }
+        };
     }
+
 }
