@@ -94,4 +94,5 @@ public class CommonImageView extends ImageView {
     public Transformation<Bitmap> createTransformation() {
         return null;
     }
+
 }

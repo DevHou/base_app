@@ -13,13 +13,27 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <!--sidebar 边界距离-->
+    <dimen name="common_list_sidebar_margin_top">10dip</dimen>
+    <dimen name="common_list_sidebar_margin_bottom">10dip</dimen>
+    <dimen name="common_list_sidebar_margin_right">5dip</dimen>
+    <!--sidebar 文字大小颜色-->
+    <dimen name="common_list_sidebar_text_size">10sp</dimen>
+    <color name="common_list_sidebar_text_normal">@color/common_list_middle_black</color>
+    <color name="common_list_sidebar_text_selected">@color/common_list_middle_black</color>
+
     <!--快速检索的页面中间显示的字母-->
-    <style name="common_list_text_white_big" parent="common_list_text_white_base">
-        <item name="android:textSize">18sp</item>
+    <style name="common_list_sidebar_big_text" parent="common_list_text_white_base">
+        <item name="android:textSize">45sp</item>
+        <item name="android:background">@drawable/common_list_shape_sidebar_pressed_background
+        </item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">100dip</item>
+        <item name="android:layout_height">100dip</item>
     </style>
 
-    <!--加载更多文字-->
-    <style name="common_list_text_black_middle_small" parent="common_list_text_black_middle_base">
+    <!--页面加载中和加载更多文字-->
+    <style name="common_list_text_loading" parent="common_list_text_black_middle_base">
         <item name="android:textSize">14sp</item>
     </style>
 

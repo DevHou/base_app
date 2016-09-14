@@ -62,6 +62,7 @@ public class ErrorConst {
     public static final long ERROR_CODE_RUNTIME_NO_METHOD = 1012020015;
     public static final long ERROR_CODE_RUNTIME_INVOCATION = 1012020016;
     public static final long ERROR_CODE_RUNTIME_ILLEGAL_ACCESS = 1012020017;
+    public static final long ERROR_CODE_RUNTIME_CALLBACK = 1012020018;
 
     public static String getMessage(long code) {
         if (ErrorConst.ERROR_CODE_SUCCESS == code) {
@@ -100,6 +101,8 @@ public class ErrorConst {
             return getString(R.string.error_code_runtime_invocation);
         } else if (ErrorConst.ERROR_CODE_RUNTIME_NO_METHOD == code) {
             return getString(R.string.error_code_runtime_no_method);
+        } else if (ErrorConst.ERROR_CODE_RUNTIME_CALLBACK == code) {
+            return getString(R.string.error_code_runtime_callback);
         } else {
             return getString(R.string.error_code_unknown);
         }

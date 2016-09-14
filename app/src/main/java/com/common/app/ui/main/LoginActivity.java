@@ -1,4 +1,4 @@
-package com.common.app.ui.test;
+package com.common.app.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,7 @@ import com.common.app.base.manager.AuthManager;
 import com.common.app.base.manager.DataServiceManager;
 import com.common.app.base.service.DataServiceResultModel;
 import com.common.app.base.service.IDataServiceCallback;
-import com.common.app.model.LoginModel;
+import com.common.app.api.model.LoginModel;
 import com.common.app.service.AuthDataService;
 import com.common.app.ui.BaseActivity;
 

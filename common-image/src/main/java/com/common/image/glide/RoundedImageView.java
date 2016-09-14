@@ -2,16 +2,20 @@ package com.common.image.glide;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.AttributeSet;
 
+import com.bumptech.glide.load.Transformation;
+import com.common.image.ImageLoader;
 import com.common.image.R;
+import com.common.image.glide.transformations.RoundedCornersBorderTransformation;
 import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 16/4/12.
  * 
- * 简单集成ImageView
+ * 简单继承ImageView
  */
 public class RoundedImageView extends com.common.image.CommonImageView {
 
@@ -64,13 +68,13 @@ public class RoundedImageView extends com.common.image.CommonImageView {
      *
      * @param resId 资源ID
      */
-//    @Override
-//    protected void loadImage(int resId) {
-//        ImageLoader.displayImage(resId, this, null);
-//    }
-//
-//    @Override
-//    public Transformation<Bitmap> createTransformation() {
-//        return new RoundedCornersBorderTransformation(getContext(), mCornerRadius, 0, mBorderWidth, mBorderColor);
-//    }
+    @Override
+    protected void loadImage(int resId) {
+        ImageLoader.displayImage(getContext(), resId, this, null);
+    }
+
+    @Override
+    public Transformation<Bitmap> createTransformation() {
+        return new RoundedCornersBorderTransformation(getContext(), mCornerRadius, 0, mBorderWidth, mBorderColor);
+    }
 }

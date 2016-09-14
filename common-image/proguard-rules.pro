@@ -22,15 +22,8 @@
   **[] $VALUES;
   public *;
 }
--keep class com.bumptech.glide.integration.okhttp.OkHttpGlideModule
+# for DexGuard only
+-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
-#fresco
--keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
-# Do not strip any method/class that is annotated with @DoNotStrip
--keep @com.facebook.common.internal.DoNotStrip class *
--keepclassmembers class * {
-    @com.facebook.common.internal.DoNotStrip *;
-}
--keep class com.facebook.imagepipeline.gif.** { *; }
--keep class com.facebook.imagepipeline.webp.* { *; }
--dontwarn com.facebook.**
+#picasso
+-dontwarn com.squareup.okhttp.**

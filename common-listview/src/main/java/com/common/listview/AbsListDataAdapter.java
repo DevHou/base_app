@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.common.utils.AppLog;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,6 +32,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     private static final String TAG = AbsListDataAdapter.class.getSimpleName();
 
     protected static final int TYPE_LOAD_MORE = Integer.MAX_VALUE;
+    protected static final int TYPE_EMPTY_FOOTER = Integer.MAX_VALUE - 1;
 
     public static final int HANDLE_ADD_TO_FRONT = 1;
     public static final int HANDLE_ADD_ALL = 2;
@@ -40,9 +43,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     public static final int HANDLE_CLEAR_DATA = 7;
     public static final int HANDLE_CLEAR = 8;
     public static final int HANDLE_NO_DATA_CHANGED = 9;
-    public static final int HANDLE_RELOADING = 10;
     public static final int HANDLE_EXCHANGE = 11;
     public static final int HANDLE_LOAD_MORE = 12;
+    public static final int HANDLE_REFRESH_FOOTER = 13;
 
     protected List<T> mData;
     protected boolean mIsReloading = false;
@@ -64,133 +67,113 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             public void handleMessage(Message msg) {
                 switch (msg.what) {
                     case HANDLE_ADD_TO_FRONT: {
-                        synchronized (this) {
-                            T[] data = (T[]) msg.obj;
-                            if (mData == null) {
-                                mData = new ArrayList<>();
-                                mIsReloading = false;
-                            }
-                            if (data != null && data.length > 0) {
-                                int startIndex = 0;
-                                mData.addAll(startIndex, Arrays.asList(data));
-                                mIsReloading = false;
-                                notifyItemRangeInserted(startIndex, data.length);
-                            } else {
-                                mIsReloading = false;
-                            }
+                        T[] data = (T[]) msg.obj;
+                        if (mData == null) {
+                            mData = new ArrayList<>();
+                        }
+                        if (data != null && data.length > 0) {
+                            int startIndex = 0;
+                            mData.addAll(startIndex, Arrays.asList(data));
+                            mIsReloading = false;
+                            notifyItemRangeInserted(startIndex, data.length);
+                        } else {
+                            mIsReloading = false;
                         }
                         break;
                     }
                     case HANDLE_ADD_ALL: {
-                        synchronized (this) {
-                            T[] data = (T[]) msg.obj;
-                            if (mData == null) {
-                                mIsReloading = false;
-                                mData = new ArrayList<>();
-                            }
-                            if (data != null && data.length > 0) {
-                                Collections.addAll(mData, data);
-                                mIsReloading = false;
-                                notifyDataSetChanged();
+                        T[] data = (T[]) msg.obj;
+                        if (mData == null) {
+                            mData = new ArrayList<>();
+                        }
+                        int oldPosition = mData.size();
+                        if (data != null && data.length > 0) {
+                            Collections.addAll(mData, data);
+                            mIsReloading = false;
+                            if (oldPosition > 0) {
+                                notifyItemRangeInserted(oldPosition, data.length);
                             } else {
-                                mIsReloading = false;
+                                notifyDataSetChanged();
                             }
+                        } else {
+                            mIsReloading = false;
                         }
                         break;
                     }
                     case HANDLE_ADD_ONE: {
-                        synchronized (this) {
-                            mData.add((T) msg.obj);
-                            mIsReloading = false;
-                            notifyItemInserted(mData.size() - 1);
-                        }
+                        mData.add((T) msg.obj);
+                        mIsReloading = false;
+                        notifyItemInserted(mData.size() - 1);
                         break;
                     }
                     case HANDLE_INSERT: {
-                        synchronized (this) {
-                            int position = msg.arg1;
-                            mData.add(position, (T) msg.obj);
-                            mIsReloading = false;
-                            notifyItemInserted(position);
-                        }
+                        int position = msg.arg1;
+                        mData.add(position, (T) msg.obj);
+                        mIsReloading = false;
+                        notifyItemInserted(position);
                         break;
                     }
                     case HANDLE_REPLACE: {
-                        synchronized (this) {
-                            int position = msg.arg1;
-                            if (mData == null || position < 0 || position > mData.size()) {
-                                mIsReloading = false;
-                                return;
-                            }
-                            mData.set(position, (T) msg.obj);
+                        int position = msg.arg1;
+                        if (mData == null || position < 0 || position > mData.size()) {
                             mIsReloading = false;
-                            notifyDataSetChanged();
+                            return;
                         }
+                        mData.set(position, (T) msg.obj);
+                        mIsReloading = false;
+                        notifyItemChanged(position);
                         break;
                     }
                     case HANDLE_REMOVE: {
-                        synchronized (this) {
-                            int position = msg.arg1;
-                            mData.remove(position);
-                            mIsReloading = false;
-                            notifyItemRemoved(position);
-                        }
+                        int position = msg.arg1;
+                        mData.remove(position);
+                        mIsReloading = false;
+                        notifyItemRemoved(position);
                         break;
                     }
                     case HANDLE_CLEAR_DATA: {
-                        synchronized (this) {
-                            mIsReloading = true;
-                            if (mData == null) {
-                                return;
-                            }
-                            mData.clear();
+                        if (mData == null) {
+                            return;
                         }
+                        mData.clear();
                         break;
                     }
                     case HANDLE_CLEAR: {
-                        synchronized (this) {
-                            if (mData == null) {
-                                mIsReloading = false;
-                                return;
-                            }
-                            mData.clear();
+                        if (mData == null) {
                             mIsReloading = false;
-                            notifyDataSetChanged();
+                            return;
                         }
+                        mData.clear();
+                        mIsReloading = false;
+                        notifyDataSetChanged();
                         break;
                     }
                     case HANDLE_NO_DATA_CHANGED: {
-                        synchronized (this) {
-                            mIsReloading = false;
-                            // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
-                            notifyDataSetChanged();
-                        }
-                        break;
-                    }
-                    case HANDLE_RELOADING: {
-                        synchronized (this) {
-                            mIsReloading = true;
-                            // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
-                            // if (!isEmpty()) {
-                            // notifyDataSetChanged();
-                            // }
-                        }
+                        mIsReloading = false;
+                        // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
+                        notifyDataSetChanged();
                         break;
                     }
                     case HANDLE_EXCHANGE: {
-                        synchronized (this) {
-                            int i = msg.arg1;
-                            int j = msg.arg2;
-                            int len = mData == null ? 0 : mData.size();
-                            if (i < 0 || i >= len || j < 0 || j >= len || i == j) {
-                                mIsReloading = false;
-                                break;
-                            }
-                            T obj = mData.get(i);
-                            mData.set(i, mData.get(j));
-                            mData.set(j, obj);
+                        int i = msg.arg1;
+                        int j = msg.arg2;
+                        int len = mData == null ? 0 : mData.size();
+                        if (i < 0 || i >= len || j < 0 || j >= len || i == j) {
                             mIsReloading = false;
-                            notifyDataSetChanged();
+                            break;
+                        }
+                        T obj = mData.get(i);
+                        mData.set(i, mData.get(j));
+                        mData.set(j, obj);
+                        mIsReloading = false;
+                        notifyItemChanged(i);
+                        notifyItemChanged(j);
+                        break;
+                    }
+                    case HANDLE_REFRESH_FOOTER: {
+                        // AppLog.d(TAG, "notify footer changed, position:" + (mData == null ? 0 : mData.size()));
+                        if (mData != null) {
+                            notifyItemChanged(mData.size());
                         }
                         break;
                     }
@@ -207,22 +190,26 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void addToFront(T[] data) {
+        mIsReloading = true;
         mHandler.obtainMessage(HANDLE_ADD_TO_FRONT, data).sendToTarget();
     }
 
     public void addAll(T[] data) {
+        mIsReloading = true;
         if (data == null || data.length == 0) {
-            noDataChanged();
+            refreshList();
         } else {
             mHandler.obtainMessage(HANDLE_ADD_ALL, data).sendToTarget();
         }
     }
 
     public void add(T obj) {
+        mIsReloading = true;
         mHandler.obtainMessage(HANDLE_ADD_ONE, obj).sendToTarget();
     }
 
     public void insert(T obj, int position) {
+        mIsReloading = true;
         mHandler.obtainMessage(HANDLE_INSERT, position, 0, obj).sendToTarget();
     }
 
@@ -231,6 +218,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void remove(int position) {
+        mIsReloading = true;
         mHandler.obtainMessage(HANDLE_REMOVE, position, 0).sendToTarget();
     }
 
@@ -238,8 +226,12 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         mHandler.obtainMessage(HANDLE_EXCHANGE, i, j).sendToTarget();
     }
 
-    public void noDataChanged() {
+    public void refreshList() {
         mHandler.obtainMessage(HANDLE_NO_DATA_CHANGED).sendToTarget();
+    }
+
+    public void reloadFooterView() {
+        mHandler.obtainMessage(HANDLE_REFRESH_FOOTER).sendToTarget();
     }
 
     /**
@@ -262,22 +254,24 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      */
     public void setIsLoading() {
         mIsReloading = true;
-        // mHandler.obtainMessage(HANDLE_RELOADING).sendToTarget();
     }
 
     public void setIfHasMore(boolean hasMore) {
+        // AppLog.d(TAG, "set has more:" + hasMore);
         mHasMore = hasMore;
-        if (!mIsReloading) {
-            noDataChanged();
-        }
+        reloadFooterView();
     }
 
-    public boolean isLoadMore(int position) {
-        if (mHasMore) {
-            return position == mData.size();
-        } else {
-            return false;
-        }
+    public void dismissLoadMore() {
+        mHasMore = false;
+        reloadFooterView();
+    }
+
+    /**
+     * 是否是底部的view
+     */
+    public boolean isFooterView(int position) {
+        return mData != null && (position == mData.size());
     }
 
     public List<T> getAllData() {
@@ -286,7 +280,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     public T getData(int position) {
         // AppLog.v(TAG, "get Data for " + position + " item count:" + getItemCount());
-        if (position >= getItemCount()) {
+        if (position >= getDataSize()) {
             return null;
         }
         return mData.get(position);
@@ -294,36 +288,51 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     @Override
     final public int getItemViewType(int position) {
-        // AppLog.v(TAG, "get view type for " + position);
-        if (mHasMore && position == mData.size()) {
-            return TYPE_LOAD_MORE;
+        if (position == mData.size()) {
+            // AppLog.v(TAG, "get view type for last " + position + ", has more:" + mHasMore);
+            if (!mHasMore) {
+                return TYPE_EMPTY_FOOTER;
+            } else {
+                return TYPE_LOAD_MORE;
+            }
         }
+        // AppLog.v(TAG, "get view type for " + position);
         return getViewType(position);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // AppLog.v(TAG, "create view holder for type " + viewType);
         if (viewType == TYPE_LOAD_MORE) {
             View v;
+            // AppLog.v(TAG, "create view holder for load more, id:" + mLoadMoreId);
             if (mLoadMoreId != 0) {
                 v = LayoutInflater.from(viewGroup.getContext()).inflate(mLoadMoreId, viewGroup, false);
             } else {
                 v = new TextView(viewGroup.getContext());
             }
             return new LoadMoreViewHolder(v);
+        } else if (viewType == TYPE_EMPTY_FOOTER) {
+            View v =
+                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_empty_footer,
+                    viewGroup, false);
+            // AppLog.v(TAG, "create view holder for empty");
+            return new EmptyViewHolder(v);
         }
+        // AppLog.v(TAG, "create view holder for type " + viewType);
         return getItemViewHolder(viewGroup, viewType);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        // AppLog.v(TAG, "bind view holder for " + position);
         if (viewHolder instanceof LoadMoreViewHolder) {
             // AppLog.v(TAG, "bind view holder for load more");
             mHandler.obtainMessage(HANDLE_LOAD_MORE).sendToTarget();
             return;
+        } else if (viewHolder instanceof EmptyViewHolder) {
+            // AppLog.v(TAG, "bind view holder for empty");
+            return;
         }
+        // AppLog.v(TAG, "bind view holder for " + position);
         setData(viewHolder, position, getData(position));
     }
 
@@ -333,10 +342,19 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         return position;
     }
 
+    public int getDataSize() {
+        return mData == null ? 0 : mData.size();
+    }
+
     @Override
     final public int getItemCount() {
-        // AppLog.v(TAG, "get count, hasMore " + mHasMore + " size:" + (mData == null ? 0 : mData.size()));
-        return (mData == null || mData.size() == 0) ? 0 : (mHasMore ? mData.size() + 1 : mData.size());
+        // AppLog.v(TAG, "get count, size:" + (mData == null ? 0 : mData.size()));
+        // if (mIsReloading) {
+        // return mData == null ? 0 : mData.size();
+        // } else {
+        // return (mData == null || mData.size() == 0) ? 0 : (mHasMore ? mData.size() + 1 : mData.size());
+        return (mData == null || mData.size() == 0) ? 0 : mData.size() + 1;
+        // }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -349,6 +367,16 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
         public LoadMoreViewHolder(View itemView) {
             super(itemView);
+            // setIsRecyclable(false);
+        }
+
+    }
+
+    private static class EmptyViewHolder extends ViewHolder {
+
+        public EmptyViewHolder(View itemView) {
+            super(itemView);
+            // setIsRecyclable(false);
         }
 
     }
@@ -364,6 +392,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     /**
      * AbsListView在显示时会用来判断以显示progress view
+     * 同时如果在加载中则不让用户滚动列表，以免导致异常
      */
     @Override
     public boolean isReloading() {
@@ -375,6 +404,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      */
     @Override
     public void setLoadMoreView(int resourceId) {
+        AppLog.d(TAG, "set load more view id:" + resourceId);
         mLoadMoreId = resourceId;
         if (resourceId <= 0) {
             mHasMore = false;

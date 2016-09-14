@@ -12,7 +12,6 @@ import com.common.app.R;
 import com.common.app.base.error.ErrorModel;
 import com.common.listview.MySectionIndexer;
 
-
 /**
  * Created by houlijiang on 15/3/31.
  *
@@ -71,6 +70,7 @@ public abstract class BaseListFragment extends AbsListFragment {
     private View.OnClickListener noNetworkErrorClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            mRecyclerListView.showLoadingView();
             onRefreshBegin();
         }
     };

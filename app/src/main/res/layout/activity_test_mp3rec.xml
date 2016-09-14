@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/layout_title_custom" />
+
     <Button
         android:id="@+id/test_mp3rec_start"
         android:layout_width="wrap_content"

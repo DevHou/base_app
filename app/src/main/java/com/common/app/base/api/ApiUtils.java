@@ -221,7 +221,7 @@ public class ApiUtils {
                 apiResult.code = ErrorConst.ERROR_CODE_NETWORK_FAIL;
                 break;
         }
-        AppLog.e(TAG,"network e:"+ error.getReason());
+        AppLog.e(TAG, "network e:" + error.getReason());
         apiResult.message = ErrorConst.getMessage(apiResult.code);
         return apiResult;
     }
@@ -250,6 +250,7 @@ public class ApiUtils {
             }
 
             ApiResultModel apiResult = new ApiResultModel();
+            apiResult.time = o.networkTimeMs;
             try {
                 BaseApiModel model = new BaseApiModel();
                 JsonObject jsonObject = jsonParser.parse(o.data).getAsJsonObject();
@@ -287,29 +288,24 @@ public class ApiUtils {
                     }
                 }
 
+                apiResult.code = model.code;
+                apiResult.message = model.msg;
+                if (model.data == null) {
+                    apiResult.result = "";
+                } else {
+                    apiResult.result = model.data;
+                }
                 if (model.pageDto != null) {
-                    apiResult.code = model.code;
-                    apiResult.message = model.msg;
-                    if (model.data == null) {
-                        apiResult.result = "";
-                    } else {
-                        apiResult.result = model.data;
-                    }
                     apiResult.pageInfo = new ApiResultModel.PageInfo();
                     apiResult.pageInfo.currentPage = model.pageDto.pageNum;
                     apiResult.pageInfo.currentPageCount = model.pageDto.curPageCount;
                     apiResult.pageInfo.pageSize = model.pageDto.pageSize;
                     apiResult.pageInfo.totalCount = model.pageDto.count;
-                    mListener.onRequestCompleted(apiResult, param);
                 } else {
-                    apiResult.code = model.code;
-                    apiResult.message = model.msg;
-                    if (model.data == null) {
-                        apiResult.result = "";
-                    } else {
-                        apiResult.result = model.data;
-                    }
-                    mListener.onRequestCompleted(apiResult, param);
+                    // TODO: 应该怎么样呢？
+                    apiResult.pageInfo = new ApiResultModel.PageInfo();
+                    apiResult.pageInfo.totalCount = 0;
+                    apiResult.pageInfo.pageSize = 0;
                 }
             } catch (JsonSyntaxException e) {
                 AppLog.e(TAG, "parse json error, e:" + e.getLocalizedMessage());
@@ -330,6 +326,7 @@ public class ApiUtils {
                 return;
             }
             ApiResultModel apiResult = convertApiError(error);
+            apiResult.time = -1;
             mListener.onRequestCompleted(apiResult, param);
         }
 

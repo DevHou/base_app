@@ -1,7 +1,5 @@
 package com.common.image;
 
-import com.facebook.drawee.drawable.ScalingUtils;
-
 /**
  * Created by houlijiang on 15/9/7.
  *
@@ -41,26 +39,4 @@ public enum ImageScaleType {
         return centerCrop;
     }
 
-    /**
-     * 对应fresco里的类型字符串
-     */
-    public static ScalingUtils.ScaleType changeToFrescoType(int value) {
-        switch (value) {
-            case 0:
-                return ScalingUtils.ScaleType.FIT_XY;
-            case 1:
-                return ScalingUtils.ScaleType.FIT_START;
-            case 2:
-                return ScalingUtils.ScaleType.FIT_CENTER;
-            case 3:
-                return ScalingUtils.ScaleType.FIT_END;
-            case 4:
-                return ScalingUtils.ScaleType.CENTER;
-            case 5:
-                return ScalingUtils.ScaleType.CENTER_INSIDE;
-            case 6:
-                return ScalingUtils.ScaleType.CENTER_CROP;
-        }
-        return ScalingUtils.ScaleType.CENTER_CROP;
-    }
 }

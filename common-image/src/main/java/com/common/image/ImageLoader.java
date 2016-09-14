@@ -1,10 +1,12 @@
 package com.common.image;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.common.image.fresco.FrescoImageLoader;
+import com.common.image.glide.GlideImageLoader;
 
 import java.io.File;
 
@@ -13,7 +15,7 @@ import java.io.File;
  * 
  * 图片加载工具类
  *
- * 切换时需要改的地方
+ * 切换时需要改的地方:
  * 此类的mImageLoader实例
  * 圆角图 圆图 BigImageView的父类
  * 具体实现里的圆角图 原图里的重载方法
@@ -27,8 +29,9 @@ public class ImageLoader {
     // url后处理回调
     private static IUrlProcessor mProcessor;
 
-    private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
-    //private static GlideImageLoader mImageLoader = new GlideImageLoader();
+    // private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
+    private static GlideImageLoader mImageLoader = new GlideImageLoader();
+    //private static PicassoImageLoader mImageLoader = new PicassoImageLoader();
 
     /**
      * 初始化
@@ -54,14 +57,28 @@ public class ImageLoader {
     }
 
     /**
-     * 显示图片
-     *
-     * @param file 图片文件
-     * @param imageView 需要显示图片的ImageView
-     * @param options 显示图片的配置项
+     * 清理不需要的内存
      */
-    public static void displayImage(File file, CommonImageView imageView, ImageOptions options) {
-        displayImage(Uri.fromFile(file), imageView, options, null);
+    public static void onLowMemory() {
+        mImageLoader.onLowMemory();
+    }
+
+    /**
+     * 获取缓存大小
+     * 在后台线程
+     * 
+     * @return 字节数
+     */
+    public static long getCacheSize() {
+        return mImageLoader.getCacheSize();
+    }
+
+    /**
+     * 清除缓存
+     * 在后台线程做
+     */
+    public static void clearCache() {
+        mImageLoader.clearCache();
     }
 
     /**
@@ -71,9 +88,38 @@ public class ImageLoader {
      * @param imageView 需要显示图片的ImageView
      * @param options 显示图片的配置项
      */
-    public static void displayImage(File file, CommonImageView imageView, ImageOptions options,
+    public static void displayImage(Context context, File file, CommonImageView imageView, ImageOptions options) {
+        displayImage(context, Uri.fromFile(file), imageView, options, null);
+    }
+
+    public static void displayImage(Activity activity, File file, CommonImageView imageView, ImageOptions options) {
+        displayImage(activity, Uri.fromFile(file), imageView, options, null);
+    }
+
+    public static void displayImage(Fragment fragment, File file, CommonImageView imageView, ImageOptions options) {
+        displayImage(fragment, Uri.fromFile(file), imageView, options, null);
+    }
+
+    /**
+     * 显示图片
+     *
+     * @param file 图片文件
+     * @param imageView 需要显示图片的ImageView
+     * @param options 显示图片的配置项
+     */
+    public static void displayImage(Context context, File file, CommonImageView imageView, ImageOptions options,
         final IImageLoadListener listener) {
-        displayImage(Uri.fromFile(file), imageView, options, listener);
+        displayImage(context, Uri.fromFile(file), imageView, options, listener);
+    }
+
+    public static void displayImage(Activity activity, File file, CommonImageView imageView, ImageOptions options,
+        final IImageLoadListener listener) {
+        displayImage(activity, Uri.fromFile(file), imageView, options, listener);
+    }
+
+    public static void displayImage(Fragment fragment, File file, CommonImageView imageView, ImageOptions options,
+        final IImageLoadListener listener) {
+        displayImage(fragment, Uri.fromFile(file), imageView, options, listener);
     }
 
     /**
@@ -83,9 +129,16 @@ public class ImageLoader {
      * @param imageView 需要显示图片的ImageView
      * @param options 显示图片的配置项
      */
-    public static void displayImage(int resId, CommonImageView imageView, ImageOptions options) {
-        Uri uri = Uri.parse("res:///" + String.valueOf(resId));
-        displayImage(uri, imageView, options, null);
+    public static void displayImage(Context context, int resId, CommonImageView imageView, ImageOptions options) {
+        displayImage(context, resId, imageView, options, null);
+    }
+
+    public static void displayImage(Activity activity, int resId, CommonImageView imageView, ImageOptions options) {
+        displayImage(activity, resId, imageView, options, null);
+    }
+
+    public static void displayImage(Fragment fragment, int resId, CommonImageView imageView, ImageOptions options) {
+        displayImage(fragment, resId, imageView, options, null);
     }
 
     /**
@@ -95,10 +148,22 @@ public class ImageLoader {
      * @param imageView 需要显示图片的ImageView
      * @param options 显示图片的配置项
      */
-    public static void displayImage(int resId, CommonImageView imageView, ImageOptions options,
+    public static void displayImage(Context context, int resId, CommonImageView imageView, ImageOptions options,
         final IImageLoadListener listener) {
         Uri uri = Uri.parse("res:///" + String.valueOf(resId));
-        displayImage(uri, imageView, options, listener);
+        displayImage(context, uri, imageView, options, listener);
+    }
+
+    public static void displayImage(Activity activity, int resId, CommonImageView imageView, ImageOptions options,
+        final IImageLoadListener listener) {
+        Uri uri = Uri.parse("res:///" + String.valueOf(resId));
+        displayImage(activity, uri, imageView, options, listener);
+    }
+
+    public static void displayImage(Fragment fragment, int resId, CommonImageView imageView, ImageOptions options,
+        final IImageLoadListener listener) {
+        Uri uri = Uri.parse("res:///" + String.valueOf(resId));
+        displayImage(fragment, uri, imageView, options, listener);
     }
 
     /**
@@ -108,8 +173,16 @@ public class ImageLoader {
      * @param imageView 需要显示图片的ImageView
      * @param options 显示图片的配置项
      */
-    public static void displayImage(String url, CommonImageView imageView, ImageOptions options) {
-        displayImage(url, imageView, options, null);
+    public static void displayImage(Context context, String url, CommonImageView imageView, ImageOptions options) {
+        displayImage(context, url, imageView, options, null);
+    }
+
+    public static void displayImage(Activity activity, String url, CommonImageView imageView, ImageOptions options) {
+        displayImage(activity, url, imageView, options, null);
+    }
+
+    public static void displayImage(Fragment fragment, String url, CommonImageView imageView, ImageOptions options) {
+        displayImage(fragment, url, imageView, options, null);
     }
 
     /**
@@ -120,8 +193,25 @@ public class ImageLoader {
      * @param options 显示图片的配置项
      * @param listener 回调
      */
-    public static void displayImage(String url, CommonImageView imageView, ImageOptions options,
+    public static void displayImage(Context context, String url, CommonImageView imageView, ImageOptions options,
         final IImageLoadListener listener) {
+        Uri uri = filterUri(url, imageView);
+        displayImage(context, uri, imageView, options, listener);
+    }
+
+    public static void displayImage(Activity activity, String url, CommonImageView imageView, ImageOptions options,
+        final IImageLoadListener listener) {
+        Uri uri = filterUri(url, imageView);
+        displayImage(activity, uri, imageView, options, listener);
+    }
+
+    public static void displayImage(Fragment fragment, String url, CommonImageView imageView, ImageOptions options,
+        final IImageLoadListener listener) {
+        Uri uri = filterUri(url, imageView);
+        displayImage(fragment, uri, imageView, options, listener);
+    }
+
+    private static Uri filterUri(String url, CommonImageView imageView) {
         Uri uri = null;
         if (!TextUtils.isEmpty(url)) {
             if (mProcessor != null) {
@@ -129,7 +219,7 @@ public class ImageLoader {
             }
             uri = Uri.parse(url);
         }
-        displayImage(uri, imageView, options, listener);
+        return uri;
     }
 
     /**
@@ -148,9 +238,19 @@ public class ImageLoader {
      * @param options 显示图片的配置项
      * @param listener 回调
      */
-    public static void displayImage(Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
-        mImageLoader.displayImage(uri, imageView, options, listener);
+    public static void displayImage(Context context, Uri uri, final CommonImageView imageView,
+        final ImageOptions options, final IImageLoadListener listener) {
+        mImageLoader.displayImage(context, uri, imageView, options, listener);
+    }
+
+    public static void displayImage(Activity activity, Uri uri, final CommonImageView imageView,
+        final ImageOptions options, final IImageLoadListener listener) {
+        mImageLoader.displayImage(activity, uri, imageView, options, listener);
+    }
+
+    public static void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView,
+        final ImageOptions options, final IImageLoadListener listener) {
+        mImageLoader.displayImage(fragment, uri, imageView, options, listener);
     }
 
     /**

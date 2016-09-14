@@ -1,8 +1,8 @@
 package com.common.app.base.manager;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 import android.text.TextUtils;
+
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by houlijiang on 15/11/18.
@@ -96,6 +96,17 @@ public class AuthManager {
     }
 
     /**
+     * 设置已经登录状态
+     */
+    public void setHasLogin() {
+        if (!mListeners.isEmpty()) {
+            for (IAuthChangedListener l : mListeners) {
+                l.onAuthChanged();
+            }
+        }
+    }
+
+    /**
      * 退出登录时调用，清除缓存数据
      */
     public void logout() {
@@ -106,6 +117,11 @@ public class AuthManager {
         CacheManager.getInstance().remove(KEY_CURRENT_USER_ID);
         CacheManager.getInstance().remove(KEY_CURRENT_USER_TYPE);
 
+        if (!mListeners.isEmpty()) {
+            for (IAuthChangedListener l : mListeners) {
+                l.onAuthChanged();
+            }
+        }
     }
 
     /**

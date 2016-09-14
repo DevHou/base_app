@@ -41,6 +41,9 @@ public class TestPtrActivity extends BaseActivity implements AppBarLayout.OnOffs
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showBackBtn();
+        setTitle("测试下拉刷新控件");
+
         mPtr = (PtrFrameLayout) findViewById(R.id.test_ptr_ptr);
         mRv = (RecyclerView) findViewById(R.id.test_ptr_rv);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.test_ptr_appbar);
@@ -70,7 +73,7 @@ public class TestPtrActivity extends BaseActivity implements AppBarLayout.OnOffs
                 }, 2000);
             }
         });
-        PtrClassicDefaultHeader header = new PtrClassicDefaultHeader(this);
+        TestPtrClassicDefaultHeader header = new TestPtrClassicDefaultHeader(this);
         mPtr.setHeaderView(header);
         mPtr.addPtrUIHandler(header);
 

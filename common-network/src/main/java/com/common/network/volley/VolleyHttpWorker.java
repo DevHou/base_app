@@ -26,10 +26,21 @@ import org.apache.http.protocol.HTTP;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.CertificateFactory;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -62,38 +73,100 @@ public class VolleyHttpWorker implements IHttpWorker {
 
     // 连接超时默认时间
     private static final int SOCKET_TIME_OUT = 3000;
+    private static final int MAX_RETRY_TIMES = DefaultRetryPolicy.DEFAULT_MAX_RETRIES;
 
     private int mTimeout;
     private OkHttpClient mHttpClient;
+
+    private X509TrustManager trustManager;
+    private SSLSocketFactory sslSocketFactory;
 
     public VolleyHttpWorker(Context context, File cache) {
         this(context, cache, SOCKET_TIME_OUT);
     }
 
     public VolleyHttpWorker(Context context, File cache, int timeout) {
+        this(context, cache, null, timeout);
+    }
+
+    public VolleyHttpWorker(Context context, File cache, InputStream[] certificate, int timeout) {
         mTimeout = timeout;
-        mHttpClient =
+
+        if (certificate != null) {
+            initForHttps(certificate);
+        }
+
+        OkHttpClient.Builder builder =
             new OkHttpClient.Builder().connectTimeout(timeout, TimeUnit.MILLISECONDS)
-                .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS).build();
+                .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS);
+        if (trustManager != null && sslSocketFactory != null) {
+            builder.sslSocketFactory(sslSocketFactory, trustManager);
+        }
+        mHttpClient = builder.build();
         SingleVolleyClient.getInstance().init(context, cache, mHttpClient, null);
     }
 
     /**
-     * get请求
-     * 
-     * @param origin 绑定的对象
-     * @param url 请求地址
-     * @param header 请求头
-     * @param params 参数列表
-     * @param classOfT 返回类型
+     * 初始化https
+     *
+     * @param certificates cer输入文件
+     */
+    private boolean initForHttps(InputStream[] certificates) {
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null);
+            int index = 0;
+            for (InputStream certificate : certificates) {
+                String certificateAlias = Integer.toString(index++);
+                keyStore.setCertificateEntry(certificateAlias, certificateFactory.generateCertificate(certificate));
+                try {
+                    if (certificate != null)
+                        certificate.close();
+                } catch (IOException e) {
+                    AppLog.e(TAG, "close certificate e:" + e.getLocalizedMessage());
+                }
+            }
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+
+            TrustManagerFactory trustManagerFactory =
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+
+            trustManagerFactory.init(keyStore);
+            TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+            if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
+                AppLog.e(TAG, "Unexpected default trust managers:" + Arrays.toString(trustManagers));
+                return false;
+            } else {
+                trustManager = (X509TrustManager) trustManagers[0];
+            }
+            sslContext.init(null, new TrustManager[] { trustManager }, new SecureRandom());
+            sslSocketFactory = sslContext.getSocketFactory();
+        } catch (Exception e) {
+            AppLog.e(TAG, "exception when init ssl, e:" + e.getLocalizedMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * get 请求
+     *
+     * @param origin 绑定的对象 取消时用的
+     * @param url url
+     * @param header header
+     * @param params 参数
+     * @param classOfT 返回值类型
      * @param handler 回调
+     * @param timeout 超时时间
      * @param param 自定义参数
+     * @param <Result> 结果
      */
     @Override
     public <Result extends HttpResponseResult> INetCall doGet(final Object origin, String url,
-        Map<String, String> header, IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler,
-        final Object param) {
-
+        Map<String, String> header, IHttpParams params, final Class<Result> classOfT,
+        final IHttpResponse<Result> handler, int timeout, final Object param) {
         if (params != null && params.getParams() != null && params.getParams().size() > 0) {
             boolean first = true;
             try {
@@ -166,10 +239,27 @@ public class VolleyHttpWorker implements IHttpWorker {
                         }
                     }
                 });
-        req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        req.setRetryPolicy(new DefaultRetryPolicy(timeout, MAX_RETRY_TIMES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
         return new RequestCall(req);
+    }
+
+    /**
+     * get请求
+     * 
+     * @param origin 绑定的对象
+     * @param url 请求地址
+     * @param header 请求头
+     * @param params 参数列表
+     * @param classOfT 返回类型
+     * @param handler 回调
+     * @param param 自定义参数
+     */
+    @Override
+    public <Result extends HttpResponseResult> INetCall doGet(final Object origin, String url,
+        Map<String, String> header, IHttpParams params, Class<Result> classOfT, final IHttpResponse<Result> handler,
+        final Object param) {
+        return doGet(origin, url, header, params, classOfT, handler, mTimeout, param);
     }
 
     /**
@@ -182,13 +272,13 @@ public class VolleyHttpWorker implements IHttpWorker {
      * @param classOfT 返回值类型
      * @param headers 自定义http头
      * @param handler 回调
+     * @param timeout 超时时间
      * @param param 自定义参数
      * @param <Result> 结果
      */
-    @Override
     public <Result extends HttpResponseResult> INetCall doPost(final Object origin, String url, IHttpParams params,
-        String contentType, Map<String, String> headers, Class<Result> classOfT, final IHttpResponse<Result> handler,
-        final Object param) {
+        String contentType, Map<String, String> headers, final Class<Result> classOfT,
+        final IHttpResponse<Result> handler, int timeout, final Object param) {
 
         GsonRequest<Result> req =
             new GsonRequest<>(Request.Method.POST, origin, url, headers, classOfT, (HttpParams) params,
@@ -240,10 +330,29 @@ public class VolleyHttpWorker implements IHttpWorker {
 
                     }
                 });
-        req.setRetryPolicy(new DefaultRetryPolicy(mTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        req.setRetryPolicy(new DefaultRetryPolicy(timeout, MAX_RETRY_TIMES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         SingleVolleyClient.getInstance().addToRequestQueue(req);
         return new RequestCall(req);
+    }
+
+    /**
+     * post请求
+     *
+     * @param origin 绑定的对象
+     * @param url url
+     * @param params 参数
+     * @param contentType post数据类型
+     * @param classOfT 返回值类型
+     * @param headers 自定义http头
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    @Override
+    public <Result extends HttpResponseResult> INetCall doPost(final Object origin, String url, IHttpParams params,
+        String contentType, Map<String, String> headers, Class<Result> classOfT, final IHttpResponse<Result> handler,
+        final Object param) {
+        return doPost(origin, url, params, contentType, headers, classOfT, handler, mTimeout, param);
     }
 
     /**
@@ -260,8 +369,34 @@ public class VolleyHttpWorker implements IHttpWorker {
     @Override
     public INetCall download(Object tag, String url, Map<String, String> header, final File file, IHttpParams params,
         final IHttpResponse<File> handler, final Object param) {
+        return download(tag, url, header, file, params, handler, SOCKET_TIME_OUT, param);
+    }
 
-        OkHttpClient copy = mHttpClient.newBuilder().addNetworkInterceptor(new Interceptor() {
+    /**
+     * 下载文件
+     *
+     * @param tag 绑定的对象
+     * @param url url
+     * @param header header
+     * @param file 下载的文件存储位置
+     * @param params 参数
+     * @param handler 回调
+     * @param param 自定义参数
+     */
+    @Override
+    public INetCall download(Object tag, String url, Map<String, String> header, final File file, IHttpParams params,
+        final IHttpResponse<File> handler, int timeout, final Object param) {
+
+        OkHttpClient client;
+        if (timeout != SOCKET_TIME_OUT) {
+            client =
+                mHttpClient.newBuilder().connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS).build();
+        } else {
+            client = mHttpClient;
+        }
+
+        OkHttpClient copy = client.newBuilder().addNetworkInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 okhttp3.Response originalResponse = chain.proceed(chain.request());
@@ -378,6 +513,35 @@ public class VolleyHttpWorker implements IHttpWorker {
     public <Result extends HttpResponseResult> INetCall upload(Object tag, String url, Map<String, String> headers,
         Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
         final IHttpResponse<Result> handler, final Object param) {
+        return upload(tag, url, headers, files, params, classOfT, handler, SOCKET_TIME_OUT, param);
+    }
+
+    /**
+     * 上传
+     *
+     * @param tag 绑定的对象
+     * @param url url
+     * @param headers 自定义http头
+     * @param files 上传的文件
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    @Override
+    public <Result extends HttpResponseResult> INetCall upload(Object tag, String url, Map<String, String> headers,
+        Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
+        final IHttpResponse<Result> handler, int timeout, final Object param) {
+
+        OkHttpClient client;
+        if (timeout != SOCKET_TIME_OUT) {
+            client =
+                mHttpClient.newBuilder().connectTimeout(timeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS).build();
+        } else {
+            client = mHttpClient;
+        }
 
         okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
         requestBuilder.url(url);
@@ -408,7 +572,7 @@ public class VolleyHttpWorker implements IHttpWorker {
 
         ProgressRequestBody req = new ProgressRequestBody<>(requestBody.build(), handler, param);
         requestBuilder.post(req);
-        Call call = mHttpClient.newCall(requestBuilder.build());
+        Call call = client.newCall(requestBuilder.build());
         call.enqueue(new Callback() {
             @Override
             public void onFailure(final Call call, final IOException e) {

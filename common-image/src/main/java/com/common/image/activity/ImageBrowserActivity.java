@@ -40,9 +40,11 @@ public class ImageBrowserActivity extends FragmentActivity {
     private static final String TAG = ImageBrowserActivity.class.getSimpleName();
     protected static final String INTENT_IN_INT_DEFAULT_INDEX = "default_index";
     protected static final String INTENT_IN_STR_ARRAY_IMAGES = "images_array";
+    protected static final String INTENT_IN_STR_ARRAY_SAMPLE_IMAGES = "sample_images_array";
     protected static final String INTENT_IN_SERIAL_IMAGE_OPTION = "image_option";
 
     private String[] mImages;
+    private String[] mSampleImages;
     private ImageOptions mImageOption;
     private SlideDotView mDotView;
     private MultiTouchViewPager mViewPager;
@@ -81,6 +83,14 @@ public class ImageBrowserActivity extends FragmentActivity {
         }
         int defaultIndex = getIntent().getIntExtra(INTENT_IN_INT_DEFAULT_INDEX, 0);
         mImages = getIntent().getStringArrayExtra(INTENT_IN_STR_ARRAY_IMAGES);
+        if (getIntent().hasExtra(INTENT_IN_STR_ARRAY_SAMPLE_IMAGES)) {
+            mSampleImages = getIntent().getStringArrayExtra(INTENT_IN_STR_ARRAY_SAMPLE_IMAGES);
+            if (mSampleImages.length != mImages.length) {
+                // 数量不相等则直接置空不用
+                mSampleImages = null;
+                AppLog.e(TAG, "sample image url array length not equals image url array length");
+            }
+        }
         if (getIntent().hasExtra(INTENT_IN_SERIAL_IMAGE_OPTION)) {
             mImageOption = (ImageOptions) getIntent().getSerializableExtra(INTENT_IN_SERIAL_IMAGE_OPTION);
         }
@@ -187,17 +197,25 @@ public class ImageBrowserActivity extends FragmentActivity {
 
             View convertView = createPageView(container.getContext());
             final BigImageView imageView = getPhotoView(convertView);
-            //imageView.setOnPhotoTapListener(mOnPhotoTapListener);
+            // imageView.setOnPhotoTapListener(mOnPhotoTapListener);
 
             String url = getItem(position);
 
             ImageOptions options = mImageOption;
             if (options == null) {
                 options = new ImageOptions();
+                if (mSampleImages != null) {
+                    options.setImageSample(mSampleImages[position]);
+                }
+            } else {
+                if (mSampleImages != null) {
+                    options = mImageOption.clone();
+                    options.setImageSample(mSampleImages[position]);
+                }
             }
             options.setImageProgress(new CustomProgressBar());
 
-            ImageLoader.displayImage(url, imageView, options, new IImageLoadListener() {
+            ImageLoader.displayImage(ImageBrowserActivity.this, url, imageView, options, new IImageLoadListener() {
                 @Override
                 public void onFailed(String s, View view, ImageLoadError imageLoadError) {
 

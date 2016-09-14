@@ -11,6 +11,11 @@ public class TestDataModel extends ListDataModel {
 
     public DataItem[] list;
 
+    @Override
+    public int getListCount() {
+        return list == null ? 0 : list.length;
+    }
+
     public static class DataItem {
         public String name;
     }
