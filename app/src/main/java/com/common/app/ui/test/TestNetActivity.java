@@ -58,6 +58,8 @@ public class TestNetActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showBackBtn();
+        setTitle("测试网络");
 
         findViewById(R.id.test_net_btn_download).setOnClickListener(this);
         findViewById(R.id.test_net_btn_upload).setOnClickListener(this);

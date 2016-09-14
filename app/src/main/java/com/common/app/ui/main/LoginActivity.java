@@ -1,4 +1,4 @@
-package com.common.app.ui.test;
+package com.common.app.ui.main;
 
 import android.content.Context;
 import android.content.Intent;

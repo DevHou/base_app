@@ -14,13 +14,14 @@
             android:id="@+id/common_list_abs_list_view_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/app_title_bar_bg"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="40dip"
+                android:layout_height="45dip"
                 android:gravity="center"
-                android:text="header" />
+                android:text="header 上划隐藏 下拉出现" />
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 

@@ -48,6 +48,8 @@ public class TestListViewActivity extends BaseListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showBackBtn();
+        setTitle("测试列表控件");
     }
 
     @Override
@@ -55,6 +57,10 @@ public class TestListViewActivity extends BaseListActivity {
         return new MyAdapter(new AbsListDataAdapter.IOnLoadMore() {
             @Override
             public void onLoadMore() {
+                if (!mHasMore) {
+                    mAdapter.setIfHasMore(false);
+                    return;
+                }
                 loadList(false);
             }
         });
@@ -87,7 +93,6 @@ public class TestListViewActivity extends BaseListActivity {
                     mAdapter.clearData();
                     mRecyclerListView.stopRefresh();
                     // 先置成不可加载更多防止因为读取缓存导致循环读取
-                    mAdapter.setIsLoading();
                     mAdapter.setIfHasMore(false);
                 }
                 mHasMore = obj.pageInfo.hasMore;
@@ -103,9 +108,9 @@ public class TestListViewActivity extends BaseListActivity {
             public void onError(ErrorModel result, Object param) {
                 int pageNum = (int) param;
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
+                    mRecyclerListView.stopRefresh();
                     showErrorView(result);
                 } else {
-                    mAdapter.setIfHasMore(false);
                     Tips.showMessage(TestListViewActivity.this, result.message);
                 }
             }
