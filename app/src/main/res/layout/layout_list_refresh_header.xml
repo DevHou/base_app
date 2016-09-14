@@ -16,6 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="下拉刷新" />
+        android:text="@string/ptr_pull_down_to_refresh" />
 
 </LinearLayout>

@@ -29,6 +29,8 @@ public class TestImageLoaderActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showBackBtn();
+        setTitle("测试图片库");
 
         ImageOptions options =
             new ImageOptions.Builder().showEmptyImage(R.drawable.ic_list_empty).showFailImage(R.drawable.ic_list_fail)

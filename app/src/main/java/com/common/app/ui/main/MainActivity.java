@@ -1,4 +1,4 @@
-package com.common.app.ui.test;
+package com.common.app.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.common.app.R;
+import com.common.app.ui.test.TestCacheActivity;
+import com.common.app.ui.test.TestImageBrowserActivity;
+import com.common.app.ui.test.TestImageLoaderActivity;
+import com.common.app.ui.test.TestListViewActivity;
+import com.common.app.ui.test.TestMp3RecActivity;
+import com.common.app.ui.test.TestNetActivity;
+import com.common.app.ui.test.TestPtrActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.main_btn_test_listview).setOnClickListener(this);
         findViewById(R.id.main_btn_test_mp3rec).setOnClickListener(this);
         findViewById(R.id.main_btn_test_ptr).setOnClickListener(this);
-        findViewById(R.id.main_btn_test_context_menu).setOnClickListener(this);
 
     }
 
@@ -157,11 +163,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.main_btn_test_ptr: {
                 Intent i = new Intent(this, TestPtrActivity.class);
-                startActivity(i);
-                break;
-            }
-            case R.id.main_btn_test_context_menu: {
-                Intent i = new Intent(this, TestContextMenuActivity.class);
                 startActivity(i);
                 break;
             }
