@@ -8,7 +8,7 @@ import android.util.AttributeSet;
  * 
  * 只是通过继承不同库的具体实现切换
  */
-public class CommonImageView extends com.common.image.fresco.CommonImageView {
+public class CommonImageView extends com.common.image.glide.CommonImageView {
 
     public CommonImageView(Context context) {
         super(context);
@@ -25,10 +25,9 @@ public class CommonImageView extends com.common.image.fresco.CommonImageView {
     /**
      * 设置点击回调，子类应该重写
      * 
-     * @param listener 回调
+     * @param listener
      */
     public void setImageOnClickListener(IOnImageClickListener listener) {
-
     }
 
     /**
@@ -39,4 +38,5 @@ public class CommonImageView extends com.common.image.fresco.CommonImageView {
      */
     public void update(int imageInfoWidth, int imageInfoHeight) {
     }
+
 }

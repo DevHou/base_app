@@ -3,14 +3,14 @@ package com.common.image;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.common.image.fresco.photodraweeview.FrescoPhotoView;
+import com.common.image.glide.GlidePhotoView;
 
 /**
  * Created by houlijiang on 16/4/13.
  * 
  * 大图查看，什么也不干只是通过继承不同实现对外统一接口
  */
-public class BigImageView extends FrescoPhotoView {
+public class BigImageView extends GlidePhotoView {
 
     public BigImageView(Context context) {
         super(context);

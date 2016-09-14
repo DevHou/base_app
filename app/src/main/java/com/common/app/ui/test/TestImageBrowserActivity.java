@@ -22,6 +22,9 @@ public class TestImageBrowserActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showBackBtn();
+        setTitle("测试大图浏览");
+
         findViewById(R.id.test_image_browser_btn_browser).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

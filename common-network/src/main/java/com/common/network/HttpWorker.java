@@ -7,6 +7,7 @@ import com.common.network.volley.VolleyHttpWorker;
 import com.common.utils.JsonUtils;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -32,6 +33,11 @@ public class HttpWorker {
         return true;
     }
 
+    public static boolean init(Context context, File cache, InputStream[] cers, int timeoutMs) {
+        mHttpWorker = new VolleyHttpWorker(context, cache, cers, timeoutMs);
+        return true;
+    }
+
     /**
      * 对结果进行统一处理
      *
@@ -41,6 +47,9 @@ public class HttpWorker {
      * @return 结果对象
      */
     public static <T extends HttpResponseResult> T handlerResult(String result, Class<T> clazz) {
+        if (clazz == null) {
+            return null;
+        }
         if (HttpStringResponse.class.isAssignableFrom(clazz)) {
             HttpStringResponse resp = new HttpStringResponse();
             resp.data = result;
@@ -84,6 +93,23 @@ public class HttpWorker {
     }
 
     /**
+     * get 请求
+     *
+     * @param tag tag
+     * @param url url
+     * @param header header
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    public static <Result extends HttpResponseResult> INetCall get(Object tag, String url, Map<String, String> header,
+        IHttpParams params, final Class<Result> classOfT, IHttpResponse<Result> handler, int timeout, Object param) {
+        return mHttpWorker.doGet(tag, url, header, params, classOfT, handler, timeout, param);
+    }
+
+    /**
      * post请求
      *
      * @param tag tag
@@ -103,6 +129,25 @@ public class HttpWorker {
     }
 
     /**
+     * post请求
+     *
+     * @param tag tag
+     * @param url url
+     * @param params 参数
+     * @param contentType post数据类型
+     * @param classOfT 返回值类型
+     * @param headers 自定义http头
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    public static <Result extends HttpResponseResult> INetCall post(Object tag, String url, IHttpParams params,
+        String contentType, Map<String, String> headers, final Class<Result> classOfT, IHttpResponse<Result> handler,
+        int timeout, Object param) {
+        return mHttpWorker.doPost(tag, url, params, contentType, headers, classOfT, handler, timeout, param);
+    }
+
+    /**
      * 下载文件
      *
      * @param tag tag
@@ -119,6 +164,25 @@ public class HttpWorker {
             t = tag.hashCode();
         }
         return mHttpWorker.download(t, url, header, file, params, handler, param);
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param tag tag
+     * @param url url
+     * @param file 下载的文件存储位置
+     * @param params 参数
+     * @param handler 回调
+     * @param param 自定义参数
+     */
+    public static INetCall download(Object tag, String url, Map<String, String> header, File file, IHttpParams params,
+        IHttpResponse<File> handler, int timeout, Object param) {
+        Object t = null;
+        if (tag != null) {
+            t = tag.hashCode();
+        }
+        return mHttpWorker.download(t, url, header, file, params, handler, timeout, param);
     }
 
     /**
@@ -142,6 +206,29 @@ public class HttpWorker {
             t = tag.hashCode();
         }
         return mHttpWorker.upload(t, url, headers, files, params, classOfT, handler, param);
+    }
+
+    /**
+     * 上传
+     *
+     * @param tag tag
+     * @param url url
+     * @param headers 自定义http头
+     * @param files 上传的文件
+     * @param params 参数
+     * @param classOfT 返回值类型
+     * @param handler 回调
+     * @param param 自定义参数
+     * @param <Result> 结果
+     */
+    public static <Result extends HttpResponseResult> INetCall upload(Object tag, String url,
+        Map<String, String> headers, Map<String, FileWrapper> files, IHttpParams params, final Class<Result> classOfT,
+        IHttpResponse<Result> handler, int timeout, Object param) {
+        Object t = null;
+        if (tag != null) {
+            t = tag.hashCode();
+        }
+        return mHttpWorker.upload(t, url, headers, files, params, classOfT, handler, timeout, param);
     }
 
     /**

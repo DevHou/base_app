@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/layout_title_toolbar" />
+
     <com.common.listview.AbsListView
         android:id="@+id/test_listview_list"
         style="@style/app_list_view"

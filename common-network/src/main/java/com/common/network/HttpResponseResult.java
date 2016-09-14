@@ -6,4 +6,5 @@ package com.common.network;
  * 所有http请求返回结果的基类
  */
 public class HttpResponseResult {
+    public long networkTimeMs;// 网络请求毫秒数
 }

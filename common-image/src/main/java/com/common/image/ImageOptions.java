@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 public class ImageOptions implements Serializable {
 
+    private String imageSample;// 图片缩略图
     private int imageResOnLoading = 0;
     private int imageResForEmptyUri = 0;
     private int imageResOnFail = 0;
@@ -26,7 +27,16 @@ public class ImageOptions implements Serializable {
     private ScaleType failScaleType = ScaleType.FIT_CENTER;
     private ImageProcessor processor = null;
     private ImageSize imageSize = null;
-    private boolean mIsGif = false;
+    private boolean isGif = false;
+    private boolean isDebug = false;
+
+    public String getImageSample() {
+        return imageSample;
+    }
+
+    public void setImageSample(String imageSample) {
+        this.imageSample = imageSample;
+    }
 
     public int getImageResOnLoading() {
         return imageResOnLoading;
@@ -132,12 +142,20 @@ public class ImageOptions implements Serializable {
         this.imageProgress = imageProgress;
     }
 
-    public boolean getIfGif() {
-        return mIsGif;
+    public boolean isGif() {
+        return isGif;
     }
 
     public void setIsGif(boolean isGif) {
-        mIsGif = isGif;
+        this.isGif = isGif;
+    }
+
+    public boolean isDebug() {
+        return isDebug;
+    }
+
+    public void setIsDebug(boolean mIsDebug) {
+        this.isDebug = mIsDebug;
     }
 
     @Override
@@ -157,7 +175,8 @@ public class ImageOptions implements Serializable {
         options.imageOnFail = this.imageOnFail;
         options.imageSize = this.imageSize;
         options.processor = this.processor;
-        options.mIsGif = this.mIsGif;
+        options.isGif = this.isGif;
+        options.isDebug = this.isDebug;
         return options;
     }
 
@@ -229,6 +248,11 @@ public class ImageOptions implements Serializable {
             return this;
         }
 
+        public Builder setIfDebug(boolean isDebug) {
+            options.setIsDebug(isDebug);
+            return this;
+        }
+
         public ImageOptions build() {
             return options;
         }
@@ -242,9 +266,30 @@ public class ImageOptions implements Serializable {
         public int width;
         public int height;
 
+        public ImageSize() {
+            this.width = 0;
+            this.height = 0;
+        }
+
         public ImageSize(int width, int height) {
             this.width = width;
             this.height = height;
+        }
+
+        public ImageSize(int width, int height, int maxWidth, int maxHeight) {
+            float ratio;
+            if (width < maxWidth && height < maxHeight) {
+                this.width = width;
+                this.height = height;
+            } else {
+                if (maxWidth * 1.0f / width < maxHeight * 1.0f / height) {
+                    ratio = maxWidth * 1.0f / width;
+                } else {
+                    ratio = maxHeight * 1.0f / height;
+                }
+                this.width = (int) (width * ratio);
+                this.height = (int) (height * ratio);
+            }
         }
     }
 }

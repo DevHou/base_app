@@ -1,7 +1,9 @@
 package com.common.image;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 
 import java.io.File;
 
@@ -14,6 +16,32 @@ public interface IImageLoader {
 
     void init(Context context, File cacheDir);
 
-    void displayImage(Uri uri, final CommonImageView imageView, final ImageOptions options,
+    /**
+     * 一定要在主线程
+     */
+    void onLowMemory();
+
+    /**
+     * 一定要在后台线程
+     * 
+     * @return 字节数
+     */
+    long getCacheSize();
+
+    /**
+     * 一定要在后台线程
+     *
+     * @return 是否成功
+     */
+    boolean clearCache();
+
+    void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
         final IImageLoadListener listener);
+
+    void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
+        final IImageLoadListener listener);
+
+    void displayImage(Activity activity, Uri uri, final CommonImageView imageView, final ImageOptions options,
+        final IImageLoadListener listener);
+
 }

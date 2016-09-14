@@ -18,4 +18,5 @@
     <string name="error_code_runtime_illegal_access">Runtime error</string>
     <string name="error_code_runtime_invocation">Runtime error</string>
     <string name="error_code_runtime_no_method">Runtime error</string>
+    <string name="error_code_runtime_callback">Callback error</string>
 </resources>

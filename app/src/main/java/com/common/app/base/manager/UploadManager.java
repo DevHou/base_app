@@ -35,6 +35,7 @@ public class UploadManager {
 
     private static final String TAG = UploadManager.class.getSimpleName();
 
+    private static final int TIMEOUT = 20000;
     private static final int HANDLER_UPLOAD = 1;
     private boolean mUpload = true;
     private Set<String> mUploadFilter = new HashSet<>();
@@ -62,6 +63,12 @@ public class UploadManager {
                         AppLog.v(TAG, "upload url:" + item.url);
                         if (TextUtils.isEmpty(item.name) || item.target == null) {
                             AppLog.v(TAG, "upload name or target is null");
+                            DispatchUtils.getInstance().postInMain(new Runnable() {
+                                @Override
+                                public void run() {
+                                    item.callback.onFinish(false, null, item.param);
+                                }
+                            });
                             return true;
                         }
                         Map<String, String> header = null;
@@ -92,6 +99,7 @@ public class UploadManager {
                                                 if (di.isCanceled) {
                                                     return;
                                                 }
+                                                AppLog.d(TAG, "result:" + result.data);
                                                 if (di.callback != null) {
                                                     try {
                                                         UploadResult uploadResult = new UploadResult();
@@ -105,7 +113,6 @@ public class UploadManager {
                                                 AppLog.v(TAG, "upload success url:" + di.url);
                                             }
                                         });
-                                        mUploadFilter.remove(item.url);
                                     }
 
                                     @Override
@@ -122,7 +129,7 @@ public class UploadManager {
                                     @Override
                                     public void onProgress(final long donebytes, final long totalbytes,
                                         final Object param) {
-                                        AppLog.v(TAG, "done:" + donebytes + " taotal:" + totalbytes);
+                                        AppLog.v(TAG, "done:" + donebytes + " total:" + totalbytes);
                                         DispatchUtils.getInstance().postInMain(new Runnable() {
                                             @Override
                                             public void run() {
@@ -140,7 +147,7 @@ public class UploadManager {
                                             }
                                         });
                                     }
-                                }, item);
+                                }, TIMEOUT, item);
                     }
                 } catch (InterruptedException e) {
                     AppLog.e(TAG, "interrupted exception when upload");

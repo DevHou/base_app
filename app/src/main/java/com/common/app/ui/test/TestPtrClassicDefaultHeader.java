@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class PtrClassicDefaultHeader extends FrameLayout implements PtrUIHandler {
+public class TestPtrClassicDefaultHeader extends FrameLayout implements PtrUIHandler {
 
     private final static String KEY_SharedPreferences = "cube_ptr_classic_last_update";
     private static SimpleDateFormat sDataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -38,17 +38,17 @@ public class PtrClassicDefaultHeader extends FrameLayout implements PtrUIHandler
 
     private LastUpdateTimeUpdater mLastUpdateTimeUpdater = new LastUpdateTimeUpdater();
 
-    public PtrClassicDefaultHeader(Context context) {
+    public TestPtrClassicDefaultHeader(Context context) {
         super(context);
         initViews(null);
     }
 
-    public PtrClassicDefaultHeader(Context context, AttributeSet attrs) {
+    public TestPtrClassicDefaultHeader(Context context, AttributeSet attrs) {
         super(context, attrs);
         initViews(attrs);
     }
 
-    public PtrClassicDefaultHeader(Context context, AttributeSet attrs, int defStyle) {
+    public TestPtrClassicDefaultHeader(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initViews(attrs);
     }

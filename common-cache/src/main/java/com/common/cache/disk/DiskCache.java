@@ -79,6 +79,15 @@ public class DiskCache {
     }
 
     /**
+     * 获取缓存大小
+     * 
+     * @return 字节数
+     */
+    public static long getCacheSize() {
+        return diskLruCache.size();
+    }
+
+    /**
      * 清空并重新打开
      */
     public static void clear() {
@@ -412,8 +421,8 @@ public class DiskCache {
      * @param editor cache编辑器
      * @throws IOException
      */
-    private static void writeMetadata(Map<String, ? extends Serializable> metadata,
-        DiskLruCache.Editor editor) throws IOException {
+    private static void writeMetadata(Map<String, ? extends Serializable> metadata, DiskLruCache.Editor editor)
+        throws IOException {
         ObjectOutputStream oos = null;
         try {
             oos =
@@ -425,8 +434,7 @@ public class DiskCache {
         }
     }
 
-    private static Map<String, Serializable> readMetadata(
-        DiskLruCache.Snapshot snapshot) throws IOException {
+    private static Map<String, Serializable> readMetadata(DiskLruCache.Snapshot snapshot) throws IOException {
         ObjectInputStream ois = null;
         try {
             ois =
@@ -519,8 +527,7 @@ public class DiskCache {
         private final DiskLruCache.Snapshot snapshot;
         private final Map<String, Serializable> metadata;
 
-        public InputStreamEntry(DiskLruCache.Snapshot snapshot,
-            Map<String, Serializable> metadata) {
+        public InputStreamEntry(DiskLruCache.Snapshot snapshot, Map<String, Serializable> metadata) {
             this.metadata = metadata;
             this.snapshot = snapshot;
         }

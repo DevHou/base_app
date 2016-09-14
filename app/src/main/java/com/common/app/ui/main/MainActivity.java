@@ -1,4 +1,4 @@
-package com.common.app.ui.test;
+package com.common.app.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,18 +15,35 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.common.app.R;
+import com.common.app.ui.test.TestCacheActivity;
+import com.common.app.ui.test.TestImageBrowserActivity;
+import com.common.app.ui.test.TestImageLoaderActivity;
+import com.common.app.ui.test.TestListViewActivity;
+import com.common.app.ui.test.TestMp3RecActivity;
+import com.common.app.ui.test.TestNetActivity;
+import com.common.app.ui.test.TestPtrActivity;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
     View.OnClickListener {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -35,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle =
             new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
@@ -52,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         findViewById(R.id.main_btn_test_listview).setOnClickListener(this);
         findViewById(R.id.main_btn_test_mp3rec).setOnClickListener(this);
         findViewById(R.id.main_btn_test_ptr).setOnClickListener(this);
-        findViewById(R.id.main_btn_test_context_menu).setOnClickListener(this);
 
     }
 
@@ -148,11 +163,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             case R.id.main_btn_test_ptr: {
                 Intent i = new Intent(this, TestPtrActivity.class);
-                startActivity(i);
-                break;
-            }
-            case R.id.main_btn_test_context_menu:{
-                Intent i = new Intent(this, TestContextMenuActivity.class);
                 startActivity(i);
                 break;
             }

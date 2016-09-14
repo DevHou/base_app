@@ -26,6 +26,11 @@ public class BaseDataService {
 
     private static final String TAG = BaseDataService.class.getSimpleName();
 
+    protected static <T extends DataModel> T processApiResult(ApiResultModel result, Class<T> modelClass,
+        IDataServiceCallback<T> listener, final Object param) {
+        return processApiResult(result, modelClass, listener, null, param);
+    }
+
     /**
      * 解析数据model
      * 如果需要boolean的model则一定会返回一个model对象
@@ -35,7 +40,7 @@ public class BaseDataService {
      * @param listener 回调
      */
     protected static <T extends DataModel> T processApiResult(ApiResultModel result, Class<T> modelClass,
-        IDataServiceCallback<T> listener, final Object param) {
+        IDataServiceCallback<T> listener, final DataPageInfo page, final Object param) {
 
         DataServiceResultModel serviceResult = createDefaultResultModel(result);
         T model = null;
@@ -61,14 +66,17 @@ public class BaseDataService {
                     } else {
                         if (model instanceof ListDataModel) {
                             ((ListDataModel) model).pageInfo = new ListDataModel.PageInfo();
-                            if (result.pageInfo != null) {
+                            if (page != null) {
+                                ((ListDataModel) model).pageInfo.hasMore =
+                                    ((ListDataModel) model).getListCount() >= page.pageSize;
+                            } else if (result.pageInfo != null) {
                                 ((ListDataModel) model).pageInfo.currentPage = result.pageInfo.currentPage;
                                 ((ListDataModel) model).pageInfo.currentPageCount = result.pageInfo.currentPageCount;
                                 ((ListDataModel) model).pageInfo.pageSize = result.pageInfo.pageSize;
                                 ((ListDataModel) model).pageInfo.totalCount = result.pageInfo.totalCount;
-                                // 增加字段是否还有更多，判断方法是当前页返回数据数目是否等于请求的每页数据数
-                                int total = result.pageInfo.currentPage * result.pageInfo.pageSize;
-                                ((ListDataModel) model).pageInfo.hasMore = (total < result.pageInfo.totalCount);
+                                ((ListDataModel) model).pageInfo.hasMore = ((ListDataModel) model).getListCount() > 0;
+                            } else {
+                                ((ListDataModel) model).pageInfo.hasMore = ((ListDataModel) model).getListCount() > 0;
                             }
                         }
                         serviceResult = DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS);
@@ -122,16 +130,27 @@ public class BaseDataService {
         DispatchUtils.getInstance().postInMain(new Runnable() {
             @Override
             public void run() {
-                try {
-                    if (listener != null) {
-                        if (errorModel != null) {
+                if (listener != null) {
+                    if (errorModel != null) {
+                        try {
                             listener.onError(errorModel, param);
-                        } else {
+                        } catch (Exception e) {
+                            AppLog.e(TAG, "service on data error back, e:" + e.getLocalizedMessage());
+                        }
+                    } else {
+                        try {
                             listener.onSuccess(result, model, param);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            AppLog.e(TAG, "service on data success back, e:" + e.getLocalizedMessage());
+                            try {
+                                ErrorModel em = ErrorModel.errorWithCode(ErrorConst.ERROR_CODE_RUNTIME_CALLBACK);
+                                listener.onError(em, param);
+                            } catch (Exception e2) {
+                                AppLog.e(TAG, "after success error, error callback e:" + e2.getLocalizedMessage());
+                            }
                         }
                     }
-                } catch (Exception e) {
-                    AppLog.e(TAG, "service on data back error, e:" + e.getLocalizedMessage());
                 }
             }
         });
@@ -179,4 +198,13 @@ public class BaseDataService {
         return DataServiceResultModel.create(ErrorConst.ERROR_CODE_SUCCESS, "");
     }
 
+    protected class DataPageInfo {
+        public int pageSize;
+        public int pageNum;
+
+        public DataPageInfo(int pageNum, int pageSize) {
+            this.pageSize = pageSize;
+            this.pageNum = pageNum;
+        }
+    }
 }

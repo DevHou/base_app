@@ -1,11 +1,11 @@
 package com.common.app.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +61,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
     }
 
     protected FragmentManager getAdapterFragmentManager() {
-        return getActivity().getSupportFragmentManager();
+        return getActivity().getFragmentManager();
     }
 
     /**
@@ -81,7 +81,7 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
         // 使用自定义view，这个要在setupWithViewPager后，否则会被覆盖成纯文本的
         for (int i = 0; i < getCount(); i++) {
             TabLayout.Tab tab = mTabLayout.getTabAt(i);
-            View view = getFragmentTabView(i);
+            View view = getFragmentTabView(i, mTabLayout);
             tab.setCustomView(view);
         }
         // 设置监听，setupWithViewPager里面做了默认设置，所以要在它之后再设置一遍
@@ -160,14 +160,14 @@ public abstract class AbsViewPagerFragment extends BaseFragment {
     /**
      * 自定义的title view
      */
-    protected View getFragmentTabView(int position) {
+    protected View getFragmentTabView(int position, ViewGroup vg) {
         View v = LayoutInflater.from(this.getActivity()).inflate(R.layout.item_viewpager_tab, null);
         TextView tv = (TextView) v.findViewById(R.id.item_viewpager_tab_tv);
         tv.setText(getFragmentTitle(position));
         return v;
     }
 
-    public class SampleFragmentPagerAdapter extends FragmentStatePagerAdapter {
+    public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
         public SampleFragmentPagerAdapter(FragmentManager fm) {
             super(fm);

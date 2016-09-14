@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_title" />
+    <include layout="@layout/layout_title_custom" />
 
     <com.common.listview.AbsListView
         android:id="@+id/test_context_menu_list"

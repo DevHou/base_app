@@ -16,15 +16,7 @@ public class AuthApi extends AbsBaseApi {
 
     @Override
     public String getHost(DeployManager.EnvironmentType type) {
-        switch (type) {
-            case TYPE_TEST:
-                return ApiConstants.AUTH_HOST_TEST;
-            case TYPE_BETA:
-                return ApiConstants.AUTH_HOST_BETA;
-            case TYPE_ONLINE:
-            default:
-                return ApiConstants.AUTH_HOST_ONLINE;
-        }
+        return ApiConstants.API_HOST;
     }
 
     /**

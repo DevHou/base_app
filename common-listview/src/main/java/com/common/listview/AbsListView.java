@@ -235,6 +235,10 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         });
     }
 
+    public void smoothScrollToPosition(int position) {
+        mRecycler.smoothScrollToPosition(position);
+    }
+
     /**
      * 设置layout manager
      */
@@ -251,6 +255,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         mProgress.setVisibility(View.VISIBLE);
         mEmpty.setVisibility(View.GONE);
         mRecycler.setVisibility(View.VISIBLE);
+        if (adapter instanceof IAbsListDataAdapter) {
+            ((IAbsListDataAdapter) adapter).setLoadMoreView(mMoreProgressId);
+        }
         // mRefreshLayout.refreshComplete();
         // 有数据变化时会重置刷新显示状态
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -300,32 +307,31 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                         if (((IAbsListDataAdapter) adapter).isEmpty()) {
                             // 为空认为是第一次加载，显示加载中view
                             mProgress.setVisibility(View.VISIBLE);
-                            mRecycler.setVisibility(View.GONE);
+                            mRefreshLayout.setVisibility(View.GONE);
                         } else {
                             // 否则认为是下拉刷新，不显示加载中view
                             mProgress.setVisibility(View.GONE);
-                            mRecycler.setVisibility(View.VISIBLE);
+                            mRefreshLayout.setVisibility(View.VISIBLE);
                         }
                         mEmpty.setVisibility(View.GONE);
                         mError.setVisibility(View.GONE);
                     } else if (((IAbsListDataAdapter) adapter).isEmpty()) {
                         mEmpty.setVisibility(View.VISIBLE);
-                        mRecycler.setVisibility(View.GONE);
+                        mRefreshLayout.setVisibility(View.GONE);
                         mError.setVisibility(View.GONE);
                     } else {
                         mEmpty.setVisibility(View.GONE);
-                        mRecycler.setVisibility(View.VISIBLE);
+                        mRefreshLayout.setVisibility(View.VISIBLE);
                         mError.setVisibility(View.GONE);
                     }
-                    ((IAbsListDataAdapter) adapter).setLoadMoreView(mMoreProgressId);
                 } else {
                     if (getChildCount() == 0) {
                         mEmpty.setVisibility(View.VISIBLE);
-                        mRecycler.setVisibility(View.GONE);
+                        mRefreshLayout.setVisibility(View.GONE);
                         mError.setVisibility(View.GONE);
                     } else {
                         mEmpty.setVisibility(View.GONE);
-                        mRecycler.setVisibility(View.VISIBLE);
+                        mRefreshLayout.setVisibility(View.VISIBLE);
                         mError.setVisibility(View.GONE);
                     }
                 }
@@ -372,6 +378,11 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     return false;
                 }
                 if (mAppBarOffset != 0) {
+                    return false;
+                }
+                AppLog.d(TAG, "empty:" + (mEmpty.getVisibility() == View.VISIBLE) + " error:"
+                    + (mError.getVisibility() == View.VISIBLE));
+                if (mEmpty.getVisibility() == View.VISIBLE || mError.getVisibility() == View.VISIBLE) {
                     return false;
                 }
                 if (mRecycler.getChildCount() == 0) {
@@ -430,25 +441,25 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             mRefreshLayout.addPtrUIHandler(new PtrUIHandler() {
                 @Override
                 public void onUIReset(PtrFrameLayout frame) {
-                    AppLog.d(TAG, "onUIReset");
+                    // AppLog.d(TAG, "onUIReset");
                     handler.onUIReset();
                 }
 
                 @Override
                 public void onUIRefreshPrepare(PtrFrameLayout frame) {
-                    AppLog.d(TAG, "onUIRefreshPrepare");
+                    // AppLog.d(TAG, "onUIRefreshPrepare");
                     handler.onUIRefreshPrepare();
                 }
 
                 @Override
                 public void onUIRefreshBegin(PtrFrameLayout frame) {
-                    AppLog.d(TAG, "onUIRefreshBegin");
+                    // AppLog.d(TAG, "onUIRefreshBegin");
                     handler.onUIRefreshBegin();
                 }
 
                 @Override
                 public void onUIRefreshComplete(PtrFrameLayout frame) {
-                    AppLog.d(TAG, "onUIRefreshComplete");
+                    // AppLog.d(TAG, "onUIRefreshComplete");
                     handler.onUIRefreshComplete();
                 }
 
@@ -562,10 +573,33 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
      */
     public void showErrorView() {
         hideEmptyAndProgressView();
-        mRecycler.setVisibility(View.GONE);
+        mRefreshLayout.setVisibility(View.GONE);
         mError.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * 把空和错误隐藏
+     */
+    private void hideEmptyAndErrorView() {
+        mEmpty.setVisibility(View.GONE);
+        mError.setVisibility(View.GONE);
+    }
+
+    /**
+     * 显示加载中页面
+     */
+    public void showLoadingView() {
+        hideEmptyAndErrorView();
+        mRefreshLayout.setVisibility(View.GONE);
+        mProgress.setVisibility(View.VISIBLE);
+    }
+
+    // 主动下拉刷新，和手动下拉一个效果
+    public void startRefresh() {
+        mRefreshLayout.autoRefresh();
+    }
+
+    // 隐藏刷新，即通知完成刷新
     public void stopRefresh() {
         mRefreshLayout.refreshComplete();
     }

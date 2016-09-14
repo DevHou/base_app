@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,26 +46,33 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CustomMenuItem[] mCustomMenuItems = null;
     private IOnMenuClick mOnMenuClick;
 
+    // 自定义方式的title
     protected View mTitle;// 整个title bar
     private View mViewBackBtn;// 返回按钮的父view，便于点击
     private ViewGroup mVgRightIcons;// 右侧显示的按钮列表
     private TextView mTvTitle;
-
     private PopupWindow mPopupWindow;// 更多菜单弹窗
     private ViewGroup mVgPopItems;// 弹窗列表
+    // toolbar方式实现的title
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindContentView();
 
-        mTitle = findViewById(R.id.layout_title_fl);
+        mTitle = findViewById(R.id.layout_title_custom_fl);
         if (mTitle != null) {
-            mViewBackBtn = findViewById(R.id.layout_title_fl_back);
-            mTvTitle = (TextView) findViewById(R.id.layout_title_tv_title);
-            mVgRightIcons = (ViewGroup) findViewById(R.id.layout_title_ll_buttons);
-            mVgPopItems = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.layout_title_popup, null);
+            mViewBackBtn = findViewById(R.id.layout_title_custom_fl_back);
+            mTvTitle = (TextView) findViewById(R.id.layout_title_custom_tv_title);
+            mVgRightIcons = (ViewGroup) findViewById(R.id.layout_title_custom_ll_buttons);
+            mVgPopItems = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.layout_title_custom_popup, null);
         }
+        mToolbar = (Toolbar) findViewById(R.id.layout_title_toolbar_toolbar);
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+        }
+
         EventUtils.register(this);
     }
 
@@ -77,10 +86,17 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 刷新右侧菜单
      */
     private void refreshTitleButtons() {
-        if (mTitle == null) {
-            return;
+        if (mTitle != null) {
+            refreshCustomButtons();
+        } else if (mToolbar != null) {
+            refreshToolbarMenus();
         }
+    }
 
+    /**
+     * 自定义的菜单
+     */
+    private void refreshCustomButtons() {
         mVgRightIcons.removeAllViews();
         mVgPopItems.removeAllViews();
         if (mCustomMenuItems != null && mCustomMenuItems.length > 0) {
@@ -94,9 +110,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                     CommonImageView iv = (CommonImageView) v.findViewById(R.id.common_item_title_bar_icon_iv);
                     TextView tv = (TextView) v.findViewById(R.id.common_item_title_bar_icon_tv);
                     if (item.icon > 0) {
-                        ImageLoader.displayImage(item.icon, iv, null);
+                        ImageLoader.displayImage(this, item.icon, iv, null);
                     } else if (!TextUtils.isEmpty(item.iconUri)) {
-                        ImageLoader.displayImage(item.iconUri, iv, null);
+                        ImageLoader.displayImage(this, item.iconUri, iv, null);
                     } else if (!TextUtils.isEmpty(item.text)) {
                         tv.setText(item.text);
                     }
@@ -116,6 +132,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                     firstPopItem = false;
                     mVgPopItems.addView(v);
                 }
+                v.setEnabled(item.enable);// 先按照每个item设置
+                // 再根据全局设置
                 if (mRightState != RIGHT_STATE_UNSET) {
                     v.setEnabled(mRightState == RIGHT_STATE_ENABLE);
                 }
@@ -135,7 +153,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             if (showMoreIcon) {
                 final View v = LayoutInflater.from(this).inflate(R.layout.item_title_bar_icon, mVgRightIcons, false);
                 CommonImageView iv = (CommonImageView) v.findViewById(R.id.common_item_title_bar_icon_iv);
-                ImageLoader.displayImage(R.drawable.ic_title_more_action, iv, null);
+                ImageLoader.displayImage(this, R.drawable.ic_title_more_action, iv, null);
                 v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -162,18 +180,81 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    private void refreshToolbarMenus() {
+        invalidateOptionsMenu();// 告诉系统重构menu
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        menu.clear();
+        if (mCustomMenuItems != null && mCustomMenuItems.length > 0) {
+            int i = 0;
+            for (final CustomMenuItem item : mCustomMenuItems) {
+                MenuItem mi = menu.add(String.valueOf(i++));
+                if (!TextUtils.isEmpty(item.text)) {
+                    mi.setTitle(item.text);
+                }
+                if (item.icon > 0) {
+                    mi.setIcon(item.icon);
+                }
+                if (!TextUtils.isEmpty(item.iconUri)) {
+                    View v = LayoutInflater.from(this).inflate(R.layout.item_title_bar_icon, null);
+                    CommonImageView iv = (CommonImageView) v.findViewById(R.id.common_item_title_bar_icon_iv);
+                    if (item.isLast && item.showType == CustomMenuShowType.TYPE_ALWAYS) {
+                        // 最有一个并且要在标题栏上直接显示的最右面要加个空
+                        View pad = v.findViewById(R.id.common_item_title_bar_icon_pad);
+                        pad.setVisibility(View.VISIBLE);
+                    }
+                    ImageLoader.displayImage(this, item.iconUri, iv, null);
+                    mi.setActionView(v);
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (mOnMenuClick != null) {
+                                mOnMenuClick.onMenuClick(item.id, item.param);
+                            }
+                        }
+                    });
+                }
+                mi.setEnabled(item.enable);
+                mi.setShowAsActionFlags(item.showType);
+
+                mi.setEnabled(item.enable);// 先按照每个item设置
+                // 再根据全局设置
+                if (mRightState != RIGHT_STATE_UNSET) {
+                    mi.setEnabled(mRightState == RIGHT_STATE_ENABLE);
+                }
+                mi.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if (mOnMenuClick != null) {
+                            mOnMenuClick.onMenuClick(item.id, item.param);
+                        }
+                        return false;
+                    }
+                });
+            }
+        }
+        return true;
+    }
+
     /**
      * 隐藏titleBar
      */
     public void hideTitleBar() {
         if (mTitle != null) {
             mTitle.setVisibility(View.GONE);
+        } else if (mToolbar != null) {
+            mToolbar.setVisibility(View.GONE);
         }
     }
 
     public void showTitleBar() {
         if (mTitle != null) {
             mTitle.setVisibility(View.VISIBLE);
+        } else if (mToolbar != null) {
+            mToolbar.setVisibility(View.VISIBLE);
         }
     }
 
@@ -181,18 +262,13 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 显示返回按键
      */
     protected void showBackBtn() {
-        if (mViewBackBtn != null) {
-            mViewBackBtn.setVisibility(View.VISIBLE);
-        }
-        mLeftClickListener = new View.OnClickListener() {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         };
-        if (mViewBackBtn != null) {
-            mViewBackBtn.setOnClickListener(mLeftClickListener);
-        }
+        showBackBtn(listener);
     }
 
     /**
@@ -201,12 +277,14 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param listener 返回键点击回调
      */
     protected void showBackBtn(final View.OnClickListener listener) {
+        mLeftClickListener = listener;
         if (mViewBackBtn != null) {
             mViewBackBtn.setVisibility(View.VISIBLE);
         }
-        mLeftClickListener = listener;
         if (mViewBackBtn != null) {
             mViewBackBtn.setOnClickListener(mLeftClickListener);
+        } else if (mToolbar != null) {
+            mToolbar.setNavigationOnClickListener(mLeftClickListener);
         }
     }
 
@@ -217,12 +295,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     public void showBackBtnWithText(String title) {
         showBackBtn();
-        if (mViewBackBtn != null && !TextUtils.isEmpty(title)) {
-            mViewBackBtn.setVisibility(View.VISIBLE);
-            if (mTvTitle != null) {
-                mTvTitle.setText(title);
-            }
-        }
+        setTitle(title);
     }
 
     /**
@@ -233,12 +306,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected void showBackBtnWithText(String title, final View.OnClickListener listener) {
         showBackBtn(listener);
-        if (mViewBackBtn != null && !TextUtils.isEmpty(title)) {
-            mViewBackBtn.setVisibility(View.VISIBLE);
-            if (mTvTitle != null) {
-                mTvTitle.setText(title);
-            }
-        }
+        setTitle(title);
     }
 
     /**
@@ -247,8 +315,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param title 标题
      */
     public void setTitle(String title) {
-        if (mTvTitle != null) {
+        if (mTvTitle != null && !TextUtils.isEmpty(title)) {
             mTvTitle.setText(title);
+        } else if (mToolbar != null && !TextUtils.isEmpty(title)) {
+            mToolbar.setTitle(title);
+            getSupportActionBar().setTitle(title);
         }
     }
 
@@ -311,6 +382,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setCustomMenu(CustomMenuItem[] menus, IOnMenuClick listener) {
         AppLog.v(TAG, "setCustomMenu items");
         mCustomMenuItems = menus;
+        if (mCustomMenuItems != null && mCustomMenuItems.length > 0) {
+            mCustomMenuItems[mCustomMenuItems.length - 1].isLast = true;
+        }
         mOnMenuClick = listener;
         refreshTitleButtons();
     }
@@ -383,6 +457,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         public int icon;
         public String iconUri;
         public int showType;
+        public boolean enable;
+        private boolean isLast = false;
     }
 
     /**

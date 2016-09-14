@@ -8,6 +8,7 @@ import com.common.image.ImageLoader;
 import com.common.network.HttpWorker;
 import com.common.utils.AppLog;
 import com.common.utils.FileUtils;
+import com.common.utils.JsonUtils;
 import com.common.utils.ResourceManager;
 
 import java.io.File;
@@ -52,6 +53,8 @@ public class Manager {
         AppLog.setIsOnline(BuildConfig.IS_ONLINE);
         // 初始化错误模块
         ErrorConst.init(context);
+        // 设置json 时间格式
+        JsonUtils.setDateFormat("yyyy-MM-dd HH:mm:ss");
 
         String goodCacheDir = FileUtils.tryGetGoodDiskCacheDir(context);
         // 缓存初始化，需要比较稳定的存储位置

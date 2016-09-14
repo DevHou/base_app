@@ -16,6 +16,7 @@
     <color name="material_blue_A200">#536DFE</color>
 
     <color name="app_transparent">@android:color/transparent</color>
+    <color name="app_white">@color/material_white</color>
 
     <!-- 按钮颜色 -->
     <color name="app_btn_white">@color/material_white</color>

@@ -10,7 +10,7 @@
     android:paddingRight="13dip"
     android:paddingTop="13dip"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/layout_test_app_bar_main">
 
     <Button
         android:id="@+id/main_btn_test_net"
@@ -52,12 +52,7 @@
         android:id="@+id/main_btn_test_ptr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="下拉刷新" />
+        android:text="下拉刷新控件和CoordinatorLayout" />
 
-    <Button
-        android:id="@+id/main_btn_test_context_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="上下文菜单" />
 
 </LinearLayout>

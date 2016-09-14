@@ -63,6 +63,7 @@ public abstract class BaseListActivity extends AbsListActivity {
     private View.OnClickListener noNetworkErrorClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            mRecyclerListView.showLoadingView();
             onRefreshBegin();
         }
     };

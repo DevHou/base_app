@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/layout_title_toolbar" />
+
     <Button
         android:id="@+id/test_image_browser_btn_browser"
         android:layout_width="wrap_content"

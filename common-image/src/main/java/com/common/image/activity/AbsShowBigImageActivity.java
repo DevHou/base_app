@@ -57,7 +57,7 @@ public abstract class AbsShowBigImageActivity extends AppCompatActivity {
     }
 
     private void showImage(Uri uri, ImageOptions options) {
-        ImageLoader.displayImage(uri, mImageView, options, new IImageLoadListener() {
+        ImageLoader.displayImage(this, uri, mImageView, options, new IImageLoadListener() {
             @Override
             public void onFailed(String s, View view, ImageLoadError imageLoadError) {
 

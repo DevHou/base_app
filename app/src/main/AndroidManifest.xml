@@ -6,7 +6,9 @@
 
     <!-- 网络变化监听模块用 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!--用Secure.Device_Id则不用这个权限-->
+    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
 
     <application
         android:name=".App"
@@ -16,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.common.app.ui.test.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,10 +34,9 @@
         <activity android:name=".ui.test.TestCacheActivity" />
         <activity android:name=".ui.test.TestImageBrowserActivity" />
         <activity android:name=".ui.test.TestPtrActivity" />
-        <activity android:name=".ui.test.TestContextMenuActivity" />
         <activity android:name=".ui.test.TestViewPagerFragmentActivity" />
 
-        <activity android:name=".ui.test.LoginActivity" />
+        <activity android:name=".ui.main.LoginActivity" />
     </application>
 
 </manifest>
