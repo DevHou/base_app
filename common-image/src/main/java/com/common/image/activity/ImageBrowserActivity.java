@@ -102,7 +102,7 @@ public class ImageBrowserActivity extends FragmentActivity {
         PhotoImagePagerAdapter adapter = new PhotoImagePagerAdapter();
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(defaultIndex);
-        onImagePageSelected(0, mImages.length);
+        onImagePageSelected(defaultIndex, mImages.length);
 
         if (mDotView != null) {
             if (mImages.length > 1) {
