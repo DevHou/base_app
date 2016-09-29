@@ -245,6 +245,9 @@ public class DiskCache {
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when get snapshot when read, e:" + e.getLocalizedMessage());
             return false;
+        } catch (Exception e) {
+            AppLog.e(TAG, "catch exception when get snapshot when read, e:" + e.getLocalizedMessage());
+            return false;
         }
         if (snapshot == null) {
             return false;
