@@ -1,11 +1,11 @@
 package com.common.image.glide;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -48,12 +48,14 @@ public class GlideImageLoader implements IImageLoader {
 
     private Context context;
     private File cacheDir;
+    private boolean debug;
     private LoggingListener<String, GlideDrawable> debugListener = new LoggingListener<>();
 
     @Override
-    public void init(Context context, File cacheDir) {
+    public void init(Context context, File cacheDir, boolean debug) {
         this.context = context;
         this.cacheDir = cacheDir;
+        this.debug = debug;
         // glide在第一次get实例时使用GlideModule初始化，所以这里可以先设置GlideModule，再初始化glide实例
         MyGlideModule.setFileCacheDir(cacheDir.getAbsolutePath());
         Glide.get(context).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(new OkHttpClient()));
@@ -124,8 +126,8 @@ public class GlideImageLoader implements IImageLoader {
     }
 
     public void displayImage(Object c, Uri uri, CommonImageView iv, ImageOptions options, IImageLoadListener listener) {
-        com.common.image.glide.CommonImageView imageView = iv;
-        // com.common.image.glide.CommonImageView imageView = null;
+        final CommonImageView imageView = iv;
+
         RequestManager manager;
         if (c instanceof Fragment) {
             manager = Glide.with((Fragment) c);
@@ -181,12 +183,12 @@ public class GlideImageLoader implements IImageLoader {
                     case FIT_START:
                     case FIT_END:
                     case CENTER:
-                    case CENTER_INSIDE:
                     case FOCUS_CROP:
                     case CENTER_CROP: {
                         request.centerCrop();
                         break;
                     }
+                    case CENTER_INSIDE:
                     case FIT_CENTER: {
                         request.fitCenter();
                         break;
@@ -213,7 +215,7 @@ public class GlideImageLoader implements IImageLoader {
                 thumbnailRequest.dontAnimate();
                 request.thumbnail(thumbnailRequest);
             }
-            if (options.isDebug()) {
+            if (debug && options.isDebug()) {
                 request.listener(debugListener);// debug输出
             }
         }
@@ -233,7 +235,7 @@ public class GlideImageLoader implements IImageLoader {
 
     }
 
-    public class LoggingListener<T, R> implements RequestListener<T, R> {
+    private class LoggingListener<T, R> implements RequestListener<T, R> {
         @Override
         public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
             AppLog.d(TAG, String.format(Locale.ROOT, "onException(%s, %s, %s, %s)", e, model, target, isFirstResource),

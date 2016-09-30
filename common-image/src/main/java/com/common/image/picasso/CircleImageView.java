@@ -66,7 +66,7 @@ public class CircleImageView extends com.common.image.CommonImageView {
         ImageLoader.displayImage(getContext(), resId, this, null);
     }
 
-    //@Override
+    @Override
     public Transformation getTransform() {
         return new Transformation() {
             @Override

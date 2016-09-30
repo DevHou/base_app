@@ -1,9 +1,9 @@
 package com.common.image.picasso;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -43,7 +43,7 @@ public class PicassoImageLoader implements IImageLoader {
     private OkHttp3Downloader mDownloader;
 
     @Override
-    public void init(Context context, File cacheDir) {
+    public void init(Context context, File cacheDir, boolean debug) {
         this.context = context;
         this.cacheDir = cacheDir;
 
@@ -51,7 +51,11 @@ public class PicassoImageLoader implements IImageLoader {
             mDownloader = new OkHttp3Downloader(cacheDir, Integer.MAX_VALUE);
             mMemoryCache = new LruCache(MAX_MEMORY_CACHE_SIZE);
             Picasso picasso = new Picasso.Builder(context).memoryCache(mMemoryCache).downloader(mDownloader).build();
+            // if (debug) {
+            // picasso.setIndicatorsEnabled(true); // For debugging
+            // }
             Picasso.setSingletonInstance(picasso);
+            AppLog.d(TAG, "init picasso memory size:" + MAX_MEMORY_CACHE_SIZE);
         } catch (Exception e) {
             AppLog.e(TAG, "init picasso e:" + e.getLocalizedMessage());
         }
@@ -110,7 +114,7 @@ public class PicassoImageLoader implements IImageLoader {
 
     @Override
     public void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
+                             final IImageLoadListener listener) {
         displayImage((Object) fragment, uri, imageView, options, listener);
     }
 
@@ -122,8 +126,7 @@ public class PicassoImageLoader implements IImageLoader {
 
     public void displayImage(final Object c, final Uri uri, CommonImageView iv, final ImageOptions options,
         IImageLoadListener listener) {
-        // final com.common.image.picasso.CommonImageView imageView = iv;
-        final com.common.image.picasso.CommonImageView imageView = null;
+        final CommonImageView imageView = iv;
 
         if (uri == null) {
             // 显示空的图片的
@@ -175,7 +178,7 @@ public class PicassoImageLoader implements IImageLoader {
 
     }
 
-    private RequestCreator createRequest(Object c, Uri uri, com.common.image.picasso.CommonImageView iv,
+    private RequestCreator createRequest(Object c, Uri uri, CommonImageView iv,
         ImageOptions options, boolean showHolder) {
         Picasso picasso = Picasso.with(context);
         RequestCreator request;

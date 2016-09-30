@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.common.image.glide.GlideImageLoader;
+import com.common.image.picasso.PicassoImageLoader;
 
 import java.io.File;
 
@@ -16,11 +17,7 @@ import java.io.File;
  * 图片加载工具类
  *
  * 切换时需要改的地方:
- * 此类的mImageLoader实例
  * 圆角图 圆图 BigImageView的父类
- * 具体实现里的圆角图 原图里的重载方法
- * 具体ImageLoader实现的displayImage的imageView变量
- * FrescoPhotoView init方法
  */
 public class ImageLoader {
 
@@ -29,9 +26,14 @@ public class ImageLoader {
     // url后处理回调
     private static IUrlProcessor mProcessor;
 
-    // private static FrescoImageLoader mImageLoader = new FrescoImageLoader();
-    private static GlideImageLoader mImageLoader = new GlideImageLoader();
-    //private static PicassoImageLoader mImageLoader = new PicassoImageLoader();
+    private static IImageLoader mImageLoader;
+    static {
+        if (BuildConfig.USE_IMAGE_LIB == BuildConstants.USE_GLIDE) {
+            mImageLoader = new GlideImageLoader();
+        } else {
+            mImageLoader = new PicassoImageLoader();
+        }
+    }
 
     /**
      * 初始化
@@ -40,7 +42,17 @@ public class ImageLoader {
      * @param cacheDir 缓存存储的目录
      */
     public static void init(Context context, File cacheDir) {
-        init(context, cacheDir, null);
+        init(context, cacheDir, false, null);
+    }
+
+    /**
+     * 初始化
+     *
+     * @param context 上下文
+     * @param cacheDir 缓存存储的目录
+     */
+    public static void init(Context context, File cacheDir, boolean debug) {
+        init(context, cacheDir, debug, null);
     }
 
     /**
@@ -49,8 +61,8 @@ public class ImageLoader {
      * @param context 上下文
      * @param cacheDir 缓存存储的目录
      */
-    public static void init(Context context, File cacheDir, IUrlProcessor filter) {
-        mImageLoader.init(context, cacheDir);
+    public static void init(Context context, File cacheDir, boolean debug, IUrlProcessor filter) {
+        mImageLoader.init(context, cacheDir, debug);
         if (filter != null) {
             mProcessor = filter;
         }

@@ -1,9 +1,9 @@
 package com.common.image;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 
 import java.io.File;
 
@@ -14,7 +14,7 @@ import java.io.File;
  */
 public interface IImageLoader {
 
-    void init(Context context, File cacheDir);
+    void init(Context context, File cacheDir, boolean debug);
 
     /**
      * 一定要在主线程
