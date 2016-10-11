@@ -11,6 +11,8 @@ import com.common.network.HttpWorker;
 import com.common.utils.AppLog;
 import com.google.gson.JsonSyntaxException;
 
+import org.apache.http.protocol.HTTP;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
@@ -79,8 +81,9 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         String json;
         try {
-            json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            json = new String(response.data, HttpHeaderParser.parseCharset(response.headers, HTTP.UTF_8));
         } catch (UnsupportedEncodingException e) {
+            AppLog.e(TAG, "parse reponse e:" + e.getLocalizedMessage());
             json = new String(response.data);
         }
         AppLog.v(TAG, "url:" + getUrl() + "\nvolley return string:" + json);
