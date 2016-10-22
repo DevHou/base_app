@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -179,7 +180,7 @@ public class ImageBrowserActivity extends FragmentActivity {
      * 
      * @param view 单页View
      */
-    protected BigImageView getPhotoView(View view) {
+    protected BigImageView getPhotoView(View view, int position) {
         return (BigImageView) view.findViewById(R.id.common_fragment_large_image_item_photoview);
     }
 
@@ -196,7 +197,7 @@ public class ImageBrowserActivity extends FragmentActivity {
         public View instantiateItem(ViewGroup container, int position) {
 
             View convertView = createPageView(container.getContext());
-            final BigImageView imageView = getPhotoView(convertView);
+            final BigImageView imageView = getPhotoView(convertView, position);
             // imageView.setOnPhotoTapListener(mOnPhotoTapListener);
 
             String url = getItem(position);
@@ -304,7 +305,8 @@ public class ImageBrowserActivity extends FragmentActivity {
 
         @Override
         public int getOpacity() {
-            return 1 - paint.getAlpha();
+            return PixelFormat.OPAQUE;
+            // return 1 - paint.getAlpha();
         }
 
         @Override
