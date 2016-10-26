@@ -10,7 +10,6 @@ import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.network.IHttpResponse;
 import com.common.utils.AppLog;
-import com.common.utils.JsonUtils;
 import com.common.utils.ResourceManager;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -271,15 +270,6 @@ public class ApiUtils {
                     }
                 }
 
-                if (jsonObject.has("pageInfo")) {
-                    if (jsonObject.get("pageInfo") instanceof JsonNull) {
-                        model.pageDto = null;
-                    } else {
-                        model.pageDto =
-                            JsonUtils.parseString(jsonObject.get("pageInfo").toString(), BaseApiModel.PageDTO.class);
-                    }
-                }
-
                 if (jsonObject.has("data")) {
                     if (jsonObject.get("data") instanceof JsonNull) {
                         model.data = "";
@@ -294,18 +284,6 @@ public class ApiUtils {
                     apiResult.result = "";
                 } else {
                     apiResult.result = model.data;
-                }
-                if (model.pageDto != null) {
-                    apiResult.pageInfo = new ApiResultModel.PageInfo();
-                    apiResult.pageInfo.currentPage = model.pageDto.pageNum;
-                    apiResult.pageInfo.currentPageCount = model.pageDto.curPageCount;
-                    apiResult.pageInfo.pageSize = model.pageDto.pageSize;
-                    apiResult.pageInfo.totalCount = model.pageDto.count;
-                } else {
-                    // TODO: 应该怎么样呢？
-                    apiResult.pageInfo = new ApiResultModel.PageInfo();
-                    apiResult.pageInfo.totalCount = 0;
-                    apiResult.pageInfo.pageSize = 0;
                 }
             } catch (JsonSyntaxException e) {
                 AppLog.e(TAG, "parse json error, e:" + e.getLocalizedMessage());

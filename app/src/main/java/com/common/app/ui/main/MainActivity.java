@@ -1,20 +1,20 @@
 package com.common.app.ui.main;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.common.app.R;
+import com.common.app.ui.bind.main.MainBind;
 import com.common.app.ui.test.TestCacheActivity;
 import com.common.app.ui.test.TestImageBrowserActivity;
 import com.common.app.ui.test.TestImageLoaderActivity;
@@ -23,28 +23,20 @@ import com.common.app.ui.test.TestMp3RecActivity;
 import com.common.app.ui.test.TestNetActivity;
 import com.common.app.ui.test.TestPtrActivity;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
     View.OnClickListener {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
+    private MainBind mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_test_main);
         setContentView(R.layout.activity_test_main);
-        ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mBinding.appBarMain.toolbar);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        mBinding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null)
@@ -53,9 +45,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         ActionBarDrawerToggle toggle =
-            new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open,
+            new ActionBarDrawerToggle(this, mBinding.drawerLayout, mBinding.appBarMain.toolbar, R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        mBinding.drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);

@@ -10,7 +10,7 @@ import com.common.app.base.manager.CacheManager;
 import com.common.app.base.model.ListDataModel;
 import com.common.app.base.service.BaseDataService;
 import com.common.app.base.service.IDataServiceCallback;
-import com.common.app.api.model.LoginModel;
+import com.common.app.model.LoginModel;
 import com.common.utils.AppLog;
 import com.common.utils.JsonUtils;
 
