@@ -13,14 +13,6 @@ public class ApiResultModel {
     public long time;
     public String message;
     public String result;
-    public PageInfo pageInfo;
-
-    public static class PageInfo {
-        public int currentPage;// 当前页码号
-        public int currentPageCount;// 当前页数量
-        public int pageSize;// 请求每页数量
-        public int totalCount;// 数据总数
-    }
 
     @Override
     public String toString() {

@@ -69,12 +69,6 @@ public class BaseDataService {
                             if (page != null) {
                                 ((ListDataModel) model).pageInfo.hasMore =
                                     ((ListDataModel) model).getListCount() >= page.pageSize;
-                            } else if (result.pageInfo != null) {
-                                ((ListDataModel) model).pageInfo.currentPage = result.pageInfo.currentPage;
-                                ((ListDataModel) model).pageInfo.currentPageCount = result.pageInfo.currentPageCount;
-                                ((ListDataModel) model).pageInfo.pageSize = result.pageInfo.pageSize;
-                                ((ListDataModel) model).pageInfo.totalCount = result.pageInfo.totalCount;
-                                ((ListDataModel) model).pageInfo.hasMore = ((ListDataModel) model).getListCount() > 0;
                             } else {
                                 ((ListDataModel) model).pageInfo.hasMore = ((ListDataModel) model).getListCount() > 0;
                             }

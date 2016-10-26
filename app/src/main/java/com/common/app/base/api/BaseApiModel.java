@@ -10,15 +10,5 @@ public class BaseApiModel {
     public long code;
     public String msg;
     public String data;
-    public PageDTO pageDto;
 
-    /**
-     * 页码结构
-     */
-    public static class PageDTO {
-        public int pageNum;// 页码 从1开始
-        public int pageSize;// 每页大小
-        public int curPageCount;// 当前页数据量
-        public int count;// 总数
-    }
 }
