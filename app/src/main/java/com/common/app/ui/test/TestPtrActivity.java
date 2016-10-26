@@ -7,10 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.widget.TextView;
 
+import com.common.app.BR;
 import com.common.app.R;
+import com.common.app.model.TestDataModel;
 import com.common.app.ui.BaseActivity;
+import com.common.listview.AbsListDataAdapter;
 import com.common.listview.BaseListCell;
 import com.common.listview.BaseListDataAdapter;
 import com.common.listview.ptr.PtrFrameLayout;
@@ -143,28 +145,22 @@ public class TestPtrActivity extends BaseActivity implements AppBarLayout.OnOffs
 
     public static class TestCell implements BaseListCell<TestData> {
 
-        private TextView mTvHead;
-
         public TestCell() {
         }
 
         @Override
-        public void setData(TestData model, int position) {
-            mTvHead.setText(model.str);
+        public void bindData(AbsListDataAdapter.ViewHolder holder, TestData model, int position) {
+            holder.getBinding().setVariable(BR.dataItem, model);
         }
 
         @Override
-        public int getCellResource() {
+        public int getCellViewLayout() {
             return R.layout.item_test_listview;
         }
 
-        @Override
-        public void initialChildViews(View view) {
-            mTvHead = (TextView) view.findViewById(R.id.item_test_listview_tv);
-        }
     }
 
-    public static class TestData {
+    public static class TestData extends TestDataModel.DataItem {
         public String str;
     }
 }

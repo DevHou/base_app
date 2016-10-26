@@ -1,12 +1,13 @@
 package com.common.listview;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.common.utils.AppLog;
 
@@ -308,15 +309,17 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             if (mLoadMoreId != 0) {
                 v = LayoutInflater.from(viewGroup.getContext()).inflate(mLoadMoreId, viewGroup, false);
             } else {
-                v = new TextView(viewGroup.getContext());
+                v =
+                    LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_load_more,
+                        viewGroup, false);
             }
-            return new LoadMoreViewHolder(v);
+            return new LoadMoreViewHolder(v, useBinding());
         } else if (viewType == TYPE_EMPTY_FOOTER) {
             View v =
                 LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_empty_footer,
                     viewGroup, false);
             // AppLog.v(TAG, "create view holder for empty");
-            return new EmptyViewHolder(v);
+            return new EmptyViewHolder(v, useBinding());
         }
         // AppLog.v(TAG, "create view holder for type " + viewType);
         return getItemViewHolder(viewGroup, viewType);
@@ -333,7 +336,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             return;
         }
         // AppLog.v(TAG, "bind view holder for " + position);
-        setData(viewHolder, position, getData(position));
+        bindData(viewHolder, position, getData(position));
+        viewHolder.getBinding().executePendingBindings();
     }
 
     @Override
@@ -358,15 +362,25 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ViewHolder(View itemView) {
+
+        private ViewDataBinding binding;
+
+        public ViewHolder(View itemView, boolean useBinding) {
             super(itemView);
+            if (useBinding) {
+                binding = DataBindingUtil.bind(itemView);
+            }
+        }
+
+        public ViewDataBinding getBinding() {
+            return binding;
         }
     }
 
     private static class LoadMoreViewHolder extends ViewHolder {
 
-        public LoadMoreViewHolder(View itemView) {
-            super(itemView);
+        public LoadMoreViewHolder(View itemView, boolean useBinding) {
+            super(itemView, useBinding);
             // setIsRecyclable(false);
         }
 
@@ -374,8 +388,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     private static class EmptyViewHolder extends ViewHolder {
 
-        public EmptyViewHolder(View itemView) {
-            super(itemView);
+        public EmptyViewHolder(View itemView, boolean useBinding) {
+            super(itemView, useBinding);
             // setIsRecyclable(false);
         }
 
@@ -427,7 +441,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      * @param viewHolder 视图
      * @param position index
      */
-    protected abstract void setData(ViewHolder viewHolder, int position, T data);
+    protected abstract void bindData(ViewHolder viewHolder, int position, T data);
 
     /**
      * 获取每一条的视图
@@ -436,6 +450,11 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      * @return 每一条的视图holder
      */
     protected abstract ViewHolder getItemViewHolder(ViewGroup viewGroup, int type);
+
+    /**
+     * 是否使用DataBinding
+     */
+    protected abstract boolean useBinding();
 
     /**
      * 加载跟多回调

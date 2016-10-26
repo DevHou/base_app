@@ -3,16 +3,16 @@ package com.common.app.ui.test;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.common.app.BR;
 import com.common.app.R;
 import com.common.app.api.ApiConstants;
-import com.common.app.api.TestDataModel;
 import com.common.app.base.error.ErrorModel;
 import com.common.app.base.manager.DataServiceManager;
 import com.common.app.base.service.DataServiceResultModel;
 import com.common.app.base.service.IDataServiceCallback;
+import com.common.app.model.TestDataModel;
 import com.common.app.service.AuthDataService;
 import com.common.app.ui.BaseListActivity;
 import com.common.app.uikit.Tips;
@@ -132,29 +132,14 @@ public class TestListViewActivity extends BaseListActivity {
 
     public class ItemCell implements BaseListCell<TestDataModel.DataItem>, View.OnClickListener {
 
-        private TextView tv;
-        private View btn1;
-        private View btn2;
-
         @Override
-        public void setData(TestDataModel.DataItem model, int position) {
-            tv.setText(model.name);
-            btn1.setTag(model.name);
-            btn2.setTag(model.name);
-            btn1.setOnClickListener(this);
-            btn2.setOnClickListener(this);
+        public void bindData(AbsListDataAdapter.ViewHolder holder, TestDataModel.DataItem model, int position) {
+            holder.getBinding().setVariable(BR.dataItem, model);
         }
 
         @Override
-        public int getCellResource() {
+        public int getCellViewLayout() {
             return R.layout.item_test_listview;
-        }
-
-        @Override
-        public void initialChildViews(View view) {
-            tv = (TextView) view.findViewById(R.id.item_test_listview_tv);
-            btn1 = view.findViewById(R.id.item_test_listview_btn1);
-            btn2 = view.findViewById(R.id.item_test_listview_btn2);
         }
 
         @Override

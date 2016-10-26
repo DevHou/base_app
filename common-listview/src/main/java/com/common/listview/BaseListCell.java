@@ -1,7 +1,5 @@
 package com.common.listview;
 
-import android.view.View;
-
 /**
  * Created by houlijiang on 15/11/23.
  *
@@ -15,17 +13,11 @@ public interface BaseListCell<T> {
      * @param model 数据
      * @param position 数据位置
      */
-    void setData(T model, int position);
+    void bindData(AbsListDataAdapter.ViewHolder holder, T model, int position);
 
     /**
-     * @return 当前 cell 的布局文件 id
+     * @return 当前 cell 的layout
      */
-    int getCellResource();
+    int getCellViewLayout();
 
-    /**
-     * 初始化 cell 的各个子 view。
-     * 
-     * @param view 根view
-     */
-    void initialChildViews(View view);
 }

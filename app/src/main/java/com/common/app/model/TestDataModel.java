@@ -1,4 +1,4 @@
-package com.common.app.api;
+package com.common.app.model;
 
 import com.common.app.base.model.ListDataModel;
 

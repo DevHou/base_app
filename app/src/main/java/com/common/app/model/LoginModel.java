@@ -13,4 +13,5 @@ public class LoginModel extends DataModel {
     public long user_id;
     public long user_number;
     public String auth_token;
+
 }

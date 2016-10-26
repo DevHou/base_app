@@ -37,17 +37,6 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
         mDefaultCellClass = defaultClass;
     }
 
-    @Override
-    protected void setData(ViewHolder viewHolder, int position, T data) {
-        BaseViewHolder holder = (BaseViewHolder) viewHolder;
-        holder.listCell.setData(data, position);
-    }
-
-    @Override
-    public int getViewType(int position) {
-        return DEFAULT_CELL_TYPE;
-    }
-
     /**
      * 如果有多中类型则子类需要重载这个方法来绑定view类型，同时返回类型
      * 
@@ -80,18 +69,21 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
     }
 
     @Override
+    public int getViewType(int position) {
+        return DEFAULT_CELL_TYPE;
+    }
+
+    @Override
     protected BaseViewHolder getItemViewHolder(ViewGroup viewGroup, int type) {
         BaseViewHolder holder = null;
         try {
             BaseListCell<T> listCell = createCell(type);
-            int layoutId = listCell.getCellResource();
-
+            int layoutId = listCell.getCellViewLayout();
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutId, viewGroup, false);
             if (view == null) {
                 return null;
             }
-            listCell.initialChildViews(view);
-            holder = new BaseViewHolder<>(view, listCell);
+            holder = new BaseViewHolder<>(view, useBinding(), listCell);
             if (!isCellRecyclable()) {
                 holder.setIsRecyclable(false);
             }
@@ -102,6 +94,12 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
     }
 
     @Override
+    protected void bindData(ViewHolder viewHolder, int position, T data) {
+        BaseViewHolder holder = (BaseViewHolder) viewHolder;
+        holder.listCell.bindData(viewHolder, data, position);
+    }
+
+    @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof BaseViewHolder) {
@@ -109,12 +107,17 @@ public class BaseListDataAdapter<T> extends AbsListDataAdapter<T> {
         }
     }
 
+    @Override
+    protected boolean useBinding() {
+        return true;
+    }
+
     protected static class BaseViewHolder<T> extends AbsListDataAdapter.ViewHolder {
 
         protected BaseListCell<T> listCell;
 
-        protected BaseViewHolder(View itemView, BaseListCell<T> listCell) {
-            super(itemView);
+        protected BaseViewHolder(View itemView, boolean useBinding, BaseListCell<T> listCell) {
+            super(itemView, useBinding);
             this.listCell = listCell;
         }
 

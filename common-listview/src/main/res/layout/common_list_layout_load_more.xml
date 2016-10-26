@@ -1,28 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/common_list_blue"
-    android:gravity="center"
-    android:orientation="horizontal">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dip"
-        android:layout_marginTop="8dip"
-        android:gravity="center">
+        android:background="@color/common_list_blue"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <ProgressBar
-            android:layout_width="15dip"
-            android:layout_height="15dip"
-            android:layout_marginRight="15dip" />
-
-        <TextView
-            android:id="@+id/common_list_item_load_more_tv"
-            style="@style/common_list_text_loading"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/gsx_list_loading" />
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_marginBottom="8dip"
+            android:layout_marginTop="8dip"
+            android:gravity="center">
+
+            <ProgressBar
+                android:layout_width="15dip"
+                android:layout_height="15dip"
+                android:layout_marginRight="15dip" />
+
+            <TextView
+                android:id="@+id/common_list_item_load_more_tv"
+                style="@style/common_list_text_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gsx_list_loading" />
+        </LinearLayout>
+    </RelativeLayout>
+</layout>
