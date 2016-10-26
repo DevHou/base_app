@@ -1,47 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/app_btn_white"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="com.common.app.ui.test.cell.ItemTestListViewBind">
+
+        <variable
+            name="dataItem"
+            type="com.common.app.model.TestDataModel.DataItem" />
+
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/app_btn_white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/item_test_listview_tv"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dip"
-            android:gravity="center"
-            android:text="head" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_head"
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:gravity="center"
+                android:text="head" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_btn1"
+                android:layout_width="0dip"
+                android:layout_height="35dip"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@{dataItem.name}" />
+
+            <TextView
+                android:id="@+id/tv_btn2"
+                android:layout_width="0dip"
+                android:layout_height="35dip"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@{dataItem.name}" />
+        </LinearLayout>
+
+        <View style="@style/app_divider" />
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/item_test_listview_btn1"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="btn1" />
-
-        <TextView
-            android:id="@+id/item_test_listview_btn2"
-            android:layout_width="0dip"
-            android:layout_height="35dip"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="btn1" />
-    </LinearLayout>
-
-    <View style="@style/app_divider" />
-</LinearLayout>
+</layout>

@@ -1,5 +1,7 @@
 package com.common.app.base.model;
 
+import android.databinding.BaseObservable;
+
 import com.common.utils.JsonUtils;
 import com.google.gson.JsonSyntaxException;
 
@@ -14,7 +16,7 @@ import java.io.Serializable;
  * 本类对应的是结果集中的 data 字段
  *
  */
-public abstract class DataModel implements Serializable {
+public abstract class DataModel extends BaseObservable implements Serializable {
 
     private static final String TAG = DataModel.class.getSimpleName();
 

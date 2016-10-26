@@ -2,7 +2,7 @@ package com.common.app.service;
 
 import com.common.app.api.ApiConstants;
 import com.common.app.api.AuthApi;
-import com.common.app.api.TestDataModel;
+import com.common.app.model.TestDataModel;
 import com.common.app.base.api.ApiResultModel;
 import com.common.app.base.api.IApiCallback;
 import com.common.app.base.manager.AuthManager;
