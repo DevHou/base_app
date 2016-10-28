@@ -1,9 +1,11 @@
 package com.common.image.glide;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.load.engine.cache.LruResourceCache;
@@ -42,6 +44,10 @@ public class MyGlideModule implements GlideModule {
         int defaultBitmapPoolSize = calculator.getBitmapPoolSize();
         builder.setMemoryCache(new LruResourceCache(defaultMemoryCacheSize / 3));
         builder.setBitmapPool(new LruBitmapPool(defaultBitmapPoolSize / 3));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // 7.0及以上版本会背景发绿，加这个可以避免绿色背景问题
+            builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+        }
         AppLog.d(TAG, "cache size:" + defaultMemoryCacheSize + " pool:" + defaultBitmapPoolSize);
         AppLog.d(TAG, "set cache size:" + defaultMemoryCacheSize / 3 + " pool:" + defaultBitmapPoolSize / 3);
     }
