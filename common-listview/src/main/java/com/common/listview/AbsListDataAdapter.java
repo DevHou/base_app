@@ -337,7 +337,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         }
         // AppLog.v(TAG, "bind view holder for " + position);
         bindData(viewHolder, position, getData(position));
-        viewHolder.getBinding().executePendingBindings();
+        if (useBinding()) {
+            viewHolder.getBinding().executePendingBindings();
+        }
     }
 
     @Override

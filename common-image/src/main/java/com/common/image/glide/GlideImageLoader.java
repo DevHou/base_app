@@ -230,6 +230,7 @@ public class GlideImageLoader implements IImageLoader {
 
         // request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.JPEG, 100));
         // request.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
+        // 加这个可以避免绿色背景问题
         request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
         request.dontAnimate().into(imageView);
 
