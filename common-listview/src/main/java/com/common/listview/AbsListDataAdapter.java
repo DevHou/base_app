@@ -1,6 +1,7 @@
 package com.common.listview;
 
 import android.databinding.DataBindingUtil;
+import android.databinding.OnRebindCallback;
 import android.databinding.ViewDataBinding;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.annotations.Nullable;
 import com.common.utils.AppLog;
 
 import java.util.ArrayList;
@@ -56,6 +58,30 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     // 如果数据变换太频繁会抛Cannot call this method while RecyclerView is computing a layout or scrolling异常
     // 所以这里使用handler把数据修改串行起来
     private Handler mHandler;
+
+    private static final Object DB_PAYLOAD = new Object();
+    @Nullable
+    private RecyclerView mRecyclerView;
+
+    /**
+     * This is used to block items from updating themselves. RecyclerView wants to know when an
+     * item is invalidated and it prefers to refresh it via onRebind. It also helps with performance
+     * since data binding will not update views that are not changed.
+     */
+    private final OnRebindCallback mOnRebindCallback = new OnRebindCallback() {
+        @Override
+        public boolean onPreBind(ViewDataBinding binding) {
+            if (mRecyclerView == null || mRecyclerView.isComputingLayout()) {
+                return true;
+            }
+            int childAdapterPosition = mRecyclerView.getChildAdapterPosition(binding.getRoot());
+            if (childAdapterPosition == RecyclerView.NO_POSITION) {
+                return true;
+            }
+            notifyItemChanged(childAdapterPosition, DB_PAYLOAD);
+            return false;
+        }
+    };
 
     public AbsListDataAdapter() {
         this(null);
@@ -303,9 +329,10 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        ViewHolder vh;
         if (viewType == TYPE_LOAD_MORE) {
             View v;
-            // AppLog.v(TAG, "create view holder for load more, id:" + mLoadMoreId);
+            AppLog.v(TAG, "create view holder for load more");
             if (mLoadMoreId != 0) {
                 v = LayoutInflater.from(viewGroup.getContext()).inflate(mLoadMoreId, viewGroup, false);
             } else {
@@ -313,33 +340,54 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                     LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_load_more,
                         viewGroup, false);
             }
-            return new LoadMoreViewHolder(v, useBinding());
+            vh = new LoadMoreViewHolder(v, useBinding());
         } else if (viewType == TYPE_EMPTY_FOOTER) {
             View v =
                 LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_empty_footer,
                     viewGroup, false);
-            // AppLog.v(TAG, "create view holder for empty");
-            return new EmptyViewHolder(v, useBinding());
+            AppLog.v(TAG, "create view holder for empty");
+            vh = new EmptyViewHolder(v, useBinding());
+        } else {
+            // AppLog.v(TAG, "create view holder for type " + viewType);
+            vh = getItemViewHolder(viewGroup, viewType);
         }
-        // AppLog.v(TAG, "create view holder for type " + viewType);
-        return getItemViewHolder(viewGroup, viewType);
+        if (useBinding()) {
+            vh.binding.addOnRebindCallback(mOnRebindCallback);
+        }
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(ViewHolder viewHolder, int position, List<Object> payloads) {
         if (viewHolder instanceof LoadMoreViewHolder) {
-            // AppLog.v(TAG, "bind view holder for load more");
+            AppLog.v(TAG, "bind view holder for load more");
             mHandler.obtainMessage(HANDLE_LOAD_MORE).sendToTarget();
             return;
         } else if (viewHolder instanceof EmptyViewHolder) {
-            // AppLog.v(TAG, "bind view holder for empty");
+            AppLog.v(TAG, "bind view holder for empty");
             return;
         }
         // AppLog.v(TAG, "bind view holder for " + position);
-        bindData(viewHolder, position, getData(position));
+        if (payloads.isEmpty() || hasNonDataBindingInvalidate(payloads)) {
+            bindData(viewHolder, position, getData(position));
+        }
         if (useBinding()) {
             viewHolder.getBinding().executePendingBindings();
         }
+    }
+
+    private boolean hasNonDataBindingInvalidate(List<Object> payloads) {
+        for (Object payload : payloads) {
+            if (payload != DB_PAYLOAD) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public final void onBindViewHolder(ViewHolder holder, int position) {
+        throw new IllegalArgumentException("just overridden to make final.");
     }
 
     @Override
@@ -355,12 +403,19 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     @Override
     final public int getItemCount() {
         // AppLog.v(TAG, "get count, size:" + (mData == null ? 0 : mData.size()));
-        // if (mIsReloading) {
-        // return mData == null ? 0 : mData.size();
-        // } else {
-        // return (mData == null || mData.size() == 0) ? 0 : (mHasMore ? mData.size() + 1 : mData.size());
+        // return getDataSize() > 0 ? (mHasMore ? mData.size() + 1 : mData.size()) : 0;
+        // 只要有数据永远都返回多一个，通过显示不同的footer view控制显示
         return (mData == null || mData.size() == 0) ? 0 : mData.size() + 1;
-        // }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        mRecyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        mRecyclerView = null;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
