@@ -236,6 +236,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     }
 
     public void smoothScrollToPosition(int position) {
+        if (mRecycler == null) {
+            return;
+        }
         mRecycler.smoothScrollToPosition(position);
     }
 
@@ -596,11 +599,17 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
     // 主动下拉刷新，和手动下拉一个效果
     public void startRefresh() {
+        if (mRefreshLayout == null) {
+            return;
+        }
         mRefreshLayout.autoRefresh();
     }
 
     // 隐藏刷新，即通知完成刷新
     public void stopRefresh() {
+        if (mRefreshLayout == null) {
+            return;
+        }
         mRefreshLayout.refreshComplete();
     }
 
