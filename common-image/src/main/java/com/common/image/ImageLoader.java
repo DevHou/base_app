@@ -69,6 +69,13 @@ public class ImageLoader {
     }
 
     /**
+     * 预先缓存图片
+     */
+    public static void cacheImage(Context context,String url){
+
+    }
+
+    /**
      * 清理不需要的内存
      */
     public static void onLowMemory() {

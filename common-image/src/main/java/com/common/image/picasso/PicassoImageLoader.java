@@ -61,6 +61,16 @@ public class PicassoImageLoader implements IImageLoader {
         }
     }
 
+    /**
+     * 预取并缓存图片
+     *
+     * @param url 图片地址
+     */
+    @Override
+    public void cacheImage(Context context, String url) {
+        Picasso.with(context).load(url).fetch();
+    }
+
     @Override
     public void onLowMemory() {
         mMemoryCache.clear();
@@ -114,7 +124,7 @@ public class PicassoImageLoader implements IImageLoader {
 
     @Override
     public void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
-                             final IImageLoadListener listener) {
+        final IImageLoadListener listener) {
         displayImage((Object) fragment, uri, imageView, options, listener);
     }
 
@@ -178,8 +188,7 @@ public class PicassoImageLoader implements IImageLoader {
 
     }
 
-    private RequestCreator createRequest(Object c, Uri uri, CommonImageView iv,
-        ImageOptions options, boolean showHolder) {
+    private RequestCreator createRequest(Object c, Uri uri, CommonImageView iv, ImageOptions options, boolean showHolder) {
         Picasso picasso = Picasso.with(context);
         RequestCreator request;
         if ("res".equals(uri.getScheme())) {

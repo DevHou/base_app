@@ -107,6 +107,16 @@ public class GlideImageLoader implements IImageLoader {
         }
     }
 
+    /**
+     * 预取并缓存图片
+     *
+     * @param url 图片地址
+     */
+    @Override
+    public void cacheImage(Context context, String url) {
+        Glide.with(context).load(url).downloadOnly(-1, -1);
+    }
+
     @Override
     public void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
         final IImageLoadListener listener) {
