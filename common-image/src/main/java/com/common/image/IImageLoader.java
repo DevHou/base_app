@@ -35,6 +35,13 @@ public interface IImageLoader {
      */
     boolean clearCache();
 
+    /**
+     * 预取并缓存图片
+     * 
+     * @param url 图片地址
+     */
+    void cacheImage(Context context, String url);
+
     void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
         final IImageLoadListener listener);
 
