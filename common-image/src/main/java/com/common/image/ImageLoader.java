@@ -71,8 +71,8 @@ public class ImageLoader {
     /**
      * 预先缓存图片
      */
-    public static void cacheImage(Context context,String url){
-
+    public static void cacheImage(Context context, String url) {
+        mImageLoader.cacheImage(context, url);
     }
 
     /**
