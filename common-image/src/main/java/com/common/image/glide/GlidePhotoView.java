@@ -16,6 +16,10 @@ import com.common.image.IOnImageClickListener;
 import uk.co.senab.photoview.IPhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
+import uk.co.senab.photoview.PhotoViewAttacher.OnMatrixChangedListener;
+import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
+import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
+
 /**
  * Created by houlijiang on 16/4/13.
  *
@@ -54,6 +58,11 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
         }
     }
 
+    @Override
+    public void update(int imageInfoWidth, int imageInfoHeight) {
+        mAttacher.update();
+    }
+
     /**
      * 转一遍回调
      */
@@ -79,14 +88,6 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
         });
     }
 
-    /**
-     * @deprecated use {@link #setRotationTo(float)}
-     */
-    @Override
-    public void setPhotoViewRotation(float rotationDegree) {
-        mAttacher.setRotationTo(rotationDegree);
-    }
-
     @Override
     public void setRotationTo(float rotationDegree) {
         mAttacher.setRotationTo(rotationDegree);
@@ -108,11 +109,6 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
     }
 
     @Override
-    public Matrix getDisplayMatrix() {
-        return mAttacher.getDisplayMatrix();
-    }
-
-    @Override
     public void getDisplayMatrix(Matrix matrix) {
         mAttacher.getDisplayMatrix(matrix);
     }
@@ -123,31 +119,13 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
     }
 
     @Override
-    @Deprecated
-    public float getMinScale() {
-        return getMinimumScale();
-    }
-
-    @Override
     public float getMinimumScale() {
         return mAttacher.getMinimumScale();
     }
 
     @Override
-    @Deprecated
-    public float getMidScale() {
-        return getMediumScale();
-    }
-
-    @Override
     public float getMediumScale() {
         return mAttacher.getMediumScale();
-    }
-
-    @Override
-    @Deprecated
-    public float getMaxScale() {
-        return getMaximumScale();
     }
 
     @Override
@@ -166,14 +144,13 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
     }
 
     @Override
-    public void setAllowParentInterceptOnEdge(boolean allow) {
-        mAttacher.setAllowParentInterceptOnEdge(allow);
+    public Matrix getImageMatrix() {
+        return mAttacher.getImageMatrix();
     }
 
     @Override
-    @Deprecated
-    public void setMinScale(float minScale) {
-        setMinimumScale(minScale);
+    public void setAllowParentInterceptOnEdge(boolean allow) {
+        mAttacher.setAllowParentInterceptOnEdge(allow);
     }
 
     @Override
@@ -182,20 +159,8 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
     }
 
     @Override
-    @Deprecated
-    public void setMidScale(float midScale) {
-        setMediumScale(midScale);
-    }
-
-    @Override
     public void setMediumScale(float mediumScale) {
         mAttacher.setMediumScale(mediumScale);
-    }
-
-    @Override
-    @Deprecated
-    public void setMaxScale(float maxScale) {
-        setMaximumScale(maxScale);
     }
 
     @Override
@@ -234,7 +199,16 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
     }
 
     @Override
-    public void setOnMatrixChangeListener(PhotoViewAttacher.OnMatrixChangedListener listener) {
+    protected boolean setFrame(int l, int t, int r, int b) {
+        boolean changed = super.setFrame(l, t, r, b);
+        if (null != mAttacher) {
+            mAttacher.update();
+        }
+        return changed;
+    }
+
+    @Override
+    public void setOnMatrixChangeListener(OnMatrixChangedListener listener) {
         mAttacher.setOnMatrixChangeListener(listener);
     }
 
@@ -244,23 +218,13 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
     }
 
     @Override
-    public void setOnPhotoTapListener(PhotoViewAttacher.OnPhotoTapListener listener) {
+    public void setOnPhotoTapListener(OnPhotoTapListener listener) {
         mAttacher.setOnPhotoTapListener(listener);
     }
 
     @Override
-    public PhotoViewAttacher.OnPhotoTapListener getOnPhotoTapListener() {
-        return mAttacher.getOnPhotoTapListener();
-    }
-
-    @Override
-    public void setOnViewTapListener(PhotoViewAttacher.OnViewTapListener listener) {
+    public void setOnViewTapListener(OnViewTapListener listener) {
         mAttacher.setOnViewTapListener(listener);
-    }
-
-    @Override
-    public PhotoViewAttacher.OnViewTapListener getOnViewTapListener() {
-        return mAttacher.getOnViewTapListener();
     }
 
     @Override
@@ -325,6 +289,7 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
     @Override
     protected void onDetachedFromWindow() {
         mAttacher.cleanup();
+        mAttacher = null;
         super.onDetachedFromWindow();
     }
 
@@ -333,5 +298,4 @@ public class GlidePhotoView extends CommonImageView implements IPhotoView {
         init();
         super.onAttachedToWindow();
     }
-
 }
