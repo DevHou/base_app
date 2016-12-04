@@ -23,7 +23,7 @@ import com.squareup.picasso.Transformation;
  */
 public class RoundedImageView extends com.common.image.CommonImageView {
 
-    public static final String TAG = RoundedImageView.class.getSimpleName();
+    private static final String TAG = RoundedImageView.class.getSimpleName();
     public static final int DEFAULT_RADIUS = 0;
     public static final int DEFAULT_BORDER_WIDTH = 0;
     private static final int DEFAULT_BORDER_COLOR = Color.BLACK;
