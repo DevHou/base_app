@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--默认设置padding都是0，下面导航线 1.5dp-->
     <android.support.design.widget.TabLayout
         android:id="@+id/common_viewpager_tl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/app_primary"
+        app:tabIndicatorColor="@color/material_pink_500"
+        app:tabIndicatorHeight="1.5dp"
+        app:tabPadding="0dp"
+        app:tabPaddingBottom="0dp"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingTop="0dp" />
 
     <com.em.motif.uikit.UnScrollViewPager
         android:id="@+id/common_viewpager_vp"

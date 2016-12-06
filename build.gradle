@@ -16,6 +16,8 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        // for photo view
+        maven { url "https://jitpack.io" }
     }
 }
 
