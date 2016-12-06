@@ -11,9 +11,10 @@
     <color name="material_blue_500">#03a9f4</color>
     <color name="material_blue_600">#3949AB</color>
     <color name="material_blue_800">#0a77bd</color>
-    <color name="material_Indigo_800">#283593</color>
+    <color name="material_indigo_800">#283593</color>
     <color name="material_blue_A400">#3D5AFE</color>
     <color name="material_blue_A200">#536DFE</color>
+    <color name="material_pink_500">#E91E63</color>
 
     <color name="app_transparent">@android:color/transparent</color>
     <color name="app_white">@color/material_white</color>
