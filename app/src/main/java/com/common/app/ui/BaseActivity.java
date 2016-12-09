@@ -457,7 +457,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         public int icon;
         public String iconUri;
         public int showType;
-        public boolean enable;
+        public boolean enable = true;
         private boolean isLast = false;
     }
 
