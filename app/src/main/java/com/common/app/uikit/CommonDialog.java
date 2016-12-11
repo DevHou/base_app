@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.common.app.R;
 import com.common.utils.AppLog;
 
-
 /**
  * 弹出框通用类
  * 
@@ -178,14 +177,16 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
         }
 
         TextView titleView = (TextView) view.findViewById(R.id.dialog_text_message_tv_title);
-        if (!TextUtils.isEmpty(mBuilder.mTitle)) {
-            titleView.setText(mBuilder.mTitle);
-            titleView.setVisibility(View.VISIBLE);
-            if (mBuilder.mTitleColor != -1) {
-                titleView.setTextColor(mBuilder.mTitleColor);
+        if (titleView != null) {
+            if (!TextUtils.isEmpty(mBuilder.mTitle)) {
+                titleView.setText(mBuilder.mTitle);
+                titleView.setVisibility(View.VISIBLE);
+                if (mBuilder.mTitleColor != -1) {
+                    titleView.setTextColor(mBuilder.mTitleColor);
+                }
+            } else {
+                titleView.setVisibility(View.GONE);
             }
-        } else {
-            titleView.setVisibility(View.GONE);
         }
 
         TextView contentView = (TextView) view.findViewById(R.id.dialog_text_message_tv_content);
