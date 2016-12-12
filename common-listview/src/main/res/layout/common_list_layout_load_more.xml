@@ -24,7 +24,7 @@
                 style="@style/common_list_text_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gsx_list_loading" />
+                android:text="@string/common_list_loading" />
         </LinearLayout>
     </RelativeLayout>
 </layout>
