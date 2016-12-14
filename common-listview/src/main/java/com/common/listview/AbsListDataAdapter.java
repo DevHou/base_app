@@ -54,6 +54,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     protected boolean mIsReloading = false;
     protected boolean mHasMore = true;
     protected int mLoadMoreId = 0;// 加载更多view ID
+    private int mLastLoadMorePositon = -1;// 上次加载更多时的位置，用于判断避免重复调用load more
     private IOnLoadMore mIOnLoadMore;
     // 如果数据变换太频繁会抛Cannot call this method while RecyclerView is computing a layout or scrolling异常
     // 所以这里使用handler把数据修改串行起来
@@ -307,7 +308,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     public T getData(int position) {
         // AppLog.v(TAG, "get Data for " + position + " item count:" + getItemCount());
-        if (position >= getDataSize()) {
+        if (mData == null || position >= getDataSize()) {
             return null;
         }
         return mData.get(position);
@@ -359,9 +360,17 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position, List<Object> payloads) {
+        AppLog.v(TAG, "bind view holder for " + position);
         if (viewHolder instanceof LoadMoreViewHolder) {
-            AppLog.v(TAG, "bind view holder for load more");
-            mHandler.obtainMessage(HANDLE_LOAD_MORE).sendToTarget();
+            if (isReloading()) {
+                AppLog.v(TAG, "reloading will not call load more");
+            } else if (position != mLastLoadMorePositon) {
+                AppLog.v(TAG, "bind view holder for load more");
+                mHandler.obtainMessage(HANDLE_LOAD_MORE).sendToTarget();
+                mLastLoadMorePositon = position;
+            } else {
+                AppLog.v(TAG, "bind view holder for load more at same position");
+            }
             return;
         } else if (viewHolder instanceof EmptyViewHolder) {
             AppLog.v(TAG, "bind view holder for empty");
@@ -405,7 +414,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         // AppLog.v(TAG, "get count, size:" + (mData == null ? 0 : mData.size()));
         // return getDataSize() > 0 ? (mHasMore ? mData.size() + 1 : mData.size()) : 0;
         // 只要有数据永远都返回多一个，通过显示不同的footer view控制显示
-        return (mData == null || mData.size() == 0) ? 0 : mData.size() + 1;
+        return (mData == null || mData.size() == 0) ? 1 : mData.size() + 1;
     }
 
     @Override
