@@ -7,6 +7,9 @@
     <string name="loading">Loading…</string>
     <string name="cancel">Cancel</string>
 
+    <string name="list_load_more">Load More</string>
+    <string name="list_empty">List is Empty</string>
+
     <string name="ptr_pull_down">pull down</string>
     <string name="ptr_pull_down_to_refresh">pull down to refresh</string>
     <string name="ptr_release_to_refresh">release to refresh</string>
