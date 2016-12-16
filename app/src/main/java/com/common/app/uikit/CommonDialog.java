@@ -9,6 +9,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -161,7 +162,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             btn.setLayoutParams(params);
             btn.setText(mBuilder.mButtons[i]);
             if (mBuilder.mButtonColors != null && mBuilder.mButtonColors.length > i) {
-                btn.setTextColor(mBuilder.mButtonColors[i]);
+                btn.setTextColor(ContextCompat.getColor(mBuilder.mContext, mBuilder.mButtonColors[i]));
             }
             btn.setOnClickListener(this);
             btn.setTag(i);
@@ -171,7 +172,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             if (mBuilder.mButtons.length > 1 && i != mBuilder.mButtons.length - 1) {
                 View line = new View(mBuilder.mContext);
                 line.setLayoutParams(new LinearLayout.LayoutParams(1, LinearLayout.LayoutParams.MATCH_PARENT));
-                line.setBackgroundColor(getResources().getColor(R.color.app_divider));
+                line.setBackgroundColor(ContextCompat.getColor(mBuilder.mContext, R.color.app_divider));
                 layoutBtns.addView(line);
             }
         }
@@ -182,7 +183,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
                 titleView.setText(mBuilder.mTitle);
                 titleView.setVisibility(View.VISIBLE);
                 if (mBuilder.mTitleColor != -1) {
-                    titleView.setTextColor(mBuilder.mTitleColor);
+                    titleView.setTextColor(ContextCompat.getColor(mBuilder.mContext, mBuilder.mTitleColor));
                 }
             } else {
                 titleView.setVisibility(View.GONE);
@@ -195,7 +196,7 @@ public class CommonDialog extends DialogFragment implements View.OnClickListener
             contentView.setVisibility(View.VISIBLE);
             // color
             if (mBuilder.mMessageColor != -1) {
-                contentView.setTextColor(mBuilder.mMessageColor);
+                contentView.setTextColor(ContextCompat.getColor(mBuilder.mContext, mBuilder.mMessageColor));
             }
         } else {
             contentView.setVisibility(View.GONE);
