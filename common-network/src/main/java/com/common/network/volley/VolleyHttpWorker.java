@@ -281,7 +281,7 @@ public class VolleyHttpWorker implements IHttpWorker {
         final IHttpResponse<Result> handler, int timeout, final Object param) {
 
         GsonRequest<Result> req =
-            new GsonRequest<>(Request.Method.POST, origin, url, headers, classOfT, (HttpParams) params,
+            new GsonRequest<>(Request.Method.POST, origin, url, headers, classOfT, params,
                 new Response.Listener<Result>() {
 
                     @Override
