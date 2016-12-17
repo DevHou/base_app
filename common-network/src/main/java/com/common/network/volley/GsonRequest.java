@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.common.network.HttpResponseResult;
 import com.common.network.HttpWorker;
+import com.common.network.IHttpParams;
 import com.common.utils.AppLog;
 import com.google.gson.JsonSyntaxException;
 
@@ -27,7 +28,7 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
     private static final String TAG = GsonRequest.class.getSimpleName();
     private final Class<T> clazz;
     private final Map<String, String> headers;
-    private final HttpParams params;
+    private final IHttpParams params;
     private final Response.Listener<T> listener;
 
     /**
@@ -37,7 +38,7 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
      * @param clazz Relevant class object, for Gson's reflection
      */
     public GsonRequest(int method, Object origin, String url, Map<String, String> headers, Class<T> clazz,
-        HttpParams params, Response.Listener<T> listener, Response.ErrorListener errorListener) {
+        IHttpParams params, Response.Listener<T> listener, Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.headers = headers;
         this.clazz = clazz;
