@@ -6,6 +6,7 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -237,11 +238,16 @@ public class GlideImageLoader implements IImageLoader {
         // 这里的dontAnimate主要是因为当placeholder和image的scaleType不同时
         // image先显示的是placeholder的scaleType，当再次滑动回来时又用的正常的scaleType显示
 
-        // request.fromResource().asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.PNG, 100));
+        //
         // request.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
         // request.diskCacheStrategy(DiskCacheStrategy.ALL);
-        // jpg图片在从缓存取出后会背景发绿，加这个可以避免绿色背景问题
-        request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
+        // 7.0以上系统，只要设置默认编码成PREFER_ARGB_8888就可以了
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            // jpg图片在从缓存取出后会背景发绿，加这个不使用多尺寸缓存可以避免绿色背景问题
+            request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
+            // or 下面这种配置来转成 png格式，但测试后发现并没用
+            // request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.PNG, 100));
+        }
         request.dontAnimate().into(imageView);
 
     }
