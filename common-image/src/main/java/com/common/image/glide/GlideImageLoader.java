@@ -236,11 +236,11 @@ public class GlideImageLoader implements IImageLoader {
         }
         // 这里的dontAnimate主要是因为当placeholder和image的scaleType不同时
         // image先显示的是placeholder的scaleType，当再次滑动回来时又用的正常的scaleType显示
-        // DiskCacheStrategy。ALL->DiskCacheStrategy.SOURCE 因为jpg的图片当从缓存中取时背景的白色变成了蓝色
 
-        // request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.JPEG, 100));
+        // request.fromResource().asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.PNG, 100));
         // request.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
-        // 加这个可以避免绿色背景问题
+        // request.diskCacheStrategy(DiskCacheStrategy.ALL);
+        // jpg图片在从缓存取出后会背景发绿，加这个可以避免绿色背景问题
         request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
         request.dontAnimate().into(imageView);
 
