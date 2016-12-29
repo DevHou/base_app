@@ -14,7 +14,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -39,6 +38,9 @@ public class DiskCache {
         try {
             open(dir, appVersion, maxSize);
         } catch (IOException e) {
+            AppLog.e(TAG, "init disk cache error, e:" + e.getLocalizedMessage());
+            return false;
+        } catch (Exception e) {
             AppLog.e(TAG, "init disk cache error, e:" + e.getLocalizedMessage());
             return false;
         }
@@ -74,6 +76,8 @@ public class DiskCache {
             diskLruCache.close();
         } catch (IOException e) {
             AppLog.e(TAG, "catch exception when close cache, e:" + e.getLocalizedMessage());
+        } catch (Exception e) {
+            AppLog.e(TAG, "close cache error, e:" + e.getLocalizedMessage());
         }
         diskLruCache = null;
     }
@@ -111,6 +115,9 @@ public class DiskCache {
         } catch (IOException e) {
             AppLog.e(TAG, "catch exception when remove key, e:" + e.getLocalizedMessage());
             return false;
+        } catch (Exception e) {
+            AppLog.e(TAG, "delete key catch error, e:" + e.getLocalizedMessage());
+            return false;
         }
     }
 
@@ -130,6 +137,9 @@ public class DiskCache {
             return ((timeout - System.currentTimeMillis()) <= 0);
         } catch (NumberFormatException e) {
             AppLog.e(TAG, "catch io exception when parse long, e:" + e.getLocalizedMessage());
+            return false;
+        } catch (Exception e) {
+            AppLog.e(TAG, "parse long catch error, e:" + e.getLocalizedMessage());
             return false;
         }
     }
@@ -160,6 +170,8 @@ public class DiskCache {
             snapshot = diskLruCache.get(toInternalKey(key));
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when get snapshot, e:" + e.getLocalizedMessage());
+        } catch (Exception e) {
+            AppLog.e(TAG, "get snapshot catch error, e:" + e.getLocalizedMessage());
         }
         if (snapshot == null) {
             return null;
@@ -174,6 +186,8 @@ public class DiskCache {
             return new InputStreamEntry(snapshot, meta);
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when new InputStreamEntry, e:" + e.getLocalizedMessage());
+        } catch (Exception e) {
+            AppLog.e(TAG, "new input stream entry catch error, e:" + e.getLocalizedMessage());
         }
         return null;
     }
@@ -212,6 +226,8 @@ public class DiskCache {
             snapshot = diskLruCache.get(toInternalKey(key));
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when get snapshot when read, e:" + e.getLocalizedMessage());
+        } catch (Exception e) {
+            AppLog.e(TAG, "read snapshot catch error, e:" + e.getLocalizedMessage());
         }
         if (snapshot == null) {
             return null;
@@ -226,6 +242,9 @@ public class DiskCache {
             return new StringEntry(snapshot.getString(VALUE_IDX), meta);
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when read from snapshot, e;" + e.getLocalizedMessage());
+            return null;
+        } catch (Exception e) {
+            AppLog.e(TAG, "read from snapshot catch error, e:" + e.getLocalizedMessage());
             return null;
         } finally {
             snapshot.close();
@@ -263,6 +282,9 @@ public class DiskCache {
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when read from snapshot, e;" + e.getLocalizedMessage());
             return false;
+        } catch (Exception e) {
+            AppLog.e(TAG, "read from snapshot catch error, e:" + e.getLocalizedMessage());
+            return false;
         } finally {
             snapshot.close();
         }
@@ -295,6 +317,9 @@ public class DiskCache {
             return new CacheOutputStream(bos, editor);
         } catch (IOException e) {
             editor.abort();
+            throw e;
+        } catch (Exception e) {
+            AppLog.e(TAG, "open stream catch error, e:" + e.getLocalizedMessage());
             throw e;
         }
     }
@@ -339,6 +364,9 @@ public class DiskCache {
             Util.copyStream(is, os);
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when write stream, e:" + e.getLocalizedMessage());
+            return false;
+        } catch (Exception e) {
+            AppLog.e(TAG, "write stream catch error, e:" + e.getLocalizedMessage());
             return false;
         } finally {
             Util.closeQuietly(os);
@@ -387,6 +415,9 @@ public class DiskCache {
         } catch (IOException e) {
             AppLog.e(TAG, "catch io exception when write string, e:" + e.getLocalizedMessage());
             return false;
+        } catch (Exception e) {
+            AppLog.e(TAG, "write string catch error, e:" + e.getLocalizedMessage());
+            return false;
         } finally {
             Util.closeQuietly(cos);
         }
@@ -412,7 +443,7 @@ public class DiskCache {
             return bigInt.toString(16);
         } catch (NoSuchAlgorithmException e) {
             throw new AssertionError();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new AssertionError();
         }
     }
@@ -432,6 +463,8 @@ public class DiskCache {
                 new ObjectOutputStream(new BufferedOutputStream(editor.newOutputStream(METADATA_IDX),
                     DEFAULT_BUFFER_SIZE));
             oos.writeObject(metadata);
+        } catch (Exception e) {
+            AppLog.e(TAG, "write meta data catch error, e:" + e.getLocalizedMessage());
         } finally {
             Util.closeQuietly(oos);
         }
@@ -447,6 +480,9 @@ public class DiskCache {
             Map<String, Serializable> annotations = (Map<String, Serializable>) ois.readObject();
             return annotations;
         } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            AppLog.e(TAG, "read meta data catch error, e:" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         } finally {
             Util.closeQuietly(ois);
