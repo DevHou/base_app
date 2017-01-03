@@ -3,8 +3,6 @@ package com.common.listview;
 import android.databinding.DataBindingUtil;
 import android.databinding.OnRebindCallback;
 import android.databinding.ViewDataBinding;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,31 +32,15 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     private static final String TAG = AbsListDataAdapter.class.getSimpleName();
 
-    protected static final int TYPE_LOAD_MORE = Integer.MAX_VALUE;
-    protected static final int TYPE_EMPTY_FOOTER = Integer.MAX_VALUE - 1;
+    private static final int TYPE_LOAD_MORE = Integer.MAX_VALUE;
+    private static final int TYPE_EMPTY_FOOTER = Integer.MAX_VALUE - 1;
 
-    public static final int HANDLE_ADD_TO_FRONT = 1;
-    public static final int HANDLE_ADD_ALL = 2;
-    public static final int HANDLE_ADD_ONE = 3;
-    public static final int HANDLE_INSERT = 4;
-    public static final int HANDLE_REPLACE = 5;
-    public static final int HANDLE_REMOVE = 6;
-    public static final int HANDLE_CLEAR_DATA = 7;
-    public static final int HANDLE_CLEAR = 8;
-    public static final int HANDLE_NO_DATA_CHANGED = 9;
-    public static final int HANDLE_EXCHANGE = 11;
-    public static final int HANDLE_LOAD_MORE = 12;
-    public static final int HANDLE_REFRESH_FOOTER = 13;
-
-    protected List<T> mData;
-    protected boolean mIsReloading = false;
-    protected boolean mHasMore = true;
-    protected int mLoadMoreId = 0;// 加载更多view ID
-    private int mLastLoadMorePositon = -1;// 上次加载更多时的位置，用于判断避免重复调用load more
+    private List<T> mData;
+    private boolean mIsReloading = false;
+    private boolean mHasMore = true;
+    private int mLoadMoreId = 0;// 加载更多view ID
+    private int mLastLoadMorePosition = -1;// 上次加载更多时的位置，用于判断避免重复调用load more
     private IOnLoadMore mIOnLoadMore;
-    // 如果数据变换太频繁会抛Cannot call this method while RecyclerView is computing a layout or scrolling异常
-    // 所以这里使用handler把数据修改串行起来
-    private Handler mHandler;
 
     private static final Object DB_PAYLOAD = new Object();
     @Nullable
@@ -90,191 +72,174 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     public AbsListDataAdapter(IOnLoadMore loadMore) {
         mData = new ArrayList<>();
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case HANDLE_ADD_TO_FRONT: {
-                        T[] data = (T[]) msg.obj;
-                        if (mData == null) {
-                            mData = new ArrayList<>();
-                        }
-                        if (data != null && data.length > 0) {
-                            int startIndex = 0;
-                            mData.addAll(startIndex, Arrays.asList(data));
-                            mIsReloading = false;
-                            notifyItemRangeInserted(startIndex, data.length);
-                        } else {
-                            mIsReloading = false;
-                        }
-                        break;
-                    }
-                    case HANDLE_ADD_ALL: {
-                        T[] data = (T[]) msg.obj;
-                        if (mData == null) {
-                            mData = new ArrayList<>();
-                        }
-                        int oldPosition = mData.size();
-                        if (data != null && data.length > 0) {
-                            Collections.addAll(mData, data);
-                            mIsReloading = false;
-                            if (oldPosition > 0) {
-                                notifyItemRangeInserted(oldPosition, data.length);
-                            } else {
-                                notifyDataSetChanged();
-                            }
-                        } else {
-                            mIsReloading = false;
-                        }
-                        break;
-                    }
-                    case HANDLE_ADD_ONE: {
-                        mData.add((T) msg.obj);
-                        mIsReloading = false;
-                        notifyItemInserted(mData.size() - 1);
-                        break;
-                    }
-                    case HANDLE_INSERT: {
-                        int position = msg.arg1;
-                        mData.add(position, (T) msg.obj);
-                        mIsReloading = false;
-                        notifyItemInserted(position);
-                        break;
-                    }
-                    case HANDLE_REPLACE: {
-                        int position = msg.arg1;
-                        if (mData == null || position < 0 || position > mData.size()) {
-                            mIsReloading = false;
-                            return;
-                        }
-                        mData.set(position, (T) msg.obj);
-                        mIsReloading = false;
-                        notifyItemChanged(position);
-                        break;
-                    }
-                    case HANDLE_REMOVE: {
-                        int position = msg.arg1;
-                        mData.remove(position);
-                        mIsReloading = false;
-                        notifyItemRemoved(position);
-                        break;
-                    }
-                    case HANDLE_CLEAR_DATA: {
-                        if (mData == null) {
-                            return;
-                        }
-                        mData.clear();
-                        break;
-                    }
-                    case HANDLE_CLEAR: {
-                        if (mData == null) {
-                            mIsReloading = false;
-                            return;
-                        }
-                        mData.clear();
-                        mIsReloading = false;
-                        notifyDataSetChanged();
-                        break;
-                    }
-                    case HANDLE_NO_DATA_CHANGED: {
-                        mIsReloading = false;
-                        // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
-                        notifyDataSetChanged();
-                        break;
-                    }
-                    case HANDLE_EXCHANGE: {
-                        int i = msg.arg1;
-                        int j = msg.arg2;
-                        int len = mData == null ? 0 : mData.size();
-                        if (i < 0 || i >= len || j < 0 || j >= len || i == j) {
-                            mIsReloading = false;
-                            break;
-                        }
-                        T obj = mData.get(i);
-                        mData.set(i, mData.get(j));
-                        mData.set(j, obj);
-                        mIsReloading = false;
-                        notifyItemChanged(i);
-                        notifyItemChanged(j);
-                        break;
-                    }
-                    case HANDLE_REFRESH_FOOTER: {
-                        // AppLog.d(TAG, "notify footer changed, position:" + (mData == null ? 0 : mData.size()));
-                        if (mData != null) {
-                            notifyItemChanged(mData.size());
-                        }
-                        break;
-                    }
-                    case HANDLE_LOAD_MORE: {
-                        if (mHasMore && mIOnLoadMore != null) {
-                            mIOnLoadMore.onLoadMore();
-                        }
-                        break;
-                    }
-                }
-            }
-        };
         mIOnLoadMore = loadMore;
     }
 
-    public void addToFront(T[] data) {
-        mIsReloading = true;
-        mHandler.obtainMessage(HANDLE_ADD_TO_FRONT, data).sendToTarget();
+    public void addToFront(final T[] data) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mData == null) {
+                    mData = new ArrayList<>();
+                }
+                if (data != null && data.length > 0) {
+                    int startIndex = 0;
+                    mData.addAll(startIndex, Arrays.asList(data));
+                    mIsReloading = false;
+                    notifyItemRangeInserted(startIndex, data.length);
+                } else {
+                    mIsReloading = false;
+                }
+            }
+        });
     }
 
-    public void addAll(T[] data) {
-        mIsReloading = true;
+    public void addAll(final T[] data) {
         if (data == null || data.length == 0) {
-            refreshList();
+            AppLog.d(TAG, "add all null");
+            // refreshList();
         } else {
-            mHandler.obtainMessage(HANDLE_ADD_ALL, data).sendToTarget();
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    AppLog.d(TAG, "add all " + data.length);
+                    if (mData == null) {
+                        mData = new ArrayList<>();
+                    }
+                    int oldPosition = mData.size();
+                    if (data.length > 0) {
+                        Collections.addAll(mData, data);
+                        mIsReloading = false;
+                        if (oldPosition > 0) {
+                            notifyItemRangeInserted(oldPosition, data.length);
+                        } else {
+                            notifyDataSetChanged();
+                        }
+                    } else {
+                        mIsReloading = false;
+                    }
+                }
+            });
         }
     }
 
-    public void add(T obj) {
-        mIsReloading = true;
-        mHandler.obtainMessage(HANDLE_ADD_ONE, obj).sendToTarget();
+    public void add(final T obj) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mData.add(obj);
+                mIsReloading = false;
+                notifyItemInserted(mData.size() - 1);
+            }
+        });
     }
 
-    public void insert(T obj, int position) {
-        mIsReloading = true;
-        mHandler.obtainMessage(HANDLE_INSERT, position, 0, obj).sendToTarget();
+    public void insert(final T obj, final int position) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mData.add(position, obj);
+                mIsReloading = false;
+                notifyItemInserted(position);
+            }
+        });
     }
 
-    public void replace(T obj, int position) {
-        mHandler.obtainMessage(HANDLE_REPLACE, position, 0, obj).sendToTarget();
+    public void replace(final T obj, final int position) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mData == null || position < 0 || position > mData.size()) {
+                    mIsReloading = false;
+                    return;
+                }
+                mData.set(position, obj);
+                mIsReloading = false;
+                notifyItemChanged(position);
+            }
+        });
     }
 
-    public void remove(int position) {
-        mIsReloading = true;
-        mHandler.obtainMessage(HANDLE_REMOVE, position, 0).sendToTarget();
+    public void remove(final int position) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mData.remove(position);
+                mIsReloading = false;
+                notifyItemRemoved(position);
+            }
+        });
     }
 
-    public void exchange(int i, int j) {
-        mHandler.obtainMessage(HANDLE_EXCHANGE, i, j).sendToTarget();
+    public void exchange(final int i, final int j) {
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                int len = mData == null ? 0 : mData.size();
+                if (i < 0 || i >= len || j < 0 || j >= len || i == j) {
+                    mIsReloading = false;
+                    return;
+                }
+                T obj = mData.get(i);
+                mIsReloading = false;
+                mData.set(i, mData.get(j));
+                notifyItemChanged(i);
+                mData.set(j, obj);
+                notifyItemChanged(j);
+            }
+        });
     }
 
     public void refreshList() {
-        mHandler.obtainMessage(HANDLE_NO_DATA_CHANGED).sendToTarget();
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                mIsReloading = false;
+                // 通过假的数据变化通知，来更新列表显示，隐藏加载中等进度
+                notifyDataSetChanged();
+            }
+        });
     }
 
     public void reloadFooterView() {
-        mHandler.obtainMessage(HANDLE_REFRESH_FOOTER).sendToTarget();
+        if (mData != null) {
+            notifyItemChanged(mData.size());
+        }
     }
 
     /**
      * 清空数据
      */
     public void clearData() {
-        mIsReloading = true;
-        mHandler.obtainMessage(HANDLE_CLEAR_DATA).sendToTarget();
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mData == null) {
+                    return;
+                }
+                mData.clear();
+                mIsReloading = false;
+                notifyDataSetChanged();
+            }
+        });
     }
 
     /**
      * 清空数据并通知数据变化
      */
     public void clear() {
-        mHandler.obtainMessage(HANDLE_CLEAR).sendToTarget();
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mData == null) {
+                    mIsReloading = false;
+                    return;
+                }
+                mData.clear();
+                mIsReloading = false;
+                notifyDataSetChanged();
+            }
+        });
     }
 
     /**
@@ -349,7 +314,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             AppLog.v(TAG, "create view holder for empty");
             vh = new EmptyViewHolder(v, useBinding());
         } else {
-            // AppLog.v(TAG, "create view holder for type " + viewType);
+            AppLog.v(TAG, "create view holder for normal " + viewType);
             vh = getItemViewHolder(viewGroup, viewType);
         }
         if (useBinding()) {
@@ -362,12 +327,20 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     public void onBindViewHolder(ViewHolder viewHolder, int position, List<Object> payloads) {
         AppLog.v(TAG, "bind view holder for " + position);
         if (viewHolder instanceof LoadMoreViewHolder) {
+            AppLog.v(TAG, "bind view holder for load more");
             if (isReloading()) {
                 AppLog.v(TAG, "reloading will not call load more");
-            } else if (position != mLastLoadMorePositon) {
+            } else if (position != mLastLoadMorePosition) {
                 AppLog.v(TAG, "bind view holder for load more");
-                mHandler.obtainMessage(HANDLE_LOAD_MORE).sendToTarget();
-                mLastLoadMorePositon = position;
+                mRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mHasMore && mIOnLoadMore != null) {
+                            mIOnLoadMore.onLoadMore();
+                        }
+                    }
+                });
+                mLastLoadMorePosition = position;
             } else {
                 AppLog.v(TAG, "bind view holder for load more at same position");
             }
@@ -411,10 +384,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     @Override
     final public int getItemCount() {
-        // AppLog.v(TAG, "get count, size:" + (mData == null ? 0 : mData.size()));
-        // return getDataSize() > 0 ? (mHasMore ? mData.size() + 1 : mData.size()) : 0;
         // 只要有数据永远都返回多一个，通过显示不同的footer view控制显示
-        return (mData == null || mData.size() == 0) ? 1 : mData.size() + 1;
+        AppLog.v(TAG, "get count for " + mRecyclerView.hashCode() + ", size:" + (mData == null ? 1 : mData.size() + 1));
+        return (mData == null) ? 1 : mData.size() + 1;
     }
 
     @Override
