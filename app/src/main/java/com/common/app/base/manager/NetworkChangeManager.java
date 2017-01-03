@@ -103,39 +103,49 @@ public class NetworkChangeManager {
      */
     private NetworkStatus getNetworkStatus() {
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // For WiFi
-        NetworkInfo wifiNetworkInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        // For Cellular data
-        NetworkInfo cellularDataNetworkInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (wifiNetworkInfo.isAvailable() && wifiNetworkInfo.isConnected()) {
-            return NetworkStatus.CONNECTED_WIFI;
-        } else if (cellularDataNetworkInfo.isAvailable() && cellularDataNetworkInfo.isConnected()) {
-            TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-            switch (tm.getNetworkType()) {
-                case TelephonyManager.NETWORK_TYPE_GPRS:
-                    return NetworkStatus.CONNECTED_GPRS;
-                case TelephonyManager.NETWORK_TYPE_EDGE:
-                case TelephonyManager.NETWORK_TYPE_CDMA:
-                case TelephonyManager.NETWORK_TYPE_1xRTT:
-                case TelephonyManager.NETWORK_TYPE_IDEN:
-                    return NetworkStatus.CONNECTED_2G;
-                case TelephonyManager.NETWORK_TYPE_UMTS:
-                case TelephonyManager.NETWORK_TYPE_EVDO_0:
-                case TelephonyManager.NETWORK_TYPE_EVDO_A:
-                case TelephonyManager.NETWORK_TYPE_HSDPA:
-                case TelephonyManager.NETWORK_TYPE_HSUPA:
-                case TelephonyManager.NETWORK_TYPE_HSPA:
-                case TelephonyManager.NETWORK_TYPE_EVDO_B:
-                case TelephonyManager.NETWORK_TYPE_EHRPD:
-                case TelephonyManager.NETWORK_TYPE_HSPAP:
-                    return NetworkStatus.CONNECTED_3G;
-                case TelephonyManager.NETWORK_TYPE_LTE:
-                    return NetworkStatus.CONNECTED_4G;
-                default:
+        if (cm == null) {
+            return NetworkStatus.UNKNOWN;
+        }
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null && activeNetwork.isAvailable() && activeNetwork.isConnected()) { // connected to the
+            // internet
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                // connected to wifi
+                return NetworkStatus.CONNECTED_WIFI;
+            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                // connected to the mobile provider's data plan
+                TelephonyManager tm = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+                if (tm == null) {
                     return NetworkStatus.UNKNOWN;
+                }
+                switch (tm.getNetworkType()) {
+                    case TelephonyManager.NETWORK_TYPE_GPRS:
+                        return NetworkStatus.CONNECTED_GPRS;
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                    case TelephonyManager.NETWORK_TYPE_1xRTT:
+                    case TelephonyManager.NETWORK_TYPE_IDEN:
+                        return NetworkStatus.CONNECTED_2G;
+                    case TelephonyManager.NETWORK_TYPE_UMTS:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                    case TelephonyManager.NETWORK_TYPE_HSDPA:
+                    case TelephonyManager.NETWORK_TYPE_HSUPA:
+                    case TelephonyManager.NETWORK_TYPE_HSPA:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:
+                        return NetworkStatus.CONNECTED_3G;
+                    case TelephonyManager.NETWORK_TYPE_LTE:
+                        return NetworkStatus.CONNECTED_4G;
+                    default:
+                        return NetworkStatus.UNKNOWN;
+                }
+            } else {
+                return NetworkStatus.UNKNOWN;
             }
         } else {
+            // not connected to the internet
             return NetworkStatus.DISCONNECTED;
         }
     }
