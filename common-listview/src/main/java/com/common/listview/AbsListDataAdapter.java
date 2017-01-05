@@ -95,9 +95,15 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void addAll(final T[] data) {
+        addAll(data, false);
+    }
+
+    public void addAll(final T[] data, final boolean removeOld) {
         if (data == null || data.length == 0) {
             AppLog.d(TAG, "add all null");
-            // refreshList();
+            if (removeOld) {
+                clear();
+            }
         } else {
             mRecyclerView.post(new Runnable() {
                 @Override
@@ -105,6 +111,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                     AppLog.d(TAG, "add all " + data.length);
                     if (mData == null) {
                         mData = new ArrayList<>();
+                    } else if (removeOld) {
+                        mData.clear();
                     }
                     int oldPosition = mData.size();
                     if (data.length > 0) {
@@ -117,6 +125,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         }
                     } else {
                         mIsReloading = false;
+                        if (removeOld) {
+                            notifyDataSetChanged();
+                        }
                     }
                 }
             });
@@ -205,23 +216,6 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         if (mData != null) {
             notifyItemChanged(mData.size());
         }
-    }
-
-    /**
-     * 清空数据
-     */
-    public void clearData() {
-        mRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mData == null) {
-                    return;
-                }
-                mData.clear();
-                mIsReloading = false;
-                notifyDataSetChanged();
-            }
-        });
     }
 
     /**
