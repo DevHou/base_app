@@ -141,6 +141,15 @@ public class ImageBrowserActivity extends FragmentActivity {
     }
 
     @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        int defaultIndex = getIntent().getIntExtra(INTENT_IN_INT_DEFAULT_INDEX, 0);
+        if (mImages != null) {
+            onImagePageSelected(defaultIndex, mImages.length);
+        }
+    }
+
+    @Override
     public void finish() {
         super.finish();
         animateInOut(this);
