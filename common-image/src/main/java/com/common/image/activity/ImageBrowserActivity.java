@@ -103,7 +103,6 @@ public class ImageBrowserActivity extends FragmentActivity {
         PhotoImagePagerAdapter adapter = new PhotoImagePagerAdapter();
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(defaultIndex);
-        onImagePageSelected(defaultIndex, mImages.length);
 
         if (mDotView != null) {
             if (mImages.length > 1) {
@@ -129,6 +128,15 @@ public class ImageBrowserActivity extends FragmentActivity {
             public void onPageScrollStateChanged(int arg0) {
             }
         });
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        int defaultIndex = getIntent().getIntExtra(INTENT_IN_INT_DEFAULT_INDEX, 0);
+        if (mImages != null) {
+            onImagePageSelected(defaultIndex, mImages.length);
+        }
     }
 
     @Override
