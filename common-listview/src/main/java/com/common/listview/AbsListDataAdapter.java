@@ -138,6 +138,11 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
+                if (mData == null) {
+                    AppLog.e(TAG, "add but data list is null");
+                    mIsReloading = false;
+                    return;
+                }
                 mData.add(obj);
                 mIsReloading = false;
                 notifyItemInserted(mData.size() - 1);
@@ -149,6 +154,11 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
+                if (mData == null || position < 0) {
+                    AppLog.e(TAG, "insert position invalid " + position);
+                    mIsReloading = false;
+                    return;
+                }
                 mData.add(position, obj);
                 mIsReloading = false;
                 notifyItemInserted(position);
@@ -160,7 +170,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                if (mData == null || position < 0 || position > mData.size()) {
+                if (mData == null || position < 0 || position >= getDataSize()) {
+                    AppLog.e(TAG, "replace position invalid " + position);
                     mIsReloading = false;
                     return;
                 }
@@ -175,6 +186,11 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
+                if (mData == null || position < 0 || position >= getDataSize()) {
+                    AppLog.e(TAG, "remove position invalid " + position);
+                    mIsReloading = false;
+                    return;
+                }
                 mData.remove(position);
                 mIsReloading = false;
                 notifyItemRemoved(position);
