@@ -5,6 +5,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.common.network.HttpResponseResult;
 import com.common.network.HttpWorker;
@@ -76,6 +77,12 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
     @Override
     protected void deliverResponse(T response) {
         listener.onResponse(response);
+    }
+
+    @Override
+    protected VolleyError parseNetworkError(VolleyError volleyError) {
+        AppLog.e(TAG, "network e:" + volleyError.getLocalizedMessage());
+        return super.parseNetworkError(volleyError);
     }
 
     @Override
