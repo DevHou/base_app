@@ -31,12 +31,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -101,6 +105,7 @@ public class VolleyHttpWorker implements IHttpWorker {
                 .readTimeout(timeout, TimeUnit.MILLISECONDS).writeTimeout(timeout, TimeUnit.MILLISECONDS);
         if (trustManager != null && sslSocketFactory != null) {
             builder.sslSocketFactory(sslSocketFactory, trustManager);
+            builder.hostnameVerifier(new NoneHostnameVerifier());
         }
         mHttpClient = builder.build();
         SingleVolleyClient.getInstance().init(context, cache, mHttpClient, null);
@@ -802,6 +807,30 @@ public class VolleyHttpWorker implements IHttpWorker {
                 }
             };
         }
+    }
+
+    private class NoneHostnameVerifier implements HostnameVerifier {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+
+    }
+
+    private class AllTrustManager implements X509TrustManager {
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+
     }
 
 }
