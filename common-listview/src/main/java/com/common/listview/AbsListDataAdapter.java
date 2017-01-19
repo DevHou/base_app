@@ -308,7 +308,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         ViewHolder vh;
         if (viewType == TYPE_LOAD_MORE) {
             View v;
-            AppLog.v(TAG, "create view holder for load more");
+            // AppLog.v(TAG, "create view holder for load more");
             if (mLoadMoreId != 0) {
                 v = LayoutInflater.from(viewGroup.getContext()).inflate(mLoadMoreId, viewGroup, false);
             } else {
@@ -321,10 +321,10 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             View v =
                 LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_empty_footer,
                     viewGroup, false);
-            AppLog.v(TAG, "create view holder for empty");
+            // AppLog.v(TAG, "create view holder for empty");
             vh = new EmptyViewHolder(v, useBinding());
         } else {
-            AppLog.v(TAG, "create view holder for normal " + viewType);
+            // AppLog.v(TAG, "create view holder for normal " + viewType);
             vh = getItemViewHolder(viewGroup, viewType);
         }
         if (useBinding()) {
@@ -335,7 +335,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position, List<Object> payloads) {
-        AppLog.v(TAG, "bind view holder for " + position);
+        // AppLog.v(TAG, "bind view holder for " + position);
         if (viewHolder instanceof LoadMoreViewHolder) {
             AppLog.v(TAG, "bind view holder for load more");
             if (isReloading()) {
@@ -395,7 +395,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     @Override
     final public int getItemCount() {
         // 只要有数据永远都返回多一个，通过显示不同的footer view控制显示
-        AppLog.v(TAG, "get count for " + mRecyclerView.hashCode() + ", size:" + (mData == null ? 1 : mData.size() + 1));
+        // AppLog.v(TAG, "get count for " + mRecyclerView.hashCode() + ", size:" + (mData == null ? 1 : mData.size() +
+        // 1));
         return (mData == null) ? 1 : mData.size() + 1;
     }
 

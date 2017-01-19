@@ -17,3 +17,13 @@
 #}
 
 -dontwarn okio.**
+-keep class org.apache.http.** { *; }
+-keep class org.apache.commons.codec.** { *; }
+-keep class org.apache.commons.logging.** { *; }
+-keep class android.net.compatibility.** { *; }
+-keep class android.net.http.** { *; }
+-keep class com.android.internal.http.multipart.** { *; }
+-dontwarn org.apache.http.**
+-dontwarn android.webkit.**
+
+-keepattributes EnclosingMethod
