@@ -18,7 +18,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.common.image.BigImageView;
 import com.common.image.IImageLoadListener;
@@ -78,7 +77,6 @@ public class ImageBrowserActivity extends FragmentActivity {
         setContent();
 
         if (!getIntent().hasExtra(INTENT_IN_STR_ARRAY_IMAGES)) {
-            Toast.makeText(this, getString(R.string.image_browser_image_list_empty), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
