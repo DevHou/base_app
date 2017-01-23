@@ -19,6 +19,8 @@ import java.util.Map;
 
 /**
  * Created by houlijiang on 15/7/14.
+ *
+ * 安装包相关
  */
 public class PackageUtil {
 

@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 /**
  * Created by houlijiang on 15/7/14.
+ * 
+ * 获取CPU相关信息
  */
 public class CpuUtil {
 

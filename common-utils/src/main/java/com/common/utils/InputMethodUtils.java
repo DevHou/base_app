@@ -7,6 +7,8 @@ import android.view.inputmethod.InputMethodManager;
 
 /**
  * Created by houlijiang on 15/7/14.
+ *
+ * 输入法相关
  */
 public class InputMethodUtils {
 

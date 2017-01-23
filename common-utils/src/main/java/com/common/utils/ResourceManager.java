@@ -40,7 +40,7 @@ public class ResourceManager {
     private ResourceManager() {
     }
 
-    public void init(){
+    public void init() {
         mCheckThread.start();
     }
 
@@ -105,7 +105,7 @@ public class ResourceManager {
         private int hashCode;
         private List<Cancelable> list;
 
-        public RequestsReference(Object r, ReferenceQueue q, Cancelable closeable) {
+        RequestsReference(Object r, ReferenceQueue q, Cancelable closeable) {
             super(r, q);
             hashCode = r.hashCode();
             list = Collections.synchronizedList(new LinkedList<Cancelable>());
@@ -155,7 +155,7 @@ public class ResourceManager {
      */
     private final class RequestCheckThread extends Thread {
 
-        public RequestCheckThread() {
+        RequestCheckThread() {
             super("RequestCheckThread");
             setPriority(Thread.MAX_PRIORITY);
             setDaemon(true);
