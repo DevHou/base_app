@@ -2,6 +2,7 @@ package com.common.utils;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -15,7 +16,7 @@ import java.util.concurrent.Executors;
 public class DispatchUtils {
 
     private final Executor mMainPoster;
-    private final Executor mBackgroundPoster = Executors.newFixedThreadPool(2);
+    private final Executor mBackgroundPoster = Executors.newFixedThreadPool(3);
 
     private DispatchUtils() {
         mMainPoster = new Executor() {
@@ -23,14 +24,14 @@ public class DispatchUtils {
             private final Handler handler = new Handler(Looper.getMainLooper());
 
             @Override
-            public void execute(Runnable runnable) {
+            public void execute(@NonNull Runnable runnable) {
                 handler.post(runnable);
             }
         };
 
     }
 
-    public static class Holder {
+    private static class Holder {
         public final static DispatchUtils utils = new DispatchUtils();
     }
 

@@ -35,14 +35,14 @@ public class JsonUtils {
     private static final String TAG = JsonUtils.class.getSimpleName();
 
     // 支持转换成Date 和 Calendar类型
-    public static Gson gson = createDefaultBuilder(null).create();
+    private static Gson gson = createDefaultBuilder(null).create();
 
-    public static class CalendarAdapter implements JsonSerializer<Calendar>, JsonDeserializer<Calendar> {
+    private static class CalendarAdapter implements JsonSerializer<Calendar>, JsonDeserializer<Calendar> {
 
         private String format;
         private SimpleDateFormat formatter;
 
-        public CalendarAdapter(String format) {
+        CalendarAdapter(String format) {
             this.format = format;
             if (!TextUtils.isEmpty(format)) {
                 formatter = new SimpleDateFormat(format, Locale.getDefault());
