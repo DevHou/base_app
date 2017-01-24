@@ -65,6 +65,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
     protected boolean bEnableRefresh;
 
+    private RecyclerView.AdapterDataObserver mAdapterObserver;
     protected PtrFrameLayout mRefreshLayout;
     protected IOnPullToRefresh mOutRefreshListener;
 
@@ -233,6 +234,26 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 }
             }
         });
+
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        AppLog.d(TAG, "onAttachedToWindow");
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        AppLog.d(TAG, "onDetachedFromWindow");
+        try {
+            if (mAdapterObserver != null) {
+                mRecycler.getAdapter().unregisterAdapterDataObserver(mAdapterObserver);
+            }
+        } catch (Exception e) {
+            AppLog.e(TAG, "unregister adapter observer e:" + e.getLocalizedMessage());
+        }
+        super.onDetachedFromWindow();
     }
 
     public void smoothScrollToPosition(int position) {
@@ -261,9 +282,14 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         if (adapter instanceof IAbsListDataAdapter) {
             ((IAbsListDataAdapter) adapter).setLoadMoreView(mMoreProgressId);
         }
-        // mRefreshLayout.refreshComplete();
-        // 有数据变化时会重置刷新显示状态
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        try {
+            if (mAdapterObserver != null) {
+                mRecycler.getAdapter().unregisterAdapterDataObserver(mAdapterObserver);
+            }
+        } catch (Exception e) {
+            AppLog.e(TAG, "unregister adapter observer in set adapter e:" + e.getLocalizedMessage());
+        }
+        mAdapterObserver = new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
                 super.onItemRangeChanged(positionStart, itemCount);
@@ -302,44 +328,33 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             }
 
             private void update() {
-                mProgress.setVisibility(View.GONE);
-                // mRefreshLayout.refreshComplete();
+                hideAllStateViews();
                 if (adapter instanceof IAbsListDataAdapter) {
                     // 调用自定义判断是否是空的列表，可能有些特殊处理，比如第一个元素是个搜索框等
                     if (((IAbsListDataAdapter) adapter).isReloading()) {
                         if (((IAbsListDataAdapter) adapter).isEmpty()) {
                             // 为空认为是第一次加载，显示加载中view
-                            mProgress.setVisibility(View.VISIBLE);
-                            mRefreshLayout.setVisibility(View.GONE);
+                            showProgressView();
                         } else {
                             // 否则认为是下拉刷新，不显示加载中view
-                            mProgress.setVisibility(View.GONE);
-                            mRefreshLayout.setVisibility(View.VISIBLE);
+                            showRefreshView();
                         }
-                        mEmpty.setVisibility(View.GONE);
-                        mError.setVisibility(View.GONE);
                     } else if (((IAbsListDataAdapter) adapter).isEmpty()) {
-                        mEmpty.setVisibility(View.VISIBLE);
-                        mRefreshLayout.setVisibility(View.GONE);
-                        mError.setVisibility(View.GONE);
+                        showEmptyView();
                     } else {
-                        mEmpty.setVisibility(View.GONE);
-                        mRefreshLayout.setVisibility(View.VISIBLE);
-                        mError.setVisibility(View.GONE);
+                        showRefreshView();
                     }
                 } else {
                     if (getChildCount() == 0) {
-                        mEmpty.setVisibility(View.VISIBLE);
-                        mRefreshLayout.setVisibility(View.GONE);
-                        mError.setVisibility(View.GONE);
+                        showEmptyView();
                     } else {
-                        mEmpty.setVisibility(View.GONE);
-                        mRefreshLayout.setVisibility(View.VISIBLE);
-                        mError.setVisibility(View.GONE);
+                        showRefreshView();
                     }
                 }
             }
-        });
+        };
+        // 有数据变化时会重置刷新显示状态
+        adapter.registerAdapterDataObserver(mAdapterObserver);
 
     }
 
@@ -469,7 +484,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 @Override
                 public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status,
                     PtrIndicator ptrIndicator) {
-                    AppLog.d(TAG, "onUIPositionChange");
+                    // AppLog.d(TAG, "onUIPositionChange");
                     PtrStatus ptrStatus;
                     switch (status) {
                         case PtrFrameLayout.PTR_STATUS_INIT:
@@ -564,37 +579,56 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     }
 
     /**
-     * 重新加载数据，把空和加载中隐藏，下拉刷新时用
+     * 隐藏所有状态相关view
      */
-    private void hideEmptyAndProgressView() {
+    private void hideAllStateViews() {
+        hideRefreshView();
+        mError.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.GONE);
         mEmpty.setVisibility(View.GONE);
-        mProgress.setVisibility(View.GONE);
+    }
+
+    /**
+     * 显示空view
+     */
+    private void showEmptyView() {
+        mEmpty.setVisibility(View.VISIBLE);
     }
 
     /**
      * 显示错误页面，加载数据发生错误时用
      */
     public void showErrorView() {
-        hideEmptyAndProgressView();
-        mRefreshLayout.setVisibility(View.GONE);
         mError.setVisibility(View.VISIBLE);
     }
 
     /**
-     * 把空和错误隐藏
+     * 显示加载中view
      */
-    private void hideEmptyAndErrorView() {
-        mEmpty.setVisibility(View.GONE);
-        mError.setVisibility(View.GONE);
+    private void showProgressView() {
+        mProgressView.setVisibility(View.VISIBLE);
     }
 
     /**
-     * 显示加载中页面
+     * 显示下拉刷新
+     */
+    private void showRefreshView() {
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideRefreshView() {
+        if (mRefreshLayout != null) {
+            mRefreshLayout.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 对外接口，显示加载中view
      */
     public void showLoadingView() {
-        hideEmptyAndErrorView();
-        mRefreshLayout.setVisibility(View.GONE);
-        mProgress.setVisibility(View.VISIBLE);
+        showProgressView();
     }
 
     // 主动下拉刷新，和手动下拉一个效果

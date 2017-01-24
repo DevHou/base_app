@@ -36,7 +36,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     private static final int TYPE_EMPTY_FOOTER = Integer.MAX_VALUE - 1;
 
     private List<T> mData;
-    private boolean mIsReloading = false;
+    private boolean mIsReloading = false;// 是否是正在从数据中心加载数据
     private boolean mHasMore = true;
     private int mLoadMoreId = 0;// 加载更多view ID
     private int mLastLoadMorePosition = -1;// 上次加载更多时的位置，用于判断避免重复调用load more
@@ -293,7 +293,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     final public int getItemViewType(int position) {
         if (position == mData.size()) {
             // AppLog.v(TAG, "get view type for last " + position + ", has more:" + mHasMore);
-            if (!mHasMore) {
+            // 当没有数据时不显示加载更多的view，避免第一页加载中状态时显示load more view
+            if (!mHasMore || getDataSize() == 0) {
                 return TYPE_EMPTY_FOOTER;
             } else {
                 return TYPE_LOAD_MORE;
@@ -397,7 +398,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
         // 只要有数据永远都返回多一个，通过显示不同的footer view控制显示
         // AppLog.v(TAG, "get count for " + mRecyclerView.hashCode() + ", size:" + (mData == null ? 1 : mData.size() +
         // 1));
-        return (mData == null) ? 1 : mData.size() + 1;
+        return (mData == null) ? 0 : mData.size() + 1;
     }
 
     @Override
