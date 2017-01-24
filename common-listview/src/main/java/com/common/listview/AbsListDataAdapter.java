@@ -54,6 +54,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     private final OnRebindCallback mOnRebindCallback = new OnRebindCallback() {
         @Override
         public boolean onPreBind(ViewDataBinding binding) {
+            AppLog.d(TAG, "onPreBind");
             if (mRecyclerView == null || mRecyclerView.isComputingLayout()) {
                 return true;
             }
@@ -105,6 +106,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                 clear();
             }
         } else {
+            if (removeOld) {
+                mLastLoadMorePosition = -1;
+            }
             mRecyclerView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -120,6 +124,10 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         mIsReloading = false;
                         if (oldPosition > 0) {
                             notifyItemRangeInserted(oldPosition, data.length);
+                            // 通知一下最后一个更新，用来解决当一页不满时最后一个loadmore不调用bindView的bug
+                            if (mHasMore) {
+                                notifyItemChanged(mData.size(), DB_PAYLOAD);
+                            }
                         } else {
                             notifyDataSetChanged();
                         }
@@ -146,6 +154,10 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                 mData.add(obj);
                 mIsReloading = false;
                 notifyItemInserted(mData.size() - 1);
+                // 通知一下最后一个更新，用来解决当一页不满时最后一个loadmore不调用bindView的bug
+                if (mHasMore) {
+                    notifyItemChanged(mData.size(), DB_PAYLOAD);
+                }
             }
         });
     }
@@ -238,6 +250,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      * 清空数据并通知数据变化
      */
     public void clear() {
+        mLastLoadMorePosition = -1;
         mRecyclerView.post(new Runnable() {
             @Override
             public void run() {
@@ -336,13 +349,14 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position, List<Object> payloads) {
-        // AppLog.v(TAG, "bind view holder for " + position);
+        int pos = position; // viewHolder.getAdapterPosition();
+        // AppLog.v(TAG, "bind view holder for " + pos);
         if (viewHolder instanceof LoadMoreViewHolder) {
-            AppLog.v(TAG, "bind view holder for load more");
+            AppLog.v(TAG, "bind view holder for load more pos:" + pos);
             if (isReloading()) {
-                AppLog.v(TAG, "reloading will not call load more");
-            } else if (position != mLastLoadMorePosition) {
-                AppLog.v(TAG, "bind view holder for load more");
+                AppLog.v(TAG, "reloading will not call load more pos:" + pos);
+            } else if (pos != mLastLoadMorePosition) {
+                AppLog.v(TAG, "bind view holder for load more pos:" + pos);
                 mRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -351,18 +365,18 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         }
                     }
                 });
-                mLastLoadMorePosition = position;
+                mLastLoadMorePosition = pos;
             } else {
-                AppLog.v(TAG, "bind view holder for load more at same position");
+                AppLog.v(TAG, "bind view holder for load more at same position " + pos);
             }
             return;
         } else if (viewHolder instanceof EmptyViewHolder) {
             AppLog.v(TAG, "bind view holder for empty");
             return;
         }
-        // AppLog.v(TAG, "bind view holder for " + position);
         if (payloads.isEmpty() || hasNonDataBindingInvalidate(payloads)) {
-            bindData(viewHolder, position, getData(position));
+            AppLog.v(TAG, "will call bindData");
+            bindData(viewHolder, pos, getData(pos));
         }
         if (useBinding()) {
             viewHolder.getBinding().executePendingBindings();

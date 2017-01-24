@@ -328,6 +328,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             }
 
             private void update() {
+                stopRefresh();
                 hideAllStateViews();
                 if (adapter instanceof IAbsListDataAdapter) {
                     // 调用自定义判断是否是空的列表，可能有些特殊处理，比如第一个元素是个搜索框等
@@ -641,7 +642,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
     // 隐藏刷新，即通知完成刷新
     public void stopRefresh() {
-        if (mRefreshLayout == null) {
+        if (mRefreshLayout == null || !mRefreshLayout.isRefreshing()) {
             return;
         }
         mRefreshLayout.refreshComplete();
