@@ -84,23 +84,17 @@ public class TestListViewActivity extends BaseListActivity {
     }
 
     private void loadList(boolean readCache) {
-
         mDataService.getTestList(this, readCache, mPageNum, new IDataServiceCallback<TestDataModel>() {
             @Override
             public void onSuccess(DataServiceResultModel result, TestDataModel obj, Object param) {
                 int pageNum = (int) param;
-                if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
-                    mRecyclerListView.stopRefresh();
-                    // 先置成不可加载更多防止因为读取缓存导致循环读取
-                    mAdapter.setIfHasMore(false);
-                }
                 mHasMore = obj.pageInfo.hasMore;
+                // 不是缓存的才设置是否能加载更多并且增加页码数
+                mAdapter.setIfHasMore(!result.isCache && mHasMore);
                 if (!result.isCache) {
-                    // 不是缓存的才设置是否能加载更多并且增加页码数
-                    mAdapter.setIfHasMore(mHasMore);
                     mPageNum++;
                 }
-                mAdapter.addAll(obj.list,pageNum == ApiConstants.API_LIST_FIRST_PAGE);
+                mAdapter.addAll(obj.list, pageNum == ApiConstants.API_LIST_FIRST_PAGE);
             }
 
             @Override
