@@ -90,7 +90,6 @@ public class TestListViewActivity extends BaseListActivity {
             public void onSuccess(DataServiceResultModel result, TestDataModel obj, Object param) {
                 int pageNum = (int) param;
                 if (pageNum == ApiConstants.API_LIST_FIRST_PAGE) {
-                    mAdapter.clearData();
                     mRecyclerListView.stopRefresh();
                     // 先置成不可加载更多防止因为读取缓存导致循环读取
                     mAdapter.setIfHasMore(false);
@@ -101,7 +100,7 @@ public class TestListViewActivity extends BaseListActivity {
                     mAdapter.setIfHasMore(mHasMore);
                     mPageNum++;
                 }
-                mAdapter.addAll(obj.list);
+                mAdapter.addAll(obj.list,pageNum == ApiConstants.API_LIST_FIRST_PAGE);
             }
 
             @Override

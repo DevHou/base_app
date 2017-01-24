@@ -69,7 +69,6 @@ public class TestPtrActivity extends BaseActivity implements AppBarLayout.OnOffs
                     public void run() {
                         mPtr.refreshComplete();
                         TestData[] data = createData(10);
-                        adapter.clearData();
                         adapter.addAll(data);
                     }
                 }, 2000);
