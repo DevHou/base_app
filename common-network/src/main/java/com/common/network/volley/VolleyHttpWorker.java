@@ -626,14 +626,14 @@ public class VolleyHttpWorker implements IHttpWorker {
     }
 
     /**
-     * 取消context相关的所有请求
+     * 取消tag相关的所有请求
      *
-     * @param context context
+     * @param tag tag
      */
     @Override
-    public void cancel(Object context) {
-        if (context != null) {
-            SingleVolleyClient.getInstance().getRequestQueue().cancelAll(context);
+    public void cancel(Object tag) {
+        if (tag != null) {
+            SingleVolleyClient.getInstance().getRequestQueue().cancelAll(tag);
         } else {
             cancelAll();
         }

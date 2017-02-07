@@ -30,7 +30,7 @@ public class ResourceManager {
     private boolean mCheckRunning = true;
 
     private static class InstanceHolder {
-        public final static ResourceManager instance = new ResourceManager();
+        final static ResourceManager instance = new ResourceManager();
     }
 
     public static ResourceManager getInstance() {
