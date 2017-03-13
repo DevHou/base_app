@@ -3,12 +3,12 @@ package com.common.listview;
 import android.databinding.DataBindingUtil;
 import android.databinding.OnRebindCallback;
 import android.databinding.ViewDataBinding;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.annotations.Nullable;
 import com.common.utils.AppLog;
 
 import java.util.ArrayList;
