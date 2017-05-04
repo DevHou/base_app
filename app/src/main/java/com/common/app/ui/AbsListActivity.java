@@ -1,15 +1,15 @@
 package com.common.app.ui;
 
+import com.common.app.uikit.PtrHeaderView;
+import com.common.listview.AbsListDataAdapter;
+import com.common.listview.AbsListView;
+import com.common.listview.MySectionIndexer;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import com.common.listview.AbsListDataAdapter;
-import com.common.listview.AbsListView;
-import com.common.listview.MySectionIndexer;
-import com.common.app.uikit.PtrHeaderView;
 
 /**
  * Created by houlijiang on 15/12/5.

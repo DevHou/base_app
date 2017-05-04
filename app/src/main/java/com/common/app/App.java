@@ -1,12 +1,7 @@
 package com.common.app;
 
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.text.TextUtils;
+import java.util.Iterator;
+import java.util.List;
 
 import com.common.app.base.manager.DeployManager;
 import com.common.app.base.manager.Manager;
@@ -14,8 +9,13 @@ import com.common.app.base.utils.EventUtils;
 import com.common.app.event.ExitAppEvent;
 import com.common.utils.AppLog;
 
-import java.util.Iterator;
-import java.util.List;
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.text.TextUtils;
 
 /**
  * Created by houlijiang on 16/1/19.
@@ -52,6 +52,7 @@ public class App extends Application {
 
             AppMain.getInstance(this).appStart();
         }
+
     }
 
     @Override

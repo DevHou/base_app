@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 16
@@ -18,22 +18,34 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "IS_ONLINE", "false"
+            //extConfig "test_config1", true
+            //extConfig "test_config2", false
         }
 
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "IS_ONLINE", "true"
+            //extConfig "test_config1", true
         }
     }
+
 }
+
+android.applicationVariants.all { variant ->
+    //boolean testConfig1 = variant.buildType.getExtConfigs()["test_config1"]
+    //boolean testConfig2 = variant.buildType.getExtConfigs()["test_config2"]
+
+    //println "test config 1 "+testConfig1+" config 2 "+testConfig2
+}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.0'
-    compile 'com.android.support:support-v13:25.3.0'
-    compile 'com.android.support:design:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:support-v13:25.3.1'
+    compile 'com.android.support:design:25.3.1'
 
     compile 'io.reactivex:rxandroid:1.2.0'
     compile 'org.greenrobot:eventbus:3.0.0'
@@ -46,3 +58,4 @@ dependencies {
     compile project(':common-utils')
     compile project(':common-mp3recorder')
 }
+
