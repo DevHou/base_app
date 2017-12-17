@@ -22,8 +22,8 @@
   **[] $VALUES;
   public *;
 }
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+# for DexGuard only 要加到app项目里
+# -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 
 #picasso
 -dontwarn com.squareup.okhttp.**
