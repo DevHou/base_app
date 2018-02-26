@@ -285,6 +285,7 @@ public class ApiUtils {
                 } else {
                     apiResult.result = model.data;
                 }
+                mListener.onRequestCompleted(apiResult, param);
             } catch (JsonSyntaxException e) {
                 AppLog.e(TAG, "parse json error, e:" + e.getLocalizedMessage());
                 apiResult.code = ErrorConst.ERROR_CODE_NETWORK_PARSE_RESULT_ERROR;
