@@ -134,6 +134,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         }
         View v = LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
         mRefreshLayout = (PtrFrameLayout) v.findViewById(R.id.common_list_abs_list_view_swipe_refresh);
+        mRefreshLayout.disableWhenHorizontalMove(true);
         mAppBarLayout = (AppBarLayout) v.findViewById(R.id.common_list_abs_list_view_app_bar);
 
         mHeader = (ViewStub) v.findViewById(R.id.common_list_abs_list_view_header);
