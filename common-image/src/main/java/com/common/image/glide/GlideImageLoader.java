@@ -1,26 +1,25 @@
 package com.common.image.glide;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.DrawableRequestBuilder;
-import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.common.image.CommonImageView;
 import com.common.image.IImageLoadListener;
@@ -30,10 +29,7 @@ import com.common.image.ImageOptions;
 import com.common.utils.AppLog;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Locale;
-
-import okhttp3.OkHttpClient;
 
 /**
  * Created by houlijiang on 16/4/12.
@@ -50,7 +46,7 @@ public class GlideImageLoader implements IImageLoader {
     private Context context;
     private File cacheDir;
     private boolean debug;
-    private LoggingListener<String, GlideDrawable> debugListener = new LoggingListener<>();
+    private LoggingListener<Drawable> debugListener = new LoggingListener<>();
 
     @Override
     public void init(Context context, File cacheDir, boolean debug) {
@@ -59,13 +55,12 @@ public class GlideImageLoader implements IImageLoader {
         this.debug = debug;
         // glide在第一次get实例时使用GlideModule初始化，所以这里可以先设置GlideModule，再初始化glide实例
         MyGlideModule.setFileCacheDir(cacheDir.getAbsolutePath());
-        Glide.get(context).register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(new OkHttpClient()));
         Glide.get(context).setMemoryCategory(MemoryCategory.HIGH);
     }
 
     @Override
     public void onLowMemory() {
-        Glide.with(context).onTrimMemory(ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW);
+        // Glide.with(context).onTrimMemory(ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW);
     }
 
     @Override
@@ -115,28 +110,33 @@ public class GlideImageLoader implements IImageLoader {
      */
     @Override
     public void cacheImage(Context context, String url) {
-        Glide.with(context).load(url).downloadOnly(-1, -1);
+        Glide.with(context).load(url).submit(-1, -1);
     }
 
     @Override
-    public void displayImage(Context context, Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
+    public void displayImage(Context context, Uri uri, final CommonImageView imageView,
+            final ImageOptions options,
+            final IImageLoadListener listener) {
         displayImage((Object) context, uri, imageView, options, listener);
     }
 
     @Override
-    public void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
+    public void displayImage(Fragment fragment, Uri uri, final CommonImageView imageView,
+            final ImageOptions options,
+            final IImageLoadListener listener) {
         displayImage((Object) fragment, uri, imageView, options, listener);
     }
 
     @Override
-    public void displayImage(Activity activity, Uri uri, final CommonImageView imageView, final ImageOptions options,
-        final IImageLoadListener listener) {
+    public void displayImage(Activity activity, Uri uri, final CommonImageView imageView,
+            final ImageOptions options,
+            final IImageLoadListener listener) {
         displayImage((Object) activity, uri, imageView, options, listener);
     }
 
-    public void displayImage(Object c, Uri uri, CommonImageView iv, ImageOptions options, IImageLoadListener listener) {
+    @SuppressLint("CheckResult")
+    public void displayImage(Object c, Uri uri, CommonImageView iv, ImageOptions options,
+            IImageLoadListener listener) {
         final CommonImageView imageView = iv;
 
         RequestManager manager;
@@ -159,11 +159,16 @@ public class GlideImageLoader implements IImageLoader {
                 }
             }
             if (listener != null) {
-                listener.onFailed("", imageView, new ImageLoadError(ImageLoadError.ERROR_NONE_URI, ""));
+                listener.onFailed("", imageView,
+                        new ImageLoadError(ImageLoadError.ERROR_NONE_URI, ""));
             }
             return;
         }
-        DrawableTypeRequest request;
+        RequestBuilder request;
+        RequestOptions requestOptions = new RequestOptions();
+        if (options != null && options.isGif()) {
+            manager.asGif();
+        }
         // 特殊处理资源加载
         if ("res".equals(uri.getScheme())) {
             int resId = 0;
@@ -178,15 +183,15 @@ public class GlideImageLoader implements IImageLoader {
         }
         if (options != null) {
             if (options.getImageResOnFail() != 0) {
-                request.error(options.getImageResOnFail());
+                requestOptions.error(options.getImageResOnFail());
             } else if (options.getImageOnFail() != null) {
-                request.error(options.getImageOnFail());
+                requestOptions.error(options.getImageOnFail());
             }
 
             if (options.getImageResOnLoading() != 0) {
-                request.placeholder(options.getImageResOnLoading());
+                requestOptions.placeholder(options.getImageResOnLoading());
             } else if (options.getImageOnLoading() != null) {
-                request.placeholder(options.getImageOnLoading());
+                requestOptions.placeholder(options.getImageOnLoading());
             }
             if (options.getImageScaleType() != null) {
                 switch (options.getImageScaleType()) {
@@ -196,12 +201,12 @@ public class GlideImageLoader implements IImageLoader {
                     case CENTER:
                     case FOCUS_CROP:
                     case CENTER_CROP: {
-                        request.centerCrop();
+                        requestOptions.centerCrop();
                         break;
                     }
                     case CENTER_INSIDE:
                     case FIT_CENTER: {
-                        request.fitCenter();
+                        requestOptions.fitCenter();
                         break;
                     }
                 }
@@ -212,59 +217,52 @@ public class GlideImageLoader implements IImageLoader {
                     iv.getLayoutParams().width = size.width;
                     iv.getLayoutParams().height = size.height;
                 }
-                request.override(size.width, size.height);
-            }
-            if (options.isGif()) {
-                request.asGif();
+                requestOptions.override(size.width, size.height);
             }
             if (!TextUtils.isEmpty(options.getImageSample())) {
-                DrawableRequestBuilder<String> thumbnailRequest = Glide.with(context).load(options.getImageSample());
+                RequestBuilder<Drawable> thumbnailRequest = Glide.with(context).load(
+                        options.getImageSample());
+                RequestOptions sampleRequestOptions = new RequestOptions();
                 // 下面两个设置是避免加载的缩略图显示和实际想要的不一样，类似loading scale的问题
                 if (size != null && size.width > 0 && size.height > 0) {
-                    thumbnailRequest.override(size.width, size.height);
+                    sampleRequestOptions.override(size.width, size.height);
                 }
-                thumbnailRequest.dontAnimate();
-                request.thumbnail(thumbnailRequest);
+                sampleRequestOptions.dontAnimate();
+                request.apply(sampleRequestOptions).thumbnail(thumbnailRequest);
             }
             if (debug && options.isDebug()) {
                 request.listener(debugListener);// debug输出
             }
         }
+
         // 圆形 圆角等特殊处理
         Transformation<Bitmap> bit = imageView.createTransformation();
         if (bit != null) {
-            request.bitmapTransform(bit);
+            requestOptions.transform(bit);
         }
+
         // 这里的dontAnimate主要是因为当placeholder和image的scaleType不同时
         // image先显示的是placeholder的scaleType，当再次滑动回来时又用的正常的scaleType显示
-
-        //
-        // request.skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE);
-        // request.diskCacheStrategy(DiskCacheStrategy.ALL);
-        // 7.0以上系统，只要设置默认编码成PREFER_ARGB_8888就可以了
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            // jpg图片在从缓存取出后会背景发绿，加这个不使用多尺寸缓存可以避免绿色背景问题
-            request.diskCacheStrategy(DiskCacheStrategy.SOURCE);
-            // or 下面这种配置来转成 png格式，但测试后发现并没用
-            // request.asBitmap().encoder(new BitmapEncoder(Bitmap.CompressFormat.PNG, 100));
-        }
-        request.dontAnimate().into(imageView);
+        requestOptions.dontAnimate();
+        request.apply(requestOptions).into(imageView);
 
     }
 
-    private class LoggingListener<T, R> implements RequestListener<T, R> {
+    private class LoggingListener<R> implements RequestListener<R> {
+
         @Override
-        public boolean onException(Exception e, Object model, Target target, boolean isFirstResource) {
-            AppLog.d(TAG, String.format(Locale.ROOT, "onException(%s, %s, %s, %s)", e, model, target, isFirstResource),
-                e);
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<R> target,
+                boolean isFirstResource) {
+            AppLog.d(TAG, String.format(Locale.ROOT, "onException(%s, %s, %s, %s)",
+                    e, model, target, isFirstResource), e);
             return false;
         }
 
         @Override
-        public boolean onResourceReady(Object resource, Object model, Target target, boolean isFromMemoryCache,
-            boolean isFirstResource) {
-            AppLog.d(TAG, String.format(Locale.ROOT, "onResourceReady(%s, %s, %s, %s, %s)", resource, model, target,
-                isFromMemoryCache, isFirstResource));
+        public boolean onResourceReady(R resource, Object model, Target<R> target,
+                DataSource dataSource, boolean isFirstResource) {
+            AppLog.d(TAG, String.format(Locale.ROOT, "onResourceReady(%s, %s, %s, %s)", resource,
+                    model, target, isFirstResource));
             return false;
         }
     }

@@ -21,16 +21,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
 
-    compile 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.volley:volley:1.0.0'
     //使用okHttp作为volley的网络底层
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     //compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     //compile 'com.squareup.okio:okio:1.0.1'
 
-    compile project(':common-utils')
-    compile project(':common-cache')
+    implementation project(':common-utils')
+    implementation project(':common-cache')
 }
