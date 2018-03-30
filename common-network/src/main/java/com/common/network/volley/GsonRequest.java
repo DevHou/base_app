@@ -11,7 +11,6 @@ import com.common.network.HttpResponseResult;
 import com.common.network.HttpWorker;
 import com.common.network.IHttpParams;
 import com.common.utils.AppLog;
-import com.google.gson.JsonSyntaxException;
 
 import org.apache.http.protocol.HTTP;
 
@@ -101,7 +100,7 @@ public class GsonRequest<T extends HttpResponseResult> extends Request<T> {
                 result.networkTimeMs = response.networkTimeMs;
             }
             return Response.success(result, HttpHeaderParser.parseCacheHeaders(response));
-        } catch (JsonSyntaxException e) {
+        } catch (Exception e) {
             AppLog.e(TAG, "json format error,e:" + e.getMessage());
             return Response.error(new ParseError(response));
         }

@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import com.common.image.glide.GlideImageLoader;
-import com.common.image.picasso.PicassoImageLoader;
 
 import java.io.File;
 
@@ -31,7 +30,7 @@ public class ImageLoader {
         if (BuildConfig.USE_IMAGE_LIB == BuildConstants.USE_GLIDE) {
             mImageLoader = new GlideImageLoader();
         } else {
-            mImageLoader = new PicassoImageLoader();
+            mImageLoader = new GlideImageLoader(); //new PicassoImageLoader();
         }
     }
 

@@ -1,21 +1,22 @@
 package com.common.permission;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import rx.Observable;
-import rx.functions.Action0;
-import rx.functions.FuncN;
-import rx.subjects.PublishSubject;
-
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.common.utils.AppLog;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by houlijiang on 15/10/8.
@@ -90,13 +91,23 @@ public class AppPermissions {
         if (!unrequestedPermissions.isEmpty()) {
             startShadowActivity(permissions);
         }
-
-        return Observable.combineLatest(list, combineLatestBools.INSTANCE).doOnSubscribe(new Action0() {
+        return Observable.combineLatest(list, new Function<Object[], Boolean>() {
             @Override
-            public void call() {
+            public Boolean apply(Object[] objects) throws Exception {
+                for (Object arg : objects) {
+                    if (!(Boolean) arg) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }).doOnSubscribe(new Consumer<Disposable>() {
+            @Override
+            public void accept(Disposable disposable) throws Exception {
 
             }
         });
+
     }
 
     void startShadowActivity(String[] permissions) {
@@ -139,20 +150,7 @@ public class AppPermissions {
             }
             mSubjects.remove(permissions[i]);
             subject.onNext(grantResults[i] == PackageManager.PERMISSION_GRANTED);
-            subject.onCompleted();
-        }
-    }
-
-    private enum combineLatestBools implements FuncN<Boolean> {
-        INSTANCE;
-
-        public Boolean call(Object...args) {
-            for (Object arg : args) {
-                if (!(Boolean) arg) {
-                    return false;
-                }
-            }
-            return true;
+            subject.onComplete();
         }
     }
 

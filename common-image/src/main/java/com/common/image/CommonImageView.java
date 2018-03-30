@@ -3,6 +3,7 @@ package com.common.image;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -13,7 +14,7 @@ import com.common.utils.AppLog;
  * 
  * 只是通过继承不同库的具体实现切换
  */
-public class CommonImageView extends ImageView {
+public class CommonImageView extends AppCompatImageView {
 
     private static final String TAG = CommonImageView.class.getSimpleName();
 
@@ -96,13 +97,6 @@ public class CommonImageView extends ImageView {
      * 子类可以重写这个方法，返回合适的对象
      */
     public com.bumptech.glide.load.Transformation<Bitmap> createTransformation() {
-        return null;
-    }
-
-    /**
-     * 子类可以重写这个方法，返回合适的对象
-     */
-    public com.squareup.picasso.Transformation getTransform() {
         return null;
     }
 

@@ -37,8 +37,6 @@ dependencies {
 
     //PhotoView要在主工程中allproject.repositories里加 maven { url "https://jitpack.io" }
     implementation 'com.github.chrisbanes:PhotoView:1.3.1'
-    //picasso
-    implementation 'com.squareup.picasso:picasso:2.5.2'
 
     implementation project(':common-utils')
     implementation project(':common-network')

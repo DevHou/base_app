@@ -25,9 +25,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
 
-    implementation 'com.android.volley:volley:1.0.0'
+    implementation 'com.android.volley:volley:1.1.0'
     //使用okHttp作为volley的网络底层
-    implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     //compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     //compile 'com.squareup.okio:okio:1.0.1'
 
