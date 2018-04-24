@@ -2,6 +2,7 @@ package com.common.image.glide;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
@@ -18,7 +19,7 @@ import com.common.utils.AppLog;
 
 /**
  * Created by houlijiang on 16/7/14.
- * 
+ * <p>
  * 给glide设置setTag的id，避免外部使用时不能setTag
  */
 @GlideModule
@@ -39,6 +40,9 @@ public class MyGlideModule extends AppGlideModule {
     @Override
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         ViewTarget.setTagId(R.id.glide_image_tag_id);
+        if (TextUtils.isEmpty(FILE_CACHE_DIR)) {
+            FILE_CACHE_DIR = context.getExternalCacheDir().getAbsolutePath();
+        }
         builder.setDiskCache(new DiskLruCacheFactory(FILE_CACHE_DIR, "glide", 500 * 1024 * 1024));
 
         MemorySizeCalculator calculator = new MemorySizeCalculator.Builder(context).build();
@@ -52,7 +56,7 @@ public class MyGlideModule extends AppGlideModule {
 
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide,
-            @NonNull Registry registry) {
+                                   @NonNull Registry registry) {
 
     }
 }

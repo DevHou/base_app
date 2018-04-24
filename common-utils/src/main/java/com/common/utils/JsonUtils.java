@@ -27,7 +27,7 @@ import java.util.Locale;
 
 /**
  * Created by houlijiang on 2014/9/20.
- * 
+ * <p>
  * json相关操作，只是对gson的包装
  */
 public class JsonUtils {
@@ -51,7 +51,7 @@ public class JsonUtils {
         }
 
         public Calendar deserialize(JsonElement json, Type type, JsonDeserializationContext context)
-            throws JsonParseException {
+                throws JsonParseException {
             Calendar calendar = Calendar.getInstance();
             if (TextUtils.isEmpty(format)) {
                 // 如果没传入格式文本则作为时间戳处理
@@ -83,7 +83,7 @@ public class JsonUtils {
         return new GsonBuilder().registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
             @Override
             public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-                throws JsonParseException {
+                    throws JsonParseException {
                 return new Date(json.getAsJsonPrimitive().getAsLong());
             }
         }).registerTypeHierarchyAdapter(Calendar.class, new CalendarAdapter(format));
@@ -91,7 +91,7 @@ public class JsonUtils {
 
     /**
      * 设置自定义的时间字符串格式
-     * 
+     *
      * @param format 格式如"yyyy-MM-dd HH:mm:ss"
      */
     public static void setDateFormat(String format) {
@@ -103,6 +103,13 @@ public class JsonUtils {
             return null;
         }
         return getModel(result, classOfT);
+    }
+
+    public static <T> T parseString(String result, Type typeToken) {
+        if (result == null || typeToken == null) {
+            return null;
+        }
+        return getModel(result, typeToken);
     }
 
     public static String toString(Object obj) {
@@ -349,6 +356,16 @@ public class JsonUtils {
     }
 
     public static <T> T getModel(String jsonString, Class<T> clazz) {
+        try {
+            return gson.fromJson(jsonString, clazz);
+        } catch (JsonSyntaxException e) {
+            AppLog.e(TAG, "parse get model e:" + e.getLocalizedMessage() + " json:" + jsonString);
+        }
+
+        return null;
+    }
+
+    public static <T> T getModel(String jsonString, Type clazz) {
         try {
             return gson.fromJson(jsonString, clazz);
         } catch (JsonSyntaxException e) {
