@@ -29,3 +29,5 @@
 
 #picasso
 -dontwarn com.squareup.okhttp.**
+
+-dontwarn com.bumptech.glide.**
