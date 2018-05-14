@@ -56,6 +56,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     // toolbar方式实现的title
     private Toolbar mToolbar;
 
+    /**
+     * 简化findViewById
+     */
+    public <T extends View> T $(int id) {
+        return (T) findViewById(id);
+    }
+
+    public static <T extends View> T $(View parent, int id) {
+        if (parent == null) {
+            return null;
+        } else {
+            return (T) parent.findViewById(id);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -28,7 +28,7 @@ import com.common.utils.AppLog;
  * > 使用RecyclerView实现，预定义了加载中 为空 错误 加载更多等view，可以通过attribute设置自己的
  * > 目前 加载中 加载更多 为空 都有默认值，可以不设置
  * > 如果不使用默认的layout而自己重写，注意里面定义的ViewStub id要和layout_abs_listview一致
- * 
+ *
  * 使用时的注意事项：
  * > 默认的空view是一个文本，可以通过setEmptyText接口设置需要显示的问题
  * > 如果需要快速检索功能需要通过setIndex设置数据源，当数据源变化时通过reloadSections重新构建检索
@@ -97,30 +97,39 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.common_list_attrs);
         try {
             mSuperRecyclerViewMainLayout =
-                a.getResourceId(R.styleable.common_list_attrs_common_list_main_layout_id,
-                    R.layout.common_list_layout_main);
-            mClipToPadding = a.getBoolean(R.styleable.common_list_attrs_common_list_clip_to_padding, false);
-            mPadding = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding, -1.0f);
-            mPaddingTop = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_top, 0.0f);
-            mPaddingBottom = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_bottom, 0.0f);
-            mPaddingLeft = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_left, 0.0f);
-            mPaddingRight = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding_right, 0.0f);
-            mScrollbarStyle = a.getInt(R.styleable.common_list_attrs_common_list_view_scrollbar_style, -1);
-            mHeaderId = a.getResourceId(R.styleable.common_list_attrs_common_list_layout_header, -1);
+                    a.getResourceId(R.styleable.common_list_attrs_common_list_main_layout_id,
+                            R.layout.common_list_layout_main);
+            mClipToPadding = a.getBoolean(R.styleable.common_list_attrs_common_list_clip_to_padding,
+                    false);
+            mPadding = (int) a.getDimension(R.styleable.common_list_attrs_common_list_view_padding,
+                    -1.0f);
+            mPaddingTop = (int) a.getDimension(
+                    R.styleable.common_list_attrs_common_list_view_padding_top, 0.0f);
+            mPaddingBottom = (int) a.getDimension(
+                    R.styleable.common_list_attrs_common_list_view_padding_bottom, 0.0f);
+            mPaddingLeft = (int) a.getDimension(
+                    R.styleable.common_list_attrs_common_list_view_padding_left, 0.0f);
+            mPaddingRight = (int) a.getDimension(
+                    R.styleable.common_list_attrs_common_list_view_padding_right, 0.0f);
+            mScrollbarStyle = a.getInt(
+                    R.styleable.common_list_attrs_common_list_view_scrollbar_style, -1);
+            mHeaderId = a.getResourceId(R.styleable.common_list_attrs_common_list_layout_header,
+                    -1);
             mEmptyId =
-                a.getResourceId(R.styleable.common_list_attrs_common_list_layout_empty,
-                    R.layout.common_list_layout_empty);
+                    a.getResourceId(R.styleable.common_list_attrs_common_list_layout_empty,
+                            R.layout.common_list_layout_empty);
             mErrorId =
-                a.getResourceId(R.styleable.common_list_attrs_common_list_layout_error,
-                    R.layout.common_list_layout_error);
+                    a.getResourceId(R.styleable.common_list_attrs_common_list_layout_error,
+                            R.layout.common_list_layout_error);
             mMoreProgressId =
-                a.getResourceId(R.styleable.common_list_attrs_common_list_layout_more_progress,
-                    R.layout.common_list_layout_load_more);
+                    a.getResourceId(R.styleable.common_list_attrs_common_list_layout_more_progress,
+                            R.layout.common_list_layout_load_more);
             mProgressId =
-                a.getResourceId(R.styleable.common_list_attrs_common_list_layout_progress,
-                    R.layout.common_list_layout_loading);
+                    a.getResourceId(R.styleable.common_list_attrs_common_list_layout_progress,
+                            R.layout.common_list_layout_loading);
 
-            bEnableRefresh = a.getBoolean(R.styleable.common_list_attrs_common_list_enable_refresh, true);
+            bEnableRefresh = a.getBoolean(R.styleable.common_list_attrs_common_list_enable_refresh,
+                    true);
 
         } finally {
             a.recycle();
@@ -133,7 +142,8 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             return;
         }
         View v = LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
-        mRefreshLayout = (PtrFrameLayout) v.findViewById(R.id.common_list_abs_list_view_swipe_refresh);
+        mRefreshLayout = (PtrFrameLayout) v.findViewById(
+                R.id.common_list_abs_list_view_swipe_refresh);
         mRefreshLayout.disableWhenHorizontalMove(true);
         mAppBarLayout = (AppBarLayout) v.findViewById(R.id.common_list_abs_list_view_app_bar);
 
@@ -177,8 +187,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         } else {
             final int offset = computeVerticalScrollOffset();
             final int range = computeVerticalScrollRange() - computeVerticalScrollExtent();
-            if (range == 0)
+            if (range == 0) {
                 return false;
+            }
             if (direction < 0) {
                 return offset > 0;
             } else {
@@ -207,10 +218,11 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     protected void initRecyclerView(View view) {
         View recyclerView = view.findViewById(R.id.common_list_abs_list_view_lv);
 
-        if (recyclerView instanceof RecyclerView)
+        if (recyclerView instanceof RecyclerView) {
             mRecycler = (RecyclerView) recyclerView;
-        else
+        } else {
             throw new IllegalArgumentException("must has a RecyclerView with id list!");
+        }
 
         mRecycler.setClipToPadding(mClipToPadding);
 
@@ -288,7 +300,8 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 mRecycler.getAdapter().unregisterAdapterDataObserver(mAdapterObserver);
             }
         } catch (Exception e) {
-            AppLog.e(TAG, "unregister adapter observer in set adapter e:" + e.getLocalizedMessage());
+            AppLog.e(TAG,
+                    "unregister adapter observer in set adapter e:" + e.getLocalizedMessage());
         }
         mAdapterObserver = new RecyclerView.AdapterDataObserver() {
             @Override
@@ -401,8 +414,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     return false;
                 }
                 AppLog.d(TAG, "empty:" + (mEmpty.getVisibility() == View.VISIBLE) + " error:"
-                    + (mError.getVisibility() == View.VISIBLE));
-                if (mEmpty.getVisibility() == View.VISIBLE || mError.getVisibility() == View.VISIBLE) {
+                        + (mError.getVisibility() == View.VISIBLE));
+                if (mEmpty.getVisibility() == View.VISIBLE
+                        || mError.getVisibility() == View.VISIBLE) {
                     return false;
                 }
                 if (mRecycler.getChildCount() == 0) {
@@ -417,16 +431,23 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 final RecyclerView recyclerView = mRecycler;
                 RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
                 if (layoutManager instanceof LinearLayoutManager) {
-                    int position = ((LinearLayoutManager) layoutManager).findFirstCompletelyVisibleItemPosition();
+                    int position =
+                            ((LinearLayoutManager) layoutManager)
+                                    .findFirstCompletelyVisibleItemPosition();
                     if (position == 0) {
                         return true;
                     } else if (position == -1) {
-                        position = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+                        position =
+                                ((LinearLayoutManager) layoutManager)
+                                        .findFirstVisibleItemPosition();
                         return position == 0;
                     }
                 } else if (layoutManager instanceof StaggeredGridLayoutManager) {
                     boolean allViewAreOverScreen = true;
-                    int[] positions = ((StaggeredGridLayoutManager) layoutManager).findFirstVisibleItemPositions(null);
+                    int[] positions =
+                            ((StaggeredGridLayoutManager) layoutManager)
+                                    .findFirstVisibleItemPositions(
+                                    null);
                     for (int position : positions) {
                         if (position == 0) {
                             return true;
@@ -436,7 +457,10 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                         }
                     }
                     if (allViewAreOverScreen) {
-                        positions = ((StaggeredGridLayoutManager) layoutManager).findFirstVisibleItemPositions(null);
+                        positions =
+                                ((StaggeredGridLayoutManager) layoutManager)
+                                        .findFirstVisibleItemPositions(
+                                        null);
                         for (int position : positions) {
                             if (position == 0) {
                                 return true;
@@ -484,8 +508,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                 }
 
                 @Override
-                public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status,
-                    PtrIndicator ptrIndicator) {
+                public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch,
+                        byte status,
+                        PtrIndicator ptrIndicator) {
                     // AppLog.d(TAG, "onUIPositionChange");
                     PtrStatus ptrStatus;
                     switch (status) {
@@ -504,7 +529,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                             break;
                     }
                     handler.onUIPositionChange(isUnderTouch, ptrStatus, frame.getOffsetToRefresh(),
-                        ptrIndicator.getCurrentPosY(), ptrIndicator.getLastPosY());
+                            ptrIndicator.getCurrentPosY(), ptrIndicator.getLastPosY());
                 }
             });
         }
@@ -594,6 +619,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
      * 显示空view
      */
     private void showEmptyView() {
+        hideAllStateViews();
         mEmpty.setVisibility(View.VISIBLE);
     }
 
@@ -601,6 +627,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
      * 显示错误页面，加载数据发生错误时用
      */
     public void showErrorView() {
+        hideAllStateViews();
         mError.setVisibility(View.VISIBLE);
     }
 
@@ -608,6 +635,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
      * 显示加载中view
      */
     private void showProgressView() {
+        hideAllStateViews();
         mProgressView.setVisibility(View.VISIBLE);
     }
 
@@ -687,14 +715,15 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
 
         /**
          * 下拉过程中位置变化回调
-         * 
+         *
          * @param isUnderTouch 是否是按下
-         * @param status 状态
-         * @param offset 设定的下拉刷新高度
-         * @param current 当前纵坐标
-         * @param last 上次的纵坐标
+         * @param status       状态
+         * @param offset       设定的下拉刷新高度
+         * @param current      当前纵坐标
+         * @param last         上次的纵坐标
          */
-        void onUIPositionChange(boolean isUnderTouch, PtrStatus status, float offset, float current, float last);
+        void onUIPositionChange(boolean isUnderTouch, PtrStatus status, float offset, float current,
+                float last);
     }
 
     public enum PtrStatus {
