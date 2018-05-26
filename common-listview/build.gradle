@@ -29,4 +29,6 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:${SUPPORT_LIB_VERSION}"
     implementation "com.android.support:design:${SUPPORT_LIB_VERSION}"
     implementation project(':common-utils')
+
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
 }

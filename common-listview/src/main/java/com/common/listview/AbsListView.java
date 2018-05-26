@@ -15,11 +15,10 @@ import android.view.ViewStub;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.common.listview.ptr.PtrFrameLayout;
-import com.common.listview.ptr.PtrHandler;
-import com.common.listview.ptr.PtrUIHandler;
-import com.common.listview.ptr.indicator.PtrIndicator;
 import com.common.utils.AppLog;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 /**
  * 包含的功能：下拉刷新，自动加载更多，右侧快速索引
@@ -66,7 +65,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
     protected boolean bEnableRefresh;
 
     private RecyclerView.AdapterDataObserver mAdapterObserver;
-    protected PtrFrameLayout mRefreshLayout;
+    protected SmartRefreshLayout mRefreshLayout;
     protected IOnPullToRefresh mOutRefreshListener;
 
     // 记录header view的偏移，在判断能否下拉刷新时用到
@@ -142,9 +141,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             return;
         }
         View v = LayoutInflater.from(getContext()).inflate(mSuperRecyclerViewMainLayout, this);
-        mRefreshLayout = (PtrFrameLayout) v.findViewById(
+        mRefreshLayout = (SmartRefreshLayout) v.findViewById(
                 R.id.common_list_abs_list_view_swipe_refresh);
-        mRefreshLayout.disableWhenHorizontalMove(true);
+
         mAppBarLayout = (AppBarLayout) v.findViewById(R.id.common_list_abs_list_view_app_bar);
 
         mHeader = (ViewStub) v.findViewById(R.id.common_list_abs_list_view_header);
@@ -404,9 +403,9 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
      */
     public void setRefreshListener(IOnPullToRefresh listener) {
         mOutRefreshListener = listener;
-        mRefreshLayout.setPtrHandler(new PtrHandler() {
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+
+            private boolean checkCanDoRefresh() {
                 if (!bEnableRefresh) {
                     return false;
                 }
@@ -447,7 +446,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                     int[] positions =
                             ((StaggeredGridLayoutManager) layoutManager)
                                     .findFirstVisibleItemPositions(
-                                    null);
+                                            null);
                     for (int position : positions) {
                         if (position == 0) {
                             return true;
@@ -460,7 +459,7 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
                         positions =
                                 ((StaggeredGridLayoutManager) layoutManager)
                                         .findFirstVisibleItemPositions(
-                                        null);
+                                                null);
                         for (int position : positions) {
                             if (position == 0) {
                                 return true;
@@ -473,67 +472,17 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
             }
 
             @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                AppLog.d(TAG, "onRefreshBegin");
-                mOutRefreshListener.onRefreshBegin();
+            public void onRefresh(RefreshLayout refreshLayout) {
+                if (checkCanDoRefresh()) {
+                    AppLog.d(TAG, "onRefreshBegin");
+                    mOutRefreshListener.onRefreshBegin();
+                }
             }
         });
     }
 
-    public void setRefreshHeaderView(View view, final IPtrHeaderUI handler) {
-        if (handler != null) {
-            mRefreshLayout.addPtrUIHandler(new PtrUIHandler() {
-                @Override
-                public void onUIReset(PtrFrameLayout frame) {
-                    // AppLog.d(TAG, "onUIReset");
-                    handler.onUIReset();
-                }
-
-                @Override
-                public void onUIRefreshPrepare(PtrFrameLayout frame) {
-                    // AppLog.d(TAG, "onUIRefreshPrepare");
-                    handler.onUIRefreshPrepare();
-                }
-
-                @Override
-                public void onUIRefreshBegin(PtrFrameLayout frame) {
-                    // AppLog.d(TAG, "onUIRefreshBegin");
-                    handler.onUIRefreshBegin();
-                }
-
-                @Override
-                public void onUIRefreshComplete(PtrFrameLayout frame) {
-                    // AppLog.d(TAG, "onUIRefreshComplete");
-                    handler.onUIRefreshComplete();
-                }
-
-                @Override
-                public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch,
-                        byte status,
-                        PtrIndicator ptrIndicator) {
-                    // AppLog.d(TAG, "onUIPositionChange");
-                    PtrStatus ptrStatus;
-                    switch (status) {
-                        case PtrFrameLayout.PTR_STATUS_INIT:
-                            ptrStatus = PtrStatus.INIT;
-                            break;
-                        case PtrFrameLayout.PTR_STATUS_PREPARE:
-                            ptrStatus = PtrStatus.PREPARE;
-                            break;
-                        case PtrFrameLayout.PTR_STATUS_LOADING:
-                            ptrStatus = PtrStatus.LOADING;
-                            break;
-                        case PtrFrameLayout.PTR_STATUS_COMPLETE:
-                        default:
-                            ptrStatus = PtrStatus.COMPLETE;
-                            break;
-                    }
-                    handler.onUIPositionChange(isUnderTouch, ptrStatus, frame.getOffsetToRefresh(),
-                            ptrIndicator.getCurrentPosY(), ptrIndicator.getLastPosY());
-                }
-            });
-        }
-        mRefreshLayout.setHeaderView(view);
+    public void setRefreshHeaderView(AbsPullRefreshView view) {
+        mRefreshLayout.setRefreshHeader(view);
     }
 
     /**
@@ -674,7 +623,8 @@ public class AbsListView extends RelativeLayout implements AppBarLayout.OnOffset
         if (mRefreshLayout == null || !mRefreshLayout.isRefreshing()) {
             return;
         }
-        mRefreshLayout.refreshComplete();
+        mRefreshLayout.finishRefresh();
+        // mRefreshLayout.refreshComplete();
     }
 
     public void setEnableRefresh(boolean enable) {

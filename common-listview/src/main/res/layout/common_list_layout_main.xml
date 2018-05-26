@@ -14,7 +14,7 @@
             android:id="@+id/common_list_abs_list_view_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed" />
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"/>
     </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
@@ -22,40 +22,44 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.common.listview.ptr.PtrFrameLayout
-            android:id="@id/common_list_abs_list_view_swipe_refresh"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/common_list_abs_list_view_swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:srlAccentColor="@android:color/white"
+            app:srlEnableAutoLoadMore="false"
+            app:srlEnableLoadMore="false"
+            app:srlEnablePreviewInEditMode="true">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@id/common_list_abs_list_view_lv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scrollbars="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        </com.common.listview.ptr.PtrFrameLayout>
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
         <ViewStub
             android:id="@id/common_list_abs_list_view_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ViewStub
             android:id="@id/common_list_abs_list_view_error"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <ViewStub
             android:id="@id/common_list_abs_list_view_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <com.common.listview.Sidebar
             android:id="@id/common_list_abs_sidebar"
@@ -65,14 +69,14 @@
             android:layout_marginBottom="@dimen/common_list_sidebar_margin_bottom"
             android:layout_marginRight="@dimen/common_list_sidebar_margin_right"
             android:layout_marginTop="@dimen/common_list_sidebar_margin_top"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <!--快速检索的页面中间显示的字母-->
         <TextView
             android:id="@id/common_list_abs_floating_header"
             style="@style/common_list_sidebar_big_text"
             android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

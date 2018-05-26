@@ -69,6 +69,10 @@ public class PtrFrameLayout extends ViewGroup {
     private long mLoadingStartTime = 0;
     private PtrIndicator mPtrIndicator;
     private boolean mHasSendCancelEvent = false;
+
+    public static final int timeInterval = 100;
+    private int mTouchSlop;
+
     private Runnable mPerformRefreshCompleteDelay = new Runnable() {
         @Override
         public void run() {
@@ -117,6 +121,7 @@ public class PtrFrameLayout extends ViewGroup {
 
         final ViewConfiguration conf = ViewConfiguration.get(getContext());
         mPagingTouchSlop = conf.getScaledTouchSlop() * 2;
+        mTouchSlop = conf.getScaledTouchSlop();
     }
 
     @Override
@@ -277,6 +282,7 @@ public class PtrFrameLayout extends ViewGroup {
         if (!isEnabled() || mContent == null || mHeaderView == null) {
             return dispatchTouchEventSupper(e);
         }
+        long downTime;
         int action = e.getAction();
         switch (action) {
             case MotionEvent.ACTION_UP:
@@ -310,6 +316,7 @@ public class PtrFrameLayout extends ViewGroup {
                 return true;
 
             case MotionEvent.ACTION_MOVE:
+                // downTime = System.currentTimeMillis();
                 mLastMoveEvent = e;
                 mPtrIndicator.onMove(e.getX(), e.getY());
                 float offsetX = mPtrIndicator.getOffsetX();
@@ -322,6 +329,10 @@ public class PtrFrameLayout extends ViewGroup {
                     }
                 }
                 if (mPreventForHorizontal) {
+                    return dispatchTouchEventSupper(e);
+                }
+                // long moveInterval = System.currentTimeMillis() - downTime;
+                if (Math.abs(offsetY) < mTouchSlop) {
                     return dispatchTouchEventSupper(e);
                 }
 
