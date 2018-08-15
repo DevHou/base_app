@@ -53,4 +53,9 @@ public class InputMethodUtils {
         return imm.isActive();
     }
 
+    public static boolean isShowing(Context context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        return imm.isAcceptingText();
+    }
+
 }

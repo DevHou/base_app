@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.common.utils.AppLog;
+import com.common.utils.DispatchUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import java.util.List;
 
 /**
  * Created by houlijiang on 2014/9/26.
- * 
+ *
  * 列表数据的通用adapter，使用AbsListView时需要继承这个adapter
  * 子类基本只需要重载setData getItemViewHolder两个方法即可
  *
@@ -27,8 +28,9 @@ import java.util.List;
  * 使用注意事项：
  * > 任何对数据的操作都调用notifyDataChanged了，使用时不需要再次调用
  */
-public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsListDataAdapter.ViewHolder> implements
-    IAbsListDataAdapter {
+public abstract class AbsListDataAdapter<T> extends
+        RecyclerView.Adapter<AbsListDataAdapter.ViewHolder> implements
+        IAbsListDataAdapter {
 
     private static final String TAG = AbsListDataAdapter.class.getSimpleName();
 
@@ -77,7 +79,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void addToFront(final T[] data) {
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mData == null) {
@@ -109,7 +111,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             if (removeOld) {
                 mLastLoadMorePosition = -1;
             }
-            mRecyclerView.post(new Runnable() {
+            postToUiThread(new Runnable() {
                 @Override
                 public void run() {
                     AppLog.d(TAG, "add all " + data.length);
@@ -119,23 +121,16 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                         mData.clear();
                     }
                     int oldPosition = mData.size();
-                    if (data.length > 0) {
-                        Collections.addAll(mData, data);
-                        mIsReloading = false;
-                        if (oldPosition > 0) {
-                            notifyItemRangeInserted(oldPosition, data.length);
-                            // 通知一下最后一个更新，用来解决当一页不满时最后一个loadmore不调用bindView的bug
-                            if (mHasMore) {
-                                notifyItemChanged(mData.size(), DB_PAYLOAD);
-                            }
-                        } else {
-                            notifyDataSetChanged();
+                    Collections.addAll(mData, data);
+                    mIsReloading = false;
+                    if (oldPosition > 0) {
+                        notifyItemRangeInserted(oldPosition, data.length);
+                        // 通知一下最后一个更新，用来解决当一页不满时最后一个loadmore不调用bindView的bug
+                        if (mHasMore) {
+                            notifyItemChanged(mData.size(), DB_PAYLOAD);
                         }
                     } else {
-                        mIsReloading = false;
-                        if (removeOld) {
-                            notifyDataSetChanged();
-                        }
+                        notifyDataSetChanged();
                     }
                 }
             });
@@ -143,7 +138,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void add(final T obj) {
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mData == null) {
@@ -163,7 +158,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void insert(final T obj, final int position) {
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mData == null || position < 0) {
@@ -179,7 +174,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void replace(final T obj, final int position) {
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mData == null || position < 0 || position >= getDataSize()) {
@@ -195,7 +190,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void remove(final int position) {
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mData == null || position < 0 || position >= getDataSize()) {
@@ -211,7 +206,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void exchange(final int i, final int j) {
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 int len = mData == null ? 0 : mData.size();
@@ -230,7 +225,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public void refreshList() {
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 mIsReloading = false;
@@ -251,7 +246,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      */
     public void clear() {
         mLastLoadMorePosition = -1;
-        mRecyclerView.post(new Runnable() {
+        postToUiThread(new Runnable() {
             @Override
             public void run() {
                 if (mData == null) {
@@ -291,6 +286,9 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     }
 
     public List<T> getAllData() {
+        if (mData == null) {
+            mData = new ArrayList<>();
+        }
         return mData;
     }
 
@@ -300,6 +298,16 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             return null;
         }
         return mData.get(position);
+    }
+
+    /**
+     * 因为adapter里数据操作都是异步的，所以这里提供一个接口来提交数据操作完成后需要执行的UI操作
+     */
+    public void doAfterDataChanged(Runnable runnable) {
+        if (runnable == null) {
+            return;
+        }
+        postToUiThread(runnable);
     }
 
     @Override
@@ -324,17 +332,20 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
             View v;
             // AppLog.v(TAG, "create view holder for load more");
             if (mLoadMoreId != 0) {
-                v = LayoutInflater.from(viewGroup.getContext()).inflate(mLoadMoreId, viewGroup, false);
+                v = LayoutInflater.from(viewGroup.getContext()).inflate(mLoadMoreId, viewGroup,
+                        false);
             } else {
                 v =
-                    LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_load_more,
-                        viewGroup, false);
+                        LayoutInflater.from(viewGroup.getContext()).inflate(
+                                R.layout.common_list_layout_load_more,
+                                viewGroup, false);
             }
             vh = new LoadMoreViewHolder(v, useBinding());
         } else if (viewType == TYPE_EMPTY_FOOTER) {
             View v =
-                LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.common_list_layout_empty_footer,
-                    viewGroup, false);
+                    LayoutInflater.from(viewGroup.getContext()).inflate(
+                            R.layout.common_list_layout_empty_footer,
+                            viewGroup, false);
             // AppLog.v(TAG, "create view holder for empty");
             vh = new EmptyViewHolder(v, useBinding());
         } else {
@@ -357,7 +368,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
                 AppLog.v(TAG, "reloading will not call load more pos:" + pos);
             } else if (pos != mLastLoadMorePosition) {
                 AppLog.v(TAG, "bind view holder for load more pos:" + pos);
-                mRecyclerView.post(new Runnable() {
+                postToUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (mHasMore && mIOnLoadMore != null) {
@@ -410,7 +421,8 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     @Override
     final public int getItemCount() {
         // 只要有数据永远都返回多一个，通过显示不同的footer view控制显示
-        // AppLog.v(TAG, "get count for " + mRecyclerView.hashCode() + ", size:" + (mData == null ? 1 : mData.size() +
+        // AppLog.v(TAG, "get count for " + mRecyclerView.hashCode() + ", size:" + (mData == null
+        // ? 1 : mData.size() +
         // 1));
         return (mData == null) ? 0 : mData.size() + 1;
     }
@@ -423,6 +435,17 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         mRecyclerView = null;
+    }
+
+    /**
+     * 放到UI线程去执行
+     */
+    private void postToUiThread(Runnable runnable) {
+        if (mRecyclerView != null) {
+            mRecyclerView.post(runnable);
+        } else {
+            DispatchUtils.getInstance().postInMain(runnable);
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -491,7 +514,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
 
     /**
      * 子类可以重载这个方法，来实现多类型item
-     * 
+     *
      * @param position index
      * @return 类型
      */
@@ -503,7 +526,7 @@ public abstract class AbsListDataAdapter<T> extends RecyclerView.Adapter<AbsList
      * 向每一个item设置数据
      *
      * @param viewHolder 视图
-     * @param position index
+     * @param position   index
      */
     protected abstract void bindData(ViewHolder viewHolder, int position, T data);
 
